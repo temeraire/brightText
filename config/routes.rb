@@ -1,4 +1,9 @@
 BrightText::Application.routes.draw do
+
+  match 'proxy/:id/story' => 'bt_proxy#story', :as => :story
+  match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
+  
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
