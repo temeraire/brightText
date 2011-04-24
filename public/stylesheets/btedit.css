@@ -1,39 +1,21 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>BrightText HTML Wand v1.0</title>
 
-
-    <script src="/js/jquery-1.5.2.min.js" type="text/javascript"></script>
-    <script src="/javascripts/bt/bt.js" type="text/javascript"></script>
-
-
-    <style type="text/css" media="screen">
-      body {
-        margin: 0;
-        margin-bottom: 25px;
-        padding: 0;
-        background-color: #f0f0f0;
-        font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
-        font-size: 13px;
-        color: #333;
-      }
 
 
 
       SPAN.changePoint{
-         color:#3333ff;
          font-family:Arial;
          cursor:pointer;
-         border:1px dotted black;
+      }
+      
+      SPAN.changePointResting{
+         color:#006600;
+         border:1px dotted #006600;
       }
       
       SPAN.changePointHover{
-         color:#0000ff;
-         font-family:Arial;
-         cursor:pointer;
-         border:1px dotted black;
-         
+         color:#00cc00;
+         border:1px dotted #00cc00;  
+         background-color:#eeffee;
       }
       
       SPAN.changePoint_dimmed{
@@ -58,15 +40,11 @@
       }
       
       DIV.btContent{
-        width:500px;
-        height:300px;
         overflow-x:hidden;
         overflow-y:scroll;
         background-color:white;
         border:1px solid black;
-        margin: 10px;
-        padding:10px;
-      
+        padding: 10px;
       }
       
       DIV.simpleButton{
@@ -164,10 +142,6 @@
         opacity:.3;
       }
       
-      BODY{
-        overflow:hidden;
-      }
-      
       P.selectedElementDisplay{
         width:240px;
         margin:0px;
@@ -187,44 +161,79 @@
         font-size:9pt;
         text-align:center;
       }
-    </style>
-    <script>
-    
-      $(document).ready(function(){
-        loadStory(791);
-      } );
-
-
-    </script>
-
-  </head>
-  <body>
-    <div id="page" class="page">
-      <div class="btContent" contentEditable="true" id='btContent' onkeyup="onKeyboardUp( event )"  onkeydown="onKeyboardDown( event )">
-        
-      </div>
-      <div class="devControls" id="devControls">
-        <button onClick="placeControlsOverlay()">Show Controls Overlay</button><br>
-        <button onClick="removeControlsOverlay()">Hide Controls Overlay</button><br>
-        <button onClick="placeVeilOverlay()">Show Veils Overlay</button><br>
-        <button onClick="removeVeilOverlay()">Hide Veil Overlay</button><br>
-        <button onClick="createChangepointFromSelection()">Create Changepoint from Selection</button><br>
-      </div>
       
-      <div id="veil" class="veil"></div>
-      
-    </div>
-    <!-- absolutely positioned items go here -->
-    <div class="textControlsOverlay" id="textControlsOverlay" style="display:none">
-      <div class="highlightDisplay" id="highlightDisplay"><p class="selectedElementDisplay" id="selectedElementDisplay"></p></div>
-      <div class="selectionBoxTopLeft" id="selectionBox_1"><p class="choiceElementDisplay" id="selectionBoxText_1"></p></div>
-      <div class="selectionBoxBottomLeft" id="selectionBox_2"><p class="choiceElementDisplay" id="selectionBoxText_2"></p></div>
-      <div class="selectionBoxTopRight" id="selectionBox_3"><p class="choiceElementDisplay" id="selectionBoxText_3"></p></div>
-      <div class="selectionboxBottomRight" id="selectionBox_4"><p class="choiceElementDisplay" id="selectionBoxText_4"></p></div>
-    </div>
-    
-    
-    
-    
-  </body>
-</html>
+      .contextContainer{
+			  background-color:white;	      
+			  border:1px solid black;
+			  padding:2px 0px 5px 0px;
+			  font-size:11pt;
+			  font-face:Arial;
+			  cursor:pointer;
+			}
+			
+      .pileElementOptContainer{
+			  background-color:white;	      
+			  border:1px solid black;
+			  padding:2px 0px 5px 0px;
+			  font-size:8pt;
+			  font-face:Arial;
+			}			
+			
+			.highlightedMenuItem{
+			  background-color:gray;
+			  color:white;
+        padding:0px 15px 2px 15px;			  
+			}
+			
+			.menuItem{
+			  background-color:white;	
+			  color:black;
+        padding:0px 15px 2px 15px;			  
+			}
+			
+			.choiceEditor{
+			  border:1px solid black;
+			  font-size:11pt;
+			  font-face:Arial;			
+			  background-color:white;	
+			  color:black;
+        padding:10px 5px 10px 5px;
+			}					
+			
+			.choiceEditContainer{
+			  background-color:white;	
+			  color:black;
+        padding:2px 2px 2px 2px;
+        margin:2px 5px 2px 5px;
+        width:220px;
+        border:1px dashed #cccccc;
+			}			
+			
+			.choiceEditContainerHighlight{
+			  border:1px solid #000000;
+			  background-color:gray;
+			}
+			
+			.choiceEditField{
+			  background-color:white;	
+			  color:black;
+        width:160px;
+			}
+			
+			.choiceDeleteButton{
+        padding:3px 5px 0px 5px;	
+        float:left;
+			}
+			
+			.elementPlusIcon{
+			 padding:3px 5px 0px 5px;
+			 float:left;
+			
+			}
+			
+			.expandPileElement{
+			  padding: 3px 0px; 5px;
+			  float:right;
+			  width:18px;
+			  height:18px;
+			}

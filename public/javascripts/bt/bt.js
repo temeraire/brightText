@@ -12,7 +12,6 @@ function loadStory( id )
 
 var _story;
 var _piles;
-
 var _changePoints = new Array();;
 
 function loadStoryCallback( data )
@@ -24,92 +23,99 @@ function loadStoryCallback( data )
 
 }
 
+
+
 function renderStory( )
 {
-  var _changePoints = new Array();;
-  storyContentDiv = $("btContent");
+  _changePoints = new Array();;
+  storyContentDiv = $("#btContent");
   
-  while( storyContentDiv.firstChild ){
-    storyContentDiv.removeChild( storyContentDiv.firstChild );
+  while( storyContentDiv[0].firstChild ){
+    storyContentDiv[0].removeChild( storyContentDiv[0].firstChild );
   }
   
   log("have data of length: " + _story.length);
   
   for ( var c = 0; c <  _story.length; c++ ){
-    renderContainer( storyContentDiv, _story[c]["container"] );
+    var pos = new DataPositioner( c );
+    renderContainer( storyContentDiv, _story[c]["container"], pos );
   }
 }
 
-function renderContainer( div, data )
+function renderContainer( div, data, pos )
 {
   log( "rendering container of length: " + data.length );
   
-  var container = document.createElement("p");
-  div.appendChild( container );
+  var container = $("<p/>");
+  container[0].id = "container_" + pos.getContainerIndex();
   
+  div.append( container );
   
   for ( var  i = 0; i < data.length; i++ ){
     var el = data[i];
     if ( typeof( el ) == "object" ){ // changepoint
-      var c = renderChangepoint( el, data, i );
+      var c = renderChangepoint( el, pos.cloneWithIndex( i ) );
     } else {
-      var c = renderText( el, data, i );
+      var c = renderText( el, pos.cloneWithIndex( i ) );
     }
-    c["val"] = c.className;
-    container.appendChild( c );
+    c["val"] = c[0].className;
+    container.append( c );
   }
 }
 
 var _undimTimeout;
 var _nodeCount = 0;
 
-function renderChangepoint( el )
+function renderChangepoint( el, pos )
 {
   var cpIndex = _changePoints.length; 
   _changePoints.push( el ); 
   
   
-  var p = document.createElement("span");
+  var p = $("<span/>");
+  p[0].id = "changepoint_" + pos.getContainerIndex() + "_" + pos.getDataIndex();
   el["view"] = p;
-  p["dataIndex"] = cpIndex;
-  p.className = "changePoint"
+  p[0]["containerIndex"] = null;
+  p[0]["dataIndex"] = cpIndex;
+  p.addClass( "changePoint" );
   var t = document.createTextNode( el['text'] );
-  p.appendChild( t );
+  p.append( t );
   p.id = "cp_" + _nodeCount++;
 
-  p.addEventListener( "mouseover", function(){
-    p.className = "changePointHover";
+  p.bind( "mouseover", function(){
+    p.removeClass("changePoint_dimmed changePoint").addClass( "changePointHover" );
+    
     if ( _undimTimeout ){
       clearTimeout( _undimTimeout ); 
       _undimTimeout = null;
     } else {
       dimTheRest( p );
     }
-  }, false );
-  p.addEventListener( "mouseout", function(){
+  });
+  p.bind( "mouseout", function(){
     setTimeout("unhighlightSelf('" + p.id + "')", 1000 );
     _undimTimeout = setTimeout( "undimAll( )", 3000 );
-  }, false );
+  });
   
-  p.addEventListener( "click", function(){
-    processChangePointClick( p );
-  }, false );
+  p.bind( "click", function(){
+    processChangePointClick( p[0] );
+  });
   
   return p;
 }
 
 
-function renderText( el, data, index )
+function renderText( el, pos )
 {
-  var p = document.createElement("span");
-  p.className = "plainText";
-  p["dataArray"] = data;
-  p["dataIndex"] = index;
+  var p = $("<span/>");
+  p[0].id = "text_" + pos.getContainerIndex() + "_" + pos.getDataIndex();
+  p.addClass( "plainText" );
+  p[0]["positioner"] = pos;
   var t = document.createTextNode( el );
-  p.appendChild( t );
-  p.addEventListener( "mouseup", function(){
+  p.append( t );
+  p.bind( "mouseup", function(){
     log(" span is up ");
-  }, false );
+  });
   return p;
 }
 
@@ -124,7 +130,7 @@ function processChangePointClick( domEl )
 
 function calculateAbsoluteCoords( el )
 {
-  var obj = el;
+  var obj = el[0];
   var x = 0;
   var y = 0;
   while ( obj ){
@@ -138,55 +144,51 @@ function calculateAbsoluteCoords( el )
   var result = {};
   result["left"]   = x;
   result["top"]    = y;
-  result["width"]  = el.offsetWidth;
-  result["height"] = el.offsetHeight;
+  result["width"]  = el[0].offsetWidth;
+  result["height"] = el[0].offsetHeight;
   return result;
   
 }
 
 
 function unhighlightSelf( id ){
-    domEl = $(id);
-    domEl.className = "changePoint_dimmed";
+    log("unhighlight: " + id );
+    domEl = $("#" + id);
+    domEl.removeClass("changePointHover").addClass( "changePoint_dimmed" );
 }
 
 function dimTheRest( domEl ){
-  var parent = $("btContent");
-  for ( var c = 0; c < parent.childNodes.length; c++ ){
-    var container = parent.childNodes[c];  
-    for ( var i = 0; i < container.childNodes.length; i ++ ){    
-      var child = container.childNodes[i];
+  var parent = $("#btContent");
+  
+  $("span.changePoint").removeClass("changePoint").addClass("changePoint_dimmed");
+  $("span.plainText").removeClass("plainText").addClass("plainText_dimmed");  
+  
+  /*
+  for ( var c = 0; c < parent.children().length; c++ ){
+    var container = $(parent.children()[c]);  
+    for ( var i = 0; i < container.children().length; i ++ ){    
+      var child = container.children()[i];
       if ( child != domEl ){
         child.className = child.className + "_dimmed";
       }
     }
   }
+  */
 }
 
 function undimTheRest( domEl ){
   _undimTimeout = null;
-  var parent = domEl.parentNode;
-  for ( var c = 0; c < parent.childNodes.length; c++ ){
-    var container = parent.childNodes[c];  
-    for ( var i = 0; i < container.childNodes.length; i ++ ){
-      var child = container.childNodes[i];
-      if ( child != domEl ){
-        child.className = child["val"];
-      }
-    }
-  }
+  
+  $("span.changePoint_dimmed").removeClass("changePoint_dimmed").addClass("changePoint");
+  $("span.plainText_dimmed").removeClass("plainText_dimmed").addClass("plainText");
 }
 
 function undimAll(){
   _undimTimeout = null;
-  var parent = $("btContent");
-  for ( var c = 0; c < parent.childNodes.length; c++ ){
-    var container = parent.childNodes[c];
-    for ( var i = 0; i < container.childNodes.length; i ++ ){
-      var child = container.childNodes[i];
-      child.className = child["val"];
-    }
-  }
+  
+  $("span.changePointHover").removeClass("changePointHover").addClass("changePoint");
+  $("span.changePoint_dimmed").removeClass("changePoint_dimmed").addClass("changePoint");
+  $("span.plainText_dimmed").removeClass("plainText_dimmed").addClass("plainText");
 }
 
 
@@ -199,15 +201,15 @@ function beginChangepointEdit( changepoint )
   
   var i = 1;
   for ( var id in pile["elements"] ){
-    var ui = $("selectionBox_" + i );
+    var ui = $("#selectionBox_" + i );
     if ( id == changepoint["pileElement"] ){
       log("default pile element: " + id );
       continue;
     }
-    renderTextIn( $("selectionBoxText_" + i ), pile["elements"][id]["text"] );
+    renderTextIn( $("#selectionBoxText_" + i ), pile["elements"][id]["text"] );
     //setupElementSelection( ui, changepoint, pile, id );
     var clickHandler = new ChangePointSelectionEventHandler( ui, changepoint, pile, id );
-    ui.addEventListener( "click", clickHandler, false );
+    ui[0].addEventListener( "click", clickHandler, false);
     _changePointSelectionHelper.registerSelectionHandler( ui, clickHandler );
     i++;
     if ( i > 4 ){
@@ -217,14 +219,14 @@ function beginChangepointEdit( changepoint )
   }
   
   while ( i <= 4 ){
-    renderTextIn( $("selectionBoxText_" + i ), "" );
+    renderTextIn( $("#selectionBoxText_" + i ), "" );
     i++;
   }
     
-  var defaultButton = $("highlightDisplay");
-  renderTextIn( $("selectedElementDisplay"), changepoint["text"] );
+  var defaultButton = $("#highlightDisplay");
+  renderTextIn( $("#selectedElementDisplay"), changepoint["text"] );
   var clickHandler = new ChangePointSelectionEventHandler( defaultButton, changepoint, pile, changepoint["pileElement"] );
-  defaultButton.addEventListener( "click", clickHandler, false );
+  defaultButton[0].addEventListener( "click", clickHandler, false );
   _changePointSelectionHelper.registerSelectionHandler( defaultButton, clickHandler );  
 
 }
@@ -243,8 +245,9 @@ var ChangePointSelectionHelper = function()
     for ( var id in this._eventListeners ){
       var listener = this._eventListeners[ id ];
       if ( listener != null ){
-        var domEl = $( id );
-        domEl.removeEventListener( "click", listener, false );
+        var domEl = $( "#" + id );
+        domEl.unbind("click");
+        //domEl[0].removeEventListener( "click", listener, false );
       }
     }
   }
@@ -282,24 +285,143 @@ function getPileFor( changepoint )
   
   var pile = _piles[ changepoint["pile"] ];
   
-  /*
-  var pile = {"id":"123"};
-  var elements = { "1":{"text":"foo", "id": "1"}, "2": {"text":"bar", "id":"2"}, "3":{"text":"blah", "id":"3"}};
-  pile["elements"] = elements;
-  */
-  
-  log(" pile: " + Object.toJSON( pile ) );
+  //log(" pile: " + Object.toJSON( pile ) );
   return pile;
+}
+
+
+/**
+  *  Fired when a key press is detected in the text area.
+  */
+function onKeyboardDown( event )
+{
+  disallowedOp = false;
+  selection = getSelectedText();
+  
+  log( event.keyCode );
+  
+  var startContainer = selection.anchorNode.parentNode;
+  
+  if ( startContainer["dataArray"] == null && (event.keyCode < 37 || event.keyCode > 40) ){
+    //disallowedOp = true;
+    if( event.keyCode == 13 ){
+     // beginChangepointEdit( _changePoints[ startContainer["dataIndex"]] );
+    }
+  }
+  
+  
+  var endContainer   = selection.focusNode.parentNode;
+  
+  log("startContainer: " + startContainer + " endContainer: " + endContainer );
+  
+  
+  var path = [];
+  
+  var currentContainer = startContainer;
+  path.push( startContainer );
+  while ( currentContainer != endContainer ){  // TODO: this equality fails to detect end when start is a change point and end is plain text
+    if ( currentContainer.nextSibling  == null ){
+      log( "null sibling in " + currentContainer.id );
+      break;
+    }
+    currentContainer = currentContainer.nextSibling;
+    path.push( currentContainer );
+  }
+  
+  log("number of containers in path: " + path.length );
+  
+  if ( path.length > 1 || disallowedOp){
+    log(" preventing edit of the area");
+    event.cancelBubble = true;
+    event.returnValue = false; 
+    event.preventDefault = true;
+    notify("We Are Sorry. Editing of ChangePoints is not alloweds.  Plese modify each Change Point and Text Section individually.");
+  }
+}
+
+function notify( text )
+{
+  // TODO: render a notification area somewhere
+}
+
+function onKeyboardUp( event )
+{ 
+   var normal = true;
+   switch (event.keyCode){
+   /*
+     case 8:  // backspace
+        handled = true;
+        doDelete();
+        break;
+    */    
+     default:
+        handled = handleEdit();
+        
+        break;
+   }
+   if ( !normal ){
+      event.cancelBubble = true;
+      event.returnValue = false;   
+   }
+}
+
+function handleEdit()
+{
+  selection = getSelectedText();
+  
+  var startContainer = selection.anchorNode.parentNode;
+  var endContainer   = selection.focusNode.parentNode;
+  
+  log("startContainer: " + startContainer + " endContainer: " + endContainer );
+  
+  
+  var path = [];
+  
+  var currentContainer = startContainer;
+  path.push( startContainer );
+  while ( currentContainer != endContainer ){  // TODO: this equality fails to detect end when start is a change point and end is plain text
+    if ( currentContainer.nextSibling  == null ){
+      log( "null sibling in " + currentContainer.id );
+      break;
+    }
+    currentContainer = currentContainer.nextSibling;
+    path.push( currentContainer );
+  }
+  
+  log("number of containers in path: " + path.length );
+  
+  if ( path.length > 1 ) {
+    return false;
+  }
+  
+  // WE ARE IN BUSINESS!!!   *************** 
+  
+  var container      = startContainer["dataArray"];
+  var containerIndex = startContainer["dataIndex"];
+  
+  //log( "modifying element: " + containerIndex + " in array: " + container );
+  
+  var startOffset = selection.anchorOffset;
+  var endOffset   = selection.focusOffset;
+  
+  log( " start offset: " + startOffset + " end offset: " + endOffset );
+  var original = container[containerIndex];
+  
+  var updatedValue = selection.focusNode.nodeValue;
+  log("new value: " + updatedValue );
+  
+  container[containerIndex] = updatedValue;
+  
 }
 
 
 function renderTextIn( para, text )
 {
   log(" Rendering text [" + text + "] in " + para );
-  while ( para.firstChild ){
-    para.removeChild( para.firstChild );
+  while ( para[0].firstChild ){
+    para[0].removeChild( para[0].firstChild );
   }
-  para.appendChild( document.createTextNode( text ) );
+  para.append( document.createTextNode( text ) );
 }
 
 
@@ -344,6 +466,9 @@ function createChangepointFromSelection()
   var startOffset = selection.anchorOffset;
   var endOffset   = selection.focusOffset;
   
+  log( " start offset: " + startOffset + " end offset: " + endOffset );
+  
+  
   var original = container[containerIndex];
   
   var data = [];
@@ -351,15 +476,15 @@ function createChangepointFromSelection()
   data.push( original.substring( startOffset, endOffset) );
   data.push( original.substring( endOffset ) );
   
-  log( "split the ofriginal into: " + Object.toJSON( data ) ); 
+  //log( "split the original into: " + Object.toJSON( data ) ); 
   
   var pileElement    = _modelFactory.createPileElement( data[1] );
   var pile           = _modelFactory.createPile( pileElement );
   var changePoint    = _modelFactory.createChangepoint( pile, pileElement );
   
-  log( "created pile: " + Object.toJSON( pile ));
+  //log( "created pile: " + Object.toJSON( pile ));
   
-  log( "created changepoint: " + Object.toJSON( changePoint ) );
+  //log( "created changepoint: " + Object.toJSON( changePoint ) );
   
   _piles[ pile.id ] = pile;
   container.splice( containerIndex, 1, data[0], changePoint, data[2] );
@@ -392,43 +517,45 @@ function getSelectedText()
 
 function placeControlsOverlay()
 {
-  var controls = $("textControlsOverlay");
+  var controls = $("#textControlsOverlay");
   
-  controls.style.display="inline";
-  
+//  controls.css( "display", "inline");
+  controls.fadeIn( 200 );
   var textOverlayCoord = calculateAbsoluteCoords( controls );
-  var editorCoord      = calculateAbsoluteCoords( $("btContent") );
+  var editorCoord      = calculateAbsoluteCoords( $("#btContent") );
   
-  log(" controls coord: " + Object.toJSON( textOverlayCoord ) );
-  log(" editor coord: " + Object.toJSON( editorCoord ) );
+  //log(" controls coord: " + Object.toJSON( textOverlayCoord ) );
+  //log(" editor coord: " + Object.toJSON( editorCoord ) );
   
   var desiredLeft = ( editorCoord["width"]  - textOverlayCoord["width"]  ) / 2 + editorCoord["left"];
   var desiredTop  = ( editorCoord["height"] - textOverlayCoord["height"] ) / 2 + editorCoord["top"] ;
   
-  controls.style.left = desiredLeft + "px";
-  controls.style.top  = desiredTop  + "px";
+  controls.css("left", desiredLeft + "px");
+  controls.css("top",  desiredTop  + "px");
 }
 
 function removeControlsOverlay()
 {
-  $("textControlsOverlay").style.display="none";
+  //$("#textControlsOverlay").css("display", "none");
+  $("#textControlsOverlay").fadeOut( 200 );
 }
 
 function placeVeilOverlay()
 {
-  var veil = $("veil");
-  veil.style.display="inline";
+  var veil = $("#veil");
+  veil.css( "display", "inline");
   
-  var coord = calculateAbsoluteCoords( $("btContent") );
+  var coord = calculateAbsoluteCoords( $("#btContent") );
   
   for ( var d in coord ){
-    veil.style[ d ] = coord[ d ] + "px";
+    veil.css( d, coord[ d ] + "px");
   }
 }
 
 function removeVeilOverlay()
 {
-  $("veil").style.display="none";
+  $("#veil").fadeOut( 200 );
+  //$("#veil").css("display", "none");
   
   
   
@@ -442,6 +569,42 @@ function log( msg )
   
 
 }
+
+$(document).ready(function(){
+  $("#veil").click( function(){
+    removeVeilOverlay();
+    removeControlsOverlay();
+  });
+});
+
+
+var DataPositioner = function( containerIndex ){
+  this._containerIndex = containerIndex;
+  this._dataIndex = -1;
+  
+  this.setContainerIndex = function( i ){
+    this._containerIndex = i;
+  }
+  
+  this.setDataIndex = function( i ){
+    this._dataIndex = i;
+  }
+  
+  this.cloneWithIndex = function( i ){
+    var positioner = new DataPositioner( this._containerIndex );
+    positioner.setDataIndex( i );
+    return positioner;
+  }
+  
+  this.getContainerIndex = function() {
+    return this._containerIndex;
+  }
+  
+  this.getDataIndex = function(){
+    return this._dataIndex;
+  }
+}
+
 
 
 /**************************************************/

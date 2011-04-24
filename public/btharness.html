@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BrightText HTML Wand v1.0 Harness</title>
+
+
+
+
+    <script src="/js/jquery/jquery-1.5.2.min.js" type="text/javascript"></script>
+    <script src="/js/jquery/jquery.json-2.2.min.js" type="text/javascript"></script>
+    <script src="/js/jquery/jquery.conmenu.js" type="text/javascript"></script>
+    
+    <script src="/js/jquery/jquery-ui-1.8.11.custom.min.js" type="text/javascript"></script>
+    
+
+    <script src="/js/btedit.js" type="text/javascript"></script>
+
+    <link rel=StyleSheet href="/stylesheets/btedit.css" type="text/css" media="screen">    
+
+
+    <link rel=StyleSheet href="/stylesheets/jquery/jquery-ui-1.8.11.custom.css" type="text/css" media="screen">    
+
+
+    <style type="text/css" media="screen">
+    
+      body {
+        margin: 0;
+        margin-bottom: 25px;
+        padding: 0;
+        background-color: #f0f0f0;
+        font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
+        font-size: 13px;
+        color: #333;
+        overflow:hidden;        
+      } 
+      
+      textarea.dataport{
+        width:392px; 
+        height:392px; 
+        resize:none;
+      }
+      
+      div.viewportcontainer{
+        width:400px; 
+        height:400px; 
+        margin:10px; 
+        padding:10px; 
+        float:left;  
+        border: 1px dotted black
+      }
+      
+      div.btEditor{
+        width:374px;
+        height:324px;
+        padding:10px;
+      }
+      
+    </style>
+    
+    <script>
+      var _bt1 = null;
+      var _bt2 = null;
+    
+
+      function loadStory( id )
+      {
+        var scriptTag = document.createElement("script");
+        scriptTag.id = "story_data";
+        scriptTag.src = "/proxy/" + id + "/story?callback=loadStoryCallback";
+        head = document.getElementsByTagName("head").item(0);  
+        head.appendChild( scriptTag );
+      }
+      
+      function loadStoryCallback( data )
+      {
+        _bt1.renderData( data );
+      }      
+      
+      $(document).ready(function(){
+        _bt1 = new BrightTextEditor( "bt_one", true );
+        _bt2 = new BrightTextEditor( "bt_two" );
+        
+        var rawData  = $("#raw_data");
+        var textData = $("#text_data");
+        
+        _bt1.onChange( function() {
+          rawData[0].value  = $.toJSON( _bt1.toData() );
+          textData[0].value = _bt1.toString();
+          _bt2.renderData( _bt1.toData() );
+        } );
+      
+      
+       $( "#slider1" ).slider({
+          value:0,
+          min: 0,
+          max: 4,
+          step: 1,
+          slide: function( event, ui ) {
+            var toneGradients = ["Friendly", "Neutral", "Coarse", "Demanding", "Offensive"];
+            $( "#gradient1" )[0].innerHTML = toneGradients[ ui.value ];
+            }
+        });
+        
+        $("#instant_rewrite1").button();
+      
+      
+       $( "#slider2" ).slider({
+          value:0,
+          min: 0,
+          max: 4,
+          range: true,
+          step: 1,
+          slide: function( event, ui ) {
+            var toneGradients = ["Friendly", "Neutral", "Coarse", "Demanding", "Offensive"];
+            
+            var s1 = ui.values[0];
+            var s2 = ui.values[1];
+            
+            if ( s1 == s2 ){
+              $( "#gradient2" )[0].innerHTML = toneGradients[ ui.value ];
+            } else {
+              $( "#gradient2" )[0].innerHTML = toneGradients[ s1 ] + " - " + toneGradients[ s2 ];
+            } 
+          }
+        });
+        
+        $("#instant_rewrite2").button();      
+      
+      
+        loadStory(791);
+      } );
+    
+    
+    </script>
+    
+  </head>
+  <body>
+    <div id="harness_container" style="width:900px;">
+      <!-- the "main" bright text control, which drives data to all the other controls on this page -->
+      <div id="main_container" class="viewportcontainer">
+        
+        
+        <div id="controls1" style="width:374px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
+        
+          <div style="border: 0px dashed grey; width:180px; padding:2px 5px 2px 10px;float:left">
+            <div id="gradient1" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;">Friendly</div>
+            <div style="padding:0px 0px 5px 0px;">Tone: </div>
+            <div id="slider1" style="width:100%;"></div>
+          </div>
+          <div style="float:right; padding: 5px 0px;">
+            <button id="instant_rewrite1">Instant Rewrite</button>
+          </div>            
+        </div>   
+      
+        <div id="bt_one" class="btEditor">BT Wand</div>
+
+
+      </div>
+      
+      <!-- the  "slave" bright text which dynamically updates with all the changes to the main control -->
+      <div id="secon_container" class="viewportcontainer">
+        <div id="controls2" style="width:374px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
+        
+          <div style="border: 0px dashed grey; width:200px; padding:2px 5px 2px 10px;float:left">
+            <div id="gradient2" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;">Friendly</div>
+            <div style="padding:0px 0px 5px 0px;">Tone: </div>
+            <div id="slider2" style="width:100%;"></div>
+          </div>
+          <div style="float:right; padding: 5px 0px;">
+            <button id="instant_rewrite2">Instant Rewrite</button>
+          </div>            
+        </div>   
+            
+      
+        <div id="bt_two" class="btEditor">BT Client</div>
+      </div>
+      
+      <!-- the real-time bright text JSON data display, to observe what's happening under the hood -->
+      <div id="data_container" class="viewportcontainer"><textarea class="dataport" id="raw_data">Three</textarea></div>
+      
+      <!-- the real-time plain text output, to observe the result -->
+      <div id="text_container" class="viewportcontainer"><textarea class="dataport" id="text_data">Four</textarea></div>
+      
+
+    </div>
+
+  </body>
