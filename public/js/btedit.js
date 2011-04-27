@@ -59,8 +59,9 @@ var BrightTextEditor = function( divId, editable ){
     var start = this._btDiv[0];
     var story = [];
     this._streamChildData( start, story );
-    
+    this._story = story;    
     return {"story": story, "piles": this._piles };
+
   }
   
   this.toString = function(){
@@ -493,6 +494,9 @@ var BrightTextEditor = function( divId, editable ){
   {
     log("rewrite");
     this.renderStory( true );
+    this.toData();
+    if ( self._btChangeCallback ) self._btChangeCallback();
+    
   }
 
 }  // end BrightTextEditor
