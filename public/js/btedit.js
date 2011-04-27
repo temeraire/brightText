@@ -164,8 +164,11 @@ var BrightTextEditor = function( divId, editable ){
   /**
    *  Story rendering 
    */
-  this.renderStory = function( )
+  this.renderStory = function( randomize )
   {
+    if ( randomize ) randomize = true;
+    else randomize = false;
+    
     this._changePoints = new Array();
     storyContentDiv = this._btDiv;
     
@@ -173,18 +176,18 @@ var BrightTextEditor = function( divId, editable ){
       storyContentDiv[0].removeChild( storyContentDiv[0].firstChild );
     }
     
-    log("have data of length: " + this._story.length);
+    //log("have data of length: " + this._story.length);
     
     for ( var c = 0; c <  this._story.length; c++ ){
       var pos = new DataPositioner( c );
-      this.renderContainer( storyContentDiv, this._story[c]["container"], pos );
+      this.renderContainer( storyContentDiv, this._story[c]["container"], pos, randomize );
     }
   }
 
 
-  this.renderContainer = function( div, data, pos )
+  this.renderContainer = function( div, data, pos, randomize )
   {
-    log( "rendering container of length: " + data.length );
+    //log( "rendering container of length: " + data.length );
     
     var container = $("<p/>");
     
@@ -193,7 +196,7 @@ var BrightTextEditor = function( divId, editable ){
     for ( var  i = 0; i < data.length; i++ ){
       var el = data[i];
       if ( typeof( el ) == "object" ){ // changepoint
-        var c = this.renderChangepoint( el, pos.cloneWithIndex( i ) );
+        var c = this.renderChangepoint( el, pos.cloneWithIndex( i ), randomize );
       } else {
         var c = this.renderText( el, pos.cloneWithIndex( i ) );
       }
@@ -205,7 +208,7 @@ var BrightTextEditor = function( divId, editable ){
   this._undimTimeout;
   this._nodeCount = 0;
 
-  this.renderChangepoint = function( el, pos )
+  this.renderChangepoint = function( el, pos, randomize )
   {
     var cpIndex = this._changePoints.length; 
     this._changePoints.push( el ); 
@@ -214,7 +217,9 @@ var BrightTextEditor = function( divId, editable ){
     p[0]["dataIndex"] = cpIndex;
     p.addClass( "changePoint" );
     p.addClass( "changePointResting");
-    var t = document.createTextNode( el['text'] );
+    var value = randomize ? this._randomPileElement( el ) : el['text']
+    
+    var t = document.createTextNode( value );
     p.append( t );
 
 
@@ -244,6 +249,22 @@ var BrightTextEditor = function( divId, editable ){
     return p;
   }
   
+  
+  this._randomPileElement = function( cp )
+  {
+    var pileId = cp.pile;
+    var pile = this._piles[ pileId ];
+    
+    var pileEls = [];
+    for ( var i in pile.elements ){
+      pileEls.push( pile.elements[i] );
+    }
+    
+    var index = Math.floor(  Math.random() * pileEls.length );
+    log( "returning index " + index + " out of " + pileEls.length + " total ");
+    
+    return pileEls[ index ].text;
+  }
   
   
   this._createChangepointFromSelection = function()
@@ -467,6 +488,12 @@ var BrightTextEditor = function( divId, editable ){
     this._btDiv[0].contentEditable = true; 
     this._attachContextMenu();
   }  
+
+  this.rewrite = function()
+  {
+    log("rewrite");
+    this.renderStory( true );
+  }
 
 }  // end BrightTextEditor
 

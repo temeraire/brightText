@@ -40,18 +40,27 @@
         resize:none;
       }
       
+      div.harnesscontainer{
+        width:834px; 
+        height:34px; 
+        margin:5px; 
+        padding:5px; 
+        float:left;  
+        border: 1px dotted black
+      }      
+      
       div.viewportcontainer{
         width:400px; 
         height:400px; 
-        margin:10px; 
-        padding:10px; 
+        margin:5px; 
+        padding:5px; 
         float:left;  
         border: 1px dotted black
       }
       
       div.btEditor{
         width:374px;
-        height:324px;
+        height:314px;
         padding:10px;
       }
       
@@ -102,6 +111,9 @@
         });
         
         $("#instant_rewrite1").button();
+        $("#instant_rewrite1").bind("click", function(){
+          _bt1.rewrite();
+        });
       
       
        $( "#slider2" ).slider({
@@ -124,18 +136,42 @@
           }
         });
         
-        $("#instant_rewrite2").button();      
+        $("#instant_rewrite2").button();  
+        $("#instant_rewrite2").bind("click", function(){
+          _bt2.rewrite();
+        });
+        
+        $("#fetchStory").button();
+        $("#saveStory").button();
       
       
-        loadStory(791);
       } );
     
+    
+      function fetchStory()
+      {
+        var id = $("#story_id")[0].value;
+        
+        loadStory( id );
+
+      
+      }
     
     </script>
     
   </head>
   <body>
     <div id="harness_container" style="width:900px;">
+     
+        <div id="controls1" style="width:828px; height:33px;padding:3px;margin:3px" class="ui-widget-header ui-corner-all">
+      
+        Story ID:<input type="text" value="791" id="story_id"></input>
+        <button id="fetchStory" onClick="fetchStory()">Load Story</button>
+        <span style="padding:0px 20px 0px 20px"></span>
+        <button id="saveStory" onClick="saveStory()" style="float:right"  >Save Story</button>
+        </div>
+  
+    
       <!-- the "main" bright text control, which drives data to all the other controls on this page -->
       <div id="main_container" class="viewportcontainer">
         
