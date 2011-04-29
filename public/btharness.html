@@ -156,6 +156,52 @@
 
       
       }
+      
+      _inRequest = false;
+      
+      function saveStory()
+      {
+         
+         if ( _inRequest ) return; // de-bounce for the register button
+         
+         _inRequest = true;
+         var xhr = null; 
+
+          if(window.XMLHttpRequest)
+              xhr = new XMLHttpRequest(); 
+          else if (window.ActiveXObject)
+              xhr  = new ActiveXObject(Microsoft.XMLHTTP);                                
+
+        xhr.onreadystatechange = function(){ 
+          if(xhr.readyState == 4){
+            if ( xhr.status == 200){
+              _inRequest = false;
+              var newData = xhr.responseText;   
+              alert("new Data: \n\n" + newData );
+				    }
+				    else {
+				      alert("error saving");
+				    }
+				  }   
+				};
+      
+      
+        xhr.open("POST", "/story/save", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        var request = "data=" + escape( $("#raw_data")[0].value ) ;
+        
+        alert("sending: " + request );
+        
+        // Need to escape value because it can have an equals sign
+        
+       xhr.send( request );
+                 
+                 
+       // $("#storySaveData")[0].value = $("#raw_data")[0].value;
+       // $("#postStoryData")[0].submit();
+          
+      }
     
     </script>
     
@@ -217,6 +263,12 @@
       <!-- the real-time plain text output, to observe the result -->
       <div id="text_container" class="viewportcontainer"><textarea class="dataport" id="text_data">Four</textarea></div>
       
+      
+      <form action="/story/save" method="POST" id="postStoryData">
+        <input type="hidden" name="data" id="storySaveData"></ipnut>
+        
+      
+      </form>
 
     </div>
 

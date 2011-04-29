@@ -2,6 +2,7 @@
 var BrightTextEditor = function( divId, editable ){
 
   this._story;
+  this._meta          = {};
   this._piles         = {};
   this._changePoints  = [];
    
@@ -42,6 +43,7 @@ var BrightTextEditor = function( divId, editable ){
   this.renderData = function( data ){
     log("renderData");
   
+    this._meta  = data["meta"];
     this._story = data["story"];
     this._piles = data["piles"];    
   
@@ -60,7 +62,7 @@ var BrightTextEditor = function( divId, editable ){
     var story = [];
     this._streamChildData( start, story );
     this._story = story;    
-    return {"story": story, "piles": this._piles };
+    return {"story": story, "piles": this._piles, "meta": this._meta };
 
   }
   
@@ -150,8 +152,6 @@ var BrightTextEditor = function( divId, editable ){
       child = child.nextSibling;
       
     }
-  
-  
   }
   
   
@@ -370,7 +370,7 @@ var BrightTextEditor = function( divId, editable ){
     
     var options = [];
 
-    $.pileEditor( pile, options );
+    $.pileEditor( pile, options, _modelFactory );
   }
   
   
@@ -669,9 +669,9 @@ var _modelFactory = new ObjectFactory();
   var choices;
   var submenu;
   
-  $.pileEditor = function( pile, options ){
+  $.pileEditor = function( pile, options, modelFactory ){
     choices = options;
-    showEditor( pile, options );
+    showEditor( pile, options, modelFactory);
   };
   
   //defaults
@@ -680,7 +680,7 @@ var _modelFactory = new ObjectFactory();
   $.pileEditor.elementContainerType = 'input';
   
   
-  var modelFactory = new ObjectFactory();
+  var modelFactory;
   
   var container = document.createElement($.pileEditor.containerType);
   $(container).addClass( "choiceEditor" );
@@ -689,8 +689,9 @@ var _modelFactory = new ObjectFactory();
     $(container).hide().attr('id','pileEditor').css('position','absolute').appendTo(document.body);
   });
   
-  function showEditor( pile, options ){
+  function showEditor( pile, options, factory ){
     //event.stopPropagation();
+    modelFactory = factory;
     resetMenu();
     $(document.body).mousedown(function( event ){
       resetMenu( event );
