@@ -24,13 +24,13 @@
          border:1px dotted black;
          
       }      
-      SPAN.plainText{
+      .plainText{
         color:#333333;
          font-family:Arial;
         
 
       }
-      SPAN.plainText_dimmed{
+      .plainText_dimmed{
         color:#888888;
         font-family:Arial;
       }     

@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'rexml/document'
+require 'rexml/formatters/transitive'
 
 
 class BtProxyController < ApplicationController
@@ -7,9 +8,9 @@ class BtProxyController < ApplicationController
   def story
     resource = params[:id]
     
-    uri = "http://localhost/contextit/btrails/Story" + resource + ".xml"
+    #uri = "http://localhost/contextit/btrails/Story" + resource + ".xml"
     
-    #uri = "http://test.contextit.com/ProcessTemplateRequest.aspx?cmd=GETXML&validationKey=75&storyID=" + resource + "&doNotEncrypt=TRUE"
+    uri = "http://test.contextit.com/ProcessTemplateRequest.aspx?cmd=GETXML&validationKey=75&storyID=" + resource + "&doNotEncrypt=TRUE"
     
     
     doc = REXML::Document.new(open(uri).read)
@@ -122,7 +123,7 @@ class BtProxyController < ApplicationController
     #puts story.toXML
     
     
-    doc = REXML::Document.new("<Story><MetaData><Author><Name/></Author><Title/><Date><Created/><Modified/></Date></MetaData><Content/><PileContainer/></Story>")
+    doc = REXML::Document.new("<Story><MetaData><Author><Name/></Author><Title/><Date><Created/><Modified/></Date></MetaData><Content/><PileContainer/><StoryDimensionContainer/></Story>")
     
     
     meta = story["meta"]
@@ -163,14 +164,62 @@ class BtProxyController < ApplicationController
       #puts ""       
     end
     
+   
     
-    result = xmlToJson( doc );
+    resultDoc = submitStory( doc )
+    
+    
+    result = xmlToJson( resultDoc );
     render :js => result  #always return the json respose
     headers['content-type']='text/javascript';    
    
     #result = data;
     #render :xml => doc
 
+  end
+  
+  
+  def submitStory( storyDoc )
+    serviceUrl = "http://test.contextit.com/processtemplaterequest.aspx"
+    #storyText = storyDoc.toString
+    
+    
+    storyText = ""
+    tr = REXML::Formatters::Transitive.new( storyText )   
+    storyDoc.write( storyText )
+    
+    puts
+    puts "*************************************************************************"
+    puts "**************                BT DOCUMENT              ******************"
+    puts storyDoc
+    puts "*************************************************************************"
+    puts     
+    
+    completeRequest = "cmd=loadxml&validationkey=12&&value=" + URI.encode_www_form_component( storyText )
+    
+    puts
+    puts "*************************************************************************"
+    puts "**************                  BT DATA                ******************"
+    puts completeRequest
+    puts "*************************************************************************"
+    puts 
+    
+    
+    url = URI.parse( serviceUrl )
+    res = Net::HTTP.start(url.host, url.port) { |http|
+      http.post(url.path, completeRequest)
+    }    
+    
+    doc = REXML::Document.new( res.read_body )
+    
+    puts
+    puts "*************************************************************************"
+    puts "**************               BT RESPONSE               ******************"
+    puts  res.read_body 
+    puts "*************************************************************************"
+    puts     
+    
+    return doc
   end
   
   
@@ -188,7 +237,7 @@ class BtProxyController < ApplicationController
         end
         element.add( flowElement );
       elsif container["type"] == "choice"
-        flowElement = REXML::Element.new("Container")
+        flowElement = REXML::Element.new("ChangePoint")
         flowElement.attributes["type"]        = container["type"]
         flowElement.attributes["pile"]        = container["pile"]
         flowElement.attributes["pileElement"] = container["pileElement"]

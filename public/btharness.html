@@ -82,6 +82,7 @@
       
       function loadStoryCallback( data )
       {
+        //alert("rendering primary data " + data );
         _bt1.renderData( data );
       }      
       
@@ -177,7 +178,10 @@
             if ( xhr.status == 200){
               _inRequest = false;
               var newData = xhr.responseText;   
-              alert("new Data: \n\n" + newData );
+              alert("Save Successful" );
+              loadStoryCallback( $.evalJSON( newData ) );
+              
+              
 				    }
 				    else {
 				      alert("error saving");
@@ -191,7 +195,7 @@
 
         var request = "data=" + escape( $("#raw_data")[0].value ) ;
         
-        alert("sending: " + request );
+        //alert("sending: " + request );
         
         // Need to escape value because it can have an equals sign
         

@@ -16,16 +16,92 @@ var BrightTextEditor = function( divId, editable ){
     return;
   }
 
-  this._btDiv[0].innerHTML = "<p><span class='plainText'>&nbsp</span></p>"; // blank template
+  this._btDiv[0].innerHTML = "<p><span class='plainText'></span></p>"; // blank template
 
     // todo: make sure this is a DIV
   this._btDiv.addClass( "btContent" );
  
   
-  this._btDiv.keyup( function( event ) {
+  this.onKeyUp = function( event ){
+ 
     log( "keyboardup" );
-    if ( self._btChangeCallback ) self._btChangeCallback();
-  });
+    
+    
+    // detect that we are inside a div
+    var selection = self._getSelectedText();    
+    
+    var range = selection.getRangeAt(0);
+    
+    var startContainer = selection.anchorNode.parentNode;
+    var endContainer   = selection.focusNode.parentNode;
+    
+    if ( startContainer.nodeName == "DIV" ){
+      log("unwieldy div");
+      
+      var buffer = new StringBuffer();
+      buffer.append("<p><span class='plainText'>");
+      var toKill = [];
+      for ( var childIndex in startContainer.childNodes ){
+        var child = startContainer.childNodes[ childIndex ];
+        if ( child.nodeName == "#text" ){
+          buffer.append( child.nodeValue );
+          toKill.push( child );
+        }
+      }
+      for ( var item in toKill ){
+        var killIt = toKill[ item ];
+        killIt.parentNode.removeChild( killIt );
+      }
+      buffer.append( "</p>" );
+      var result = buffer.toString();
+      
+      log("rewriting innner div text with: " + result );
+      
+      var updated = $( result )[0];      
+      startContainer.appendChild( updated );    
+      
+      range.insertNode(updated);
+      range.setStartAfter(updated);
+      selection.removeAllRanges();
+      selection.addRange(range);             
+    }
+    
+    if ( startContainer.nodeName == "FONT" ){
+      log("**** unwieldy font ****");
+      
+      var buffer = new StringBuffer();
+      for ( var childIndex in startContainer.childNodes ){
+        var child = startContainer.childNodes[ childIndex ];
+        if ( child.nodeName == "#text" ){
+          buffer.append( child.nodeValue );
+        }
+      }
+      
+      var result = buffer.toString();
+      
+      log("rewriting innner div text with: " + result );
+      
+      var updated = null;
+      if ( startContainer.parentNode.nodeName != "SPAN" ){
+        updated = $( "<span class='plainText'>" + result + "</span>" )[0];
+      } else {
+        updated = document.createTextNode( result );
+      }
+      startContainer.parentNode.insertBefore( updated, startContainer );
+      startContainer.parentNode.removeChild( startContainer );
+      
+     // range.removeNode( startContainer );
+      range.insertNode(updated);
+      range.setStartAfter(updated);
+      selection.removeAllRanges();
+      selection.addRange(range);             
+      
+    }    
+    
+    if ( self._btChangeCallback ) self._btChangeCallback(); 
+  }
+  
+  this._btDiv.bind( "keyup", this.onKeyUp );
   
   this._btDiv.bind( "keydown", function( event ) {
     log( "keydown" );
@@ -78,7 +154,7 @@ var BrightTextEditor = function( divId, editable ){
   
   this.bufferChildData = function( node, buffer )
   {
-    log( "bufferChildData.  NodeName: " + node.nodeName );
+    //log( "bufferChildData.  NodeName: " + node.nodeName );
     var child = node.firstChild;
     while ( child !=  null){
       switch (child.nodeName){
@@ -95,9 +171,12 @@ var BrightTextEditor = function( divId, editable ){
           break;
         case "BR":
           buffer.append("\n");        
-          break;          
+          break;       
+        case "FONT":
+          this.bufferChildData( child, buffer );
+          break;
         case "#text":
-          buffer.append( child.nodeValue );
+          buffer.append( child.nodeValue.replace(/\xA0/g ,' ') );
           break;
         default:
           log("unsupported edit node: " + child.nodeName );
@@ -111,7 +190,7 @@ var BrightTextEditor = function( divId, editable ){
   
   this._streamChildData = function( node, story )
   {
-    log( "streamChildData.  NodeName: " + node.nodeName );
+    //log( "streamChildData.  NodeName: " + node.nodeName );
     var child = node.firstChild;
     while ( child !=  null){
       switch (child.nodeName){
@@ -143,7 +222,7 @@ var BrightTextEditor = function( divId, editable ){
           break;
        
         case "#text":
-          story.push( child.nodeValue );
+          story.push( child.nodeValue.replace(/\xA0/g ,' ') );
           break;
         default:
           log("unsupported edit node: " + child.nodeName );
