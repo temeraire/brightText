@@ -160,7 +160,7 @@ var BrightTextEditor = function( divId, editable ){
       switch (child.nodeName){
         case "P":  // really the only thing we expect at this level, if the editor is working properly
           this.bufferChildData( child, buffer );
-          buffer.append("\n");
+          buffer.append("\n\n");
           break;
         case "DIV":
           this.bufferChildData( child, buffer );
@@ -199,6 +199,7 @@ var BrightTextEditor = function( divId, editable ){
           var container = { "container": kidz };
           this._streamChildData( child, kidz );
           story.push( container );
+          story.push( { "container": [] } );
           break;
           
    /*   
@@ -269,6 +270,7 @@ var BrightTextEditor = function( divId, editable ){
   {
     //log( "rendering container of length: " + data.length );
     
+    if ( data.length == 0 ) return;  // ignore line-break containers
     var container = $("<p/>");
     
     div.append( container );
