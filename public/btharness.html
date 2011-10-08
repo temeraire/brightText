@@ -84,7 +84,41 @@
       {
         //alert("rendering primary data " + data );
         _bt1.renderData( data );
-      }      
+      }   
+      
+      
+      function updateToneSlider( gradients )
+      {
+         $("#tone-control2").hide( );
+         $( "#slider2" ).slider({
+            value:0,
+            min: 0,
+            max: gradients.length - 1,
+            range: false,
+            step: 1,
+            slide: function( event, ui ) {
+              var toneGradients = gradients;
+              
+              var s1 = ui.value;
+
+              //var s1 = ui.values[0];
+              //var s2 = ui.values[1];  // needed for range editing, which could be supported
+              
+              //if ( s1 == s2 ){
+                $( "#gradient2" )[0].innerHTML = toneGradients[ ui.value ].name;
+              //} else {
+              //  $( "#gradient2" )[0].innerHTML = toneGradients[ s1 ] + " - " + toneGradients[ s2 ];
+              //} 
+              
+              // TODO: feed the resulting value back into the bt editor
+              _bt2.handleToneSelection( toneGradients[ ui.value ].id ); 
+            }
+          });   
+          if ( gradients.length > 1) {
+            $( "#gradient2" )[0].innerHTML = gradients[ 0 ].name
+            $("#tone-control2").show();
+          }
+      }
       
       $(document).ready(function(){
         _bt1 = new BrightTextEditor( "bt_one", true );
@@ -96,46 +130,20 @@
         _bt1.onChange( function() {
           rawData[0].value  = $.toJSON( _bt1.toData() );
           textData[0].value = _bt1.toString();
+          updateToneSlider( _bt1.toneGradients() );
           _bt2.renderData( _bt1.toData() );
         } );
       
       
-       $( "#slider1" ).slider({
-          value:0,
-          min: 0,
-          max: 4,
-          step: 1,
-          slide: function( event, ui ) {
-            var toneGradients = ["Friendly", "Neutral", "Coarse", "Demanding", "Offensive"];
-            $( "#gradient1" )[0].innerHTML = toneGradients[ ui.value ];
-            }
-        });
         
         $("#instant_rewrite1").button();
         $("#instant_rewrite1").bind("click", function(){
           _bt1.rewrite();
         });
       
-      
-       $( "#slider2" ).slider({
-          value:0,
-          min: 0,
-          max: 4,
-          range: true,
-          step: 1,
-          slide: function( event, ui ) {
-            var toneGradients = ["Friendly", "Neutral", "Coarse", "Demanding", "Offensive"];
-            
-            var s1 = ui.values[0];
-            var s2 = ui.values[1];
-            
-            if ( s1 == s2 ){
-              $( "#gradient2" )[0].innerHTML = toneGradients[ ui.value ];
-            } else {
-              $( "#gradient2" )[0].innerHTML = toneGradients[ s1 ] + " - " + toneGradients[ s2 ];
-            } 
-          }
-        });
+       
+        $("#tone-control2").hide( );
+     
         
         $("#instant_rewrite2").button();  
         $("#instant_rewrite2").bind("click", function(){
@@ -145,6 +153,7 @@
         $("#fetchStory").button();
         $("#saveStory").button();
       
+        $("#edit_choicesets").button().click( _bt1.editChoicesets );
       
       } );
     
@@ -228,10 +237,9 @@
         
         <div id="controls1" style="width:374px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
         
-          <div style="border: 0px dashed grey; width:180px; padding:2px 5px 2px 10px;float:left">
-            <div id="gradient1" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;">Friendly</div>
-            <div style="padding:0px 0px 5px 0px;">Tone: </div>
-            <div id="slider1" style="width:100%;"></div>
+          
+          <div style="border: 0px dashed grey; width:180px; padding:5px 5px 2px 10px;float:left">
+            <button id="edit_choicesets">Choicesets</button>
           </div>
           <div style="float:right; padding: 5px 0px;">
             <button id="instant_rewrite1">Instant Rewrite</button>
@@ -247,8 +255,8 @@
       <div id="secon_container" class="viewportcontainer">
         <div id="controls2" style="width:374px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
         
-          <div style="border: 0px dashed grey; width:200px; padding:2px 5px 2px 10px;float:left">
-            <div id="gradient2" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;">Friendly</div>
+          <div style="border: 0px dashed grey; width:200px; padding:2px 5px 2px 10px;float:left" id="tone-control2">
+            <div id="gradient2" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;"></div>
             <div style="padding:0px 0px 5px 0px;">Tone: </div>
             <div id="slider2" style="width:100%;"></div>
           </div>
@@ -262,14 +270,14 @@
       </div>
       
       <!-- the real-time bright text JSON data display, to observe what's happening under the hood -->
-      <div id="data_container" class="viewportcontainer"><textarea class="dataport" id="raw_data">Three</textarea></div>
+      <div id="data_container" class="viewportcontainer"><textarea class="dataport" id="raw_data"></textarea></div>
       
       <!-- the real-time plain text output, to observe the result -->
-      <div id="text_container" class="viewportcontainer"><textarea class="dataport" id="text_data">Four</textarea></div>
+      <div id="text_container" class="viewportcontainer"><textarea class="dataport" id="text_data"></textarea></div>
       
       
       <form action="/story/save" method="POST" id="postStoryData">
-        <input type="hidden" name="data" id="storySaveData"></ipnut>
+        <input type="hidden" name="data" id="storySaveData"></input>
         
       
       </form>

@@ -100,13 +100,37 @@ class BtProxyController < ApplicationController
         else
           pileChoice["text"] = pileElementElement.get_elements("Content")[0].text
         end
+        pileChoiceFilter = []
+        pileElementElement.get_elements("AllowedChoiceSets/ChoiceSetRef").each do | choiceSetRef |
+          pileChoiceFilter << choiceSetRef.attributes["choiceSet"].to_s   
+        end
+        pileChoice["choiceSetIds"] = pileChoiceFilter
         pileElements[ pileChoice["id"] ] = pileChoice
       end
       piles[ pile["id"] ] = pile
     end
     
+    storyDimensions = []
+    doc.root.get_elements( "//StoryDimension").each do | dimensionElement |
+      storyDimension = {}
+      choiceSets = []
+      storyDimension["name"] = dimensionElement.attributes["name"];
+      storyDimension["id"]   = dimensionElement.attributes["id"];
+      dimensionElement.get_elements("ChoiceSet").each do | choiceSetElement |
+        choiceSet = {}
+        choiceSet["name"] = choiceSetElement.attributes["name"]
+        choiceSet["id"]   = choiceSetElement.attributes["id"]
+        choiceSets << choiceSet
+      end
+      storyDimension["choiceSets"] = choiceSets
+      storyDimensions << storyDimension  
+
+    end    
+    
     story["story"] = data
     story["piles"] = piles
+    story["storyDimensions"] = storyDimensions
+    
     result = story.to_json  
     return result;
   end
@@ -164,7 +188,15 @@ class BtProxyController < ApplicationController
       #puts ""       
     end
     
-   
+    storyDimensions = story["storyDimensions"]
+    
+    storyDimensions.each do | storyDimension |
+      #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
+      #puts storyDimension
+      writeStoryDimension( storyDimension, doc.root.get_elements("/Story/StoryDimensionContainer")[0] )
+      #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
+      #puts ""     
+    end
     
     resultDoc = submitStory( doc )
     
@@ -204,18 +236,20 @@ class BtProxyController < ApplicationController
     puts "*************************************************************************"
     puts 
     
-    
+=begin    
     url = URI.parse( serviceUrl )
     res = Net::HTTP.start(url.host, url.port) { |http|
       http.post(url.path, completeRequest)
     }    
     
     doc = REXML::Document.new( res.read_body )
+=end
+    doc = storyDoc
     
     puts
     puts "*************************************************************************"
     puts "**************               BT RESPONSE               ******************"
-    puts  res.read_body 
+   # puts  res.read_body 
     puts "*************************************************************************"
     puts     
     
@@ -273,7 +307,23 @@ class BtProxyController < ApplicationController
     
   end
   
+  def writeStoryDimension( dimension, element ) 
+    flowElement = REXML::Element.new("StoryDimension")
+    flowElement.attributes["id"]        = dimension["id"]
+    flowElement.attributes["name"]      = dimension["name"]
+    element.add( flowElement )
+    
+    dimension["choiceSets"].each do | choiceSet |
+      writeChoiceSet( choiceSet, flowElement )
+    end
+  end
   
+  def writeChoiceSet( chos, element )
+    flowElement = REXML::Element.new("ChoiceSet")
+    flowElement.attributes["id"]     = chos["id"]
+    flowElement.attributes["name"]   = chos["name"]
+    element.add( flowElement ) 
+  end  
   
   def populateContainerData( currentElement )
   

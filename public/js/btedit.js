@@ -2,12 +2,19 @@
 var BrightTextEditor = function( divId, editable ){
 
   this._story;
-  this._meta          = {};
-  this._piles         = {};
-  this._changePoints  = [];
+  this._meta            = {};
+  this._piles           = {};
+  this._changePoints    = [];
+  this._storyDimensions = [];
+  
+  
+  this._toneFilter = null;  // no filter
    
 
   var self = this;
+  
+  self._choiceSetAssignMode = false;
+  self._choiceSetEditor     = null;
 
 
   this._btDiv = $("#" + divId );
@@ -99,6 +106,7 @@ var BrightTextEditor = function( divId, editable ){
     }    
     
     if ( self._btChangeCallback ) self._btChangeCallback(); 
+    
   }
   
   this._btDiv.bind( "keyup", this.onKeyUp );
@@ -115,21 +123,38 @@ var BrightTextEditor = function( divId, editable ){
     this._btChangeCallback = callback;
   }
   
+  this.toneGradients = function(){
+    var result = [];
+    result.push( { id: null, name: "Any" } );
+    if ( typeof(this._storyDimensions[0]) != 'undefined' ){
+      for ( var i = 0; i < this._storyDimensions[0].choiceSets.length; i++ ){
+        result.push( this._storyDimensions[0].choiceSets[i] );
+      }
+    }
+    return result;
+  }
+  
+  this.handleToneSelection = function( toneId ){
+    self._toneFilter = toneId;
+    log(" tone filter: " + toneId );
+    self.rewrite();
+  }
   
   this.renderData = function( data ){
     log("renderData");
+    
+    this._toneFilter = null;
   
-    this._meta  = data["meta"];
-    this._story = data["story"];
-    this._piles = data["piles"];    
+    this._meta            = data["meta"];
+    this._story           = data["story"];
+    this._piles           = data["piles"]; 
+    this._storyDimensions = data["storyDimensions"];
   
     this.renderStory();
     
     if ( this._btChangeCallback ) this._btChangeCallback();
   }
-  
-  
-  
+
   
   this.toData = function(){
     log("toData");
@@ -138,9 +163,9 @@ var BrightTextEditor = function( divId, editable ){
     var story = [];
     this._streamChildData( start, story );
     this._story = story;    
-    return {"story": story, "piles": this._piles, "meta": this._meta };
-
+    return {"story": story, "piles": this._piles, storyDimensions: this._storyDimensions, "meta": this._meta };
   }
+  
   
   this.toString = function(){
     log("toString");
@@ -308,6 +333,12 @@ var BrightTextEditor = function( divId, editable ){
     var self = this;
     p.bind( "mouseover", function(){
       p.removeClass("changePointResting").addClass( "changePointHover" );
+      
+      if (!editable){
+        self._cpSelect( event );
+      } else if( self._choiceSetAssignMode ) {
+        self._cpEditChoiceSet( event );
+      }
     });
     
     p.bind( "mouseout", function(){
@@ -315,7 +346,9 @@ var BrightTextEditor = function( divId, editable ){
     });
     
     p.bind( "click", function(){
-      self._cpSelect( event );
+      if ( editable ){  
+        self._cpSelect( event );
+      }
     });
     
     return p;
@@ -331,6 +364,33 @@ var BrightTextEditor = function( divId, editable ){
     return p;
   }
   
+  this.editChoicesets = function( )
+  {
+    if ( self._choiceSetEditor ) return;
+    self._choiceSetEditor = new $.choiceSetEditor( self._storyDimensions, {
+      onClose: self._onChoiceEditComplete, 
+      onDataChange: function() { 
+        if ( self._btChangeCallback ) self._btChangeCallback(); 
+      },
+      onAssignModeEnter: self._onChoiceSetAssignEnter,
+      onAssignModeLeave: self._onChoiceSetAssignLeave,
+    });
+    self._choiceEdit = true;
+  }
+  
+  this._onChoiceEditComplete = function(){
+    self._choiceEdit          = false;
+    self._choiceSetAssignMode = false;
+    self._choiceSetEditor     = null;
+  }
+  
+  this._onChoiceSetAssignEnter = function(){
+    self._choiceSetAssignMode = true;
+  }
+  
+  this._onChoiceSetAssignLeave = function(){
+    self._choiceSetAssignMode = false;
+  }  
   
   this._randomPileElement = function( cp )
   {
@@ -339,13 +399,22 @@ var BrightTextEditor = function( divId, editable ){
     
     var pileEls = [];
     for ( var i in pile.elements ){
-      pileEls.push( pile.elements[i] );
+      var add = true;
+      var pileElement = pile.elements[i];
+      if ( typeof( pileElement.choiceSetIds ) != 'undefined' && pileElement.choiceSetIds.length > 0 && this._toneFilter ){
+        add = false;
+        for ( var j = 0; i < pileElement.choiceSetIds.length; i++ ){
+          var choice = pileElement.choiceSetIds[j];
+          if ( choice == this._toneFilter ) add = true;
+        }
+      }    
+      if ( add ) pileEls.push( pileElement );
     }
     
     var index = Math.floor(  Math.random() * pileEls.length );
     log( "returning index " + index + " out of " + pileEls.length + " total ");
     
-    return pileEls[ index ].text;
+    return pileEls.length > 0 ? pileEls[ index ].text : "[NO MATCH IN TONE]";
   }
   
   
@@ -390,6 +459,12 @@ var BrightTextEditor = function( divId, editable ){
     var startOffset = selection.anchorOffset;
     var endOffset   = selection.focusOffset;
     
+    if ( endOffset < startOffset ){
+      var v = endOffset;
+      endOffset = startOffset;
+      startOffset = v;
+    }
+    
     log( " start offset: " + startOffset + " end offset: " + endOffset );
     
     var text = startContainer.firstChild.nodeValue;
@@ -423,6 +498,7 @@ var BrightTextEditor = function( divId, editable ){
     
     if ( self._btChangeCallback ) self._btChangeCallback();
 
+    self._cpEdit( cp[0] );
   }  
   
   
@@ -465,10 +541,45 @@ var BrightTextEditor = function( divId, editable ){
     
     var self = this;
     for ( var id in pile["elements"] ){
-      options.push( {label: pile["elements"][id]["text"], action: this._selectionCallback( pile, id, el ) } );
+      var choiceSetIds = [];
+      
+      if ( typeof( pile["elements"][id]["choiceSetIds"] ) != 'undefined' ) {
+        choiceSetIds = pile["elements"][id]["choiceSetIds"];
+      }
+      
+      options.push( {label: pile["elements"][id]["text"], action: this._selectionCallback( pile, id, el ), choiceSetIds: choiceSetIds  } );
     }
-    $.choiceMenu( event, options );    
+    $.choiceMenu( event, options, this._toneFilter );    
   }
+  
+  
+  this._cpEditChoiceSet = function( event )
+  {
+    var el = event.target;
+    var changepoint = this._changePoints[ el["dataIndex"] ];
+    var pile = this._getPileFor( changepoint )
+    
+    var options = [];
+    var spec = { choiceSetAssignment: this._choiceSetEditor.choiceSetAssignment(), storyDimensionSpec: this._choiceSetEditor.storyDimensionSpec() };
+    
+    var self = this;
+    var chosCount = 0;
+    for ( var id in pile["elements"] ){
+      var choiceSetIds = [];
+      
+      if ( typeof( pile["elements"][id]["choiceSetIds"] ) != 'undefined' ) {
+        choiceSetIds = pile["elements"][id]["choiceSetIds"];
+      }
+        
+      options.push( {label: pile["elements"][id]["text"], action: this._pileElementChoiceSetAppliedCallback( pile, id, el ), choiceSetIds: choiceSetIds });
+      if ( choiceSetIds.length > chosCount ){
+        chosCount = choiceSetIds.length;
+      }
+      
+    }
+    $.choiceSetMenu( event, options, spec, chosCount );    
+  }  
+  
     
   this._cpUpdateSelection = function ( pile, elementId, el )
   {
@@ -484,11 +595,39 @@ var BrightTextEditor = function( divId, editable ){
     if ( this._btChangeCallback ) this._btChangeCallback(); 
   }
   
+  this._cpUpdateChoiceSet = function ( pile, elementId, el, choiceSetId )
+  {
+    var validOp = false;
+    var element = pile["elements"][ elementId ];
+    if ( choiceSetId != null ){
+      if ( typeof (element.choiceSetIds) == 'undefined' ){
+        element.choiceSetIds = [];
+        validOp = true;
+      }
+      if (-1 == $.inArray( choiceSetId, element.choiceSetIds) ) {
+        element.choiceSetIds.push( choiceSetId );
+        validOp = true;
+      }
+    } else {
+      delete element.choiceSetIds;
+      validOp = true;
+    }
+    if ( this._btChangeCallback ) this._btChangeCallback();
+    return validOp;
+  }  
+  
   this._selectionCallback = function( pile, elementId, el ){
     var self = this;
     return function( event ){
       self._cpUpdateSelection( pile, elementId, el );
     };
+  }
+  
+  this._pileElementChoiceSetAppliedCallback = function( pile, elementId, el ){
+    var self = this;
+    return function( event, choiceSetId ){
+      return self._cpUpdateChoiceSet( pile, elementId, el, choiceSetId );
+    };  
   }
   
   this._getSelectedText = function()
@@ -658,6 +797,16 @@ var ObjectFactory = function(){
     return element;
   }
   
+  this.createStoryDimension = function( name ){
+    var element = {"id":this.generateId(), "name":name, choiceSets:[] };
+    return element;    
+  }
+  
+  this.createChoiceSet = function( name ){
+    var element = {"id":this.generateId(), "name":name };
+    return element;    
+  }  
+  
 
   this.generateId = function(){
     return this._idCounter--;
@@ -676,9 +825,9 @@ var _modelFactory = new ObjectFactory();
 (function($) {
   var choices;
   
-  $.choiceMenu = function( event, options ){
+  $.choiceMenu = function( event, options, filter ){
     choices = options;
-    showmenu( event, options );
+    showmenu( event, options, filter );
   };
   
   //defaults
@@ -691,7 +840,7 @@ var _modelFactory = new ObjectFactory();
     $(container).hide().attr('id','choiceMenu').css('position','absolute').appendTo(document.body);
   });
   
-  function showmenu(event, choices){
+  function showmenu(event, choices, filter ){
     event.stopPropagation();
     resetMenu();
     $(document.body).mousedown(function( ){
@@ -700,6 +849,14 @@ var _modelFactory = new ObjectFactory();
     
     $.each(choices,function(){
       var action = this.action;
+      if ( this.choiceSetIds && this.choiceSetIds.length > 0 && filter ){
+        var add = false;
+        for ( var i = 0; i < this.choiceSetIds.length; i++ ){
+          var choice = this.choiceSetIds[i];
+          if ( choice == filter ) add = true;
+        }
+        if (!add) return; // do not add filtered out choices
+      }
       actionElement =  $(document.createElement($.conmenu.choicesType)).html(this.label);
       
       actionElement.addClass( 'menuItem' );
@@ -740,6 +897,126 @@ var _modelFactory = new ObjectFactory();
     $(container).hide().empty();
   }
   
+})(jQuery);
+
+
+/**
+ *
+ */
+(function($) {
+  var choices;
+  
+  $.choiceSetMenu = function( event, options, spec, chosCount ){
+    this._spec      = spec;
+    this._chosCount = chosCount;
+    var self        = this;
+  
+    //defaults
+    //$.choiceSetMenu.containerType = 'div';
+   // $.choiceSetMenu.choicesType = 'div';
+    
+    var container = $("#choiceSetMenu");
+    if ( typeof( container[0] ) == 'undefined' ){ // jQuery returns an object when there isn't one in the DOM
+      container = $("<div id='choiceSetMenu' style='position:absolute'/>");
+      $('body').append( container );
+    }
+    
+    //$(document).ready(function(){
+
+    //    });
+    
+    this._showmenu = function (event, choices){
+      event.stopPropagation();
+      self._resetMenu();
+      $(document.body).mousedown(function( ){
+        self._resetMenu();
+      });    
+      
+      $.each( choices,function(){
+        var action  = this.action;
+        var label   = this.label;
+        var chosIds = this.choiceSetIds;
+        self._renderAction( action, label, chosIds);     
+      });
+      var size = {
+        'height':$(window).height(),
+        'width':$(window).width(),
+        'sT': $(window).scrollTop(),
+        'cW':$(container).width(),
+        'cH':$(container).height()
+      };
+      $(container).css({
+        'left': ((event.clientX + size.cW) > size.width ? ( event.clientX - size.cW) : event.clientX),
+        'top': ((event.clientY + size.cH) > size.height && event.clientY > size.cH ? (event.clientY + size.sT - size.cH) : event.clientY + size.sT),
+  
+      }).show();
+      $(container).addClass( 'contextContainer' );
+  
+      return false;
+    }
+    
+    this._resetMenu = function(){
+      $(container).hide().empty();
+    }
+    
+    this._renderAction = function( action, label, choiceSetIds){
+      var actionElement =  $("<div class='menuItem' style='height:19px;'/>");
+      actionElement.appendTo(container);
+      var chosInPileElement = choiceSetIds.length;
+      
+      for ( var i = 0; i < self._chosCount + 1; i++ ){
+        var choiceSetIndicator = self._renderChoiceSetIndicator( actionElement, choiceSetIds, i );
+      }
+      
+      var textContainer = $("<div class='choiceSetTextContainer'/>").html( label );
+      actionElement.append( textContainer );
+      
+      
+      actionElement.mousedown( function(clickEvent){
+        var colors = self._spec.storyDimensionSpec;    
+        clickEvent.stopPropagation();        
+        var color = colors[self._spec.choiceSetAssignment];
+        if ( color == null ){
+          color = null;
+          var indicator = actionElement[0].firstChild;
+          while ( indicator != null ){
+            $(indicator).css( 'background-color', "#ffffff" );
+            indicator.style.backgroundColor = null;
+
+            indicator = indicator.nextSibling;
+          }
+        }
+        if ( action( event.target, self._spec.choiceSetAssignment )) { // apply the choice set element
+          choiceSetIndicator.css('background-color', color );        
+        }
+      });
+      
+      actionElement.mouseover( function( event ) {
+        actionElement.removeClass('menuItem').addClass( 'highlightedMenuItem' );
+      });
+      actionElement.mouseout( function( event ) {
+        actionElement.removeClass('highlightedMenuItem').addClass( 'menuItem' );
+      });          
+            
+    }
+    
+    this._renderChoiceSetIndicator = function( actionElement, choiceSetIds, i ){
+      var colors = self._spec.storyDimensionSpec;    
+      var choiceSetIndicator = $("<div class='choiceSetIndicator ui-corner-all'/>");
+      var mappedCount = choiceSetIds.length - self._chosCount + i;
+      var bgcolor = null;
+      if ( mappedCount >= 0 && i < self._chosCount ){
+        bgcolor = colors[ choiceSetIds[ mappedCount ] ];
+      }
+      choiceSetIndicator.css('background-color',  bgcolor);
+      actionElement.append( choiceSetIndicator );
+      return choiceSetIndicator;
+    }
+    
+    
+    self._showmenu( event, options );
+
+  }
 })(jQuery);
 
 
@@ -835,6 +1112,7 @@ var _modelFactory = new ObjectFactory();
         event.target["pel"].text = event.target.value;
       } );
       
+      /*
       var elementExpandImg = $("<img src='images/expand.png' class='expandPileElement'/>");
       
       elementContainer.append( elementExpandImg );
@@ -847,7 +1125,7 @@ var _modelFactory = new ObjectFactory();
         timedHideToneDimensions( pileElement, event );
       } );
       
-      
+      */
 
       elementContainer.appendTo(container);
    }
@@ -906,7 +1184,7 @@ var _modelFactory = new ObjectFactory();
       });
       elementDeleteImg.insertBefore( elementEditField );      
       
-      
+      /*
       var elementExpandImg = $("<img src='images/expand.png' class='expandPileElement'/>");
       elementExpandImg.insertAfter( elementEditField );
       
@@ -917,7 +1195,7 @@ var _modelFactory = new ObjectFactory();
       elementExpandImg.bind( "mouseout", function( event ){
         timedHideToneDimensions( pileElement, event );
       } );
-            
+      */      
             
       $(this).bind( "keyup", function( event ) {
         event.target["pel"].text = event.target.value;
@@ -927,6 +1205,8 @@ var _modelFactory = new ObjectFactory();
     } );
 
     elementContainer.appendTo(container);
+    
+    elementEditField.focus();
   }
   
   function deleteCallback( id ){
@@ -1060,3 +1340,272 @@ function log( msg )
     console.log( msg );
   }
 }
+
+
+(function($) {
+  $.choiceSetEditor = function( data, options ){
+    
+    var self = this;
+    
+    self._data = data;
+    self._choiceMode = "create";
+    self._assignSetId = null;
+  
+    self._init = function(){
+      var editor = $("<div id='choiceset-editor'><div style='width:100%; margin: 0px 15px 20px 3px'<form><div id='choiceset-mode-selector'><input type='radio' id='mode-new' name='radio'/><label for='mode-new' >New</label><input type='radio' id='mode-edit' name='radio'/><label for='mode-edit' >Edit</label><input type='radio' id='mode-assign' name='radio' checked='checked'/><label for='mode-assign'>Assign</label></div></form></div><div id='choice-set-editor-body' style='width:100%; height:100%'></div></div>");
+      $('body').append(editor);
+      
+      colors = ["#ffffff", "#ff9999", "#99ff99", "#9999ff", "#ffff99", "#ff99ff", "#99ffff"];
+      
+      
+      var dialog = $("#choiceset-editor").dialog({close: function(){
+        $("#choiceset-editor").remove();
+        options.onClose(); 
+      }});
+      
+      dialog[0].parentNode.style.width = '223px';
+      dialog[0].parentNode.style.height = '380px';
+      dialog[0].style.overflowX = 'hidden';
+      dialog[0].style.overflowY = 'hidden';
+      
+      $("#choiceset-mode-selector").buttonset();
+      
+      $("#mode-edit").click( self._renderEditUI );
+      $("#mode-assign").click( self._renderAssignUI );
+      $("#mode-new").click( self._renderNewUI );
+      
+      
+      
+      self._dialogBody = $("#choice-set-editor-body");
+      self._clearBody();
+        
+
+      if ( self._data.length > 0 ){   // TODO: key off the number of choicesets... only support 1 for now...
+        $("#mode-new").button("disable");
+        $("#mode-assign").click();
+      } else {
+        $("#mode-edit").button("disable");
+        $("#mode-assign").button("disable");
+        $("#mode-new").click();
+      }
+    }
+    
+    self._renderNewUI = function(){
+      self._clearBody();
+      $("#choice-set-editor-body").append( $("<div style='float:left; display:block'>Name: <input type='text' id='choiceset-name' style='width:143px' value=''>") );
+      $("#choice-set-editor-body").append( $("<button id='save-new-choiceset' style='float:right; margin:40px 5px 0px 0px'>Create</button>" ).button().button("disable").click( function() {
+        self._finishCreateChoiceSet( $("#choiceset-name")[0].value );
+      }) );
+      $("#choiceset-name").keyup( function( event ) {
+        if ( event.target.value.length > 0 ){
+          $("#save-new-choiceset").button("enable");
+        } else {
+          $("#save-new-choiceset").button("disable");
+        }
+      });    
+    }
+    
+    self._renderAssignUI = function(){
+      self._clearBody();    
+      // append the name
+      // append the name
+       $("#choice-set-editor-body").append(  $("<div style='width:100%; height:30px'></div>"));
+       
+       var csName = $("<div style='width:100%; text-align:center; display:block; font-size:14pt; font-face:Lucida Sans Unicode; font-weight:bold; padding-bottom:20px'></div>")
+       $("#choice-set-editor-body").append( csName );
+       csName[0].innerHTML = self._data[0].name;       
+      
+  
+      self._storyDimensionSet = {};
+      self._renderAssignment( null, "UNASSIGNED", colors[0] );
+            
+      for ( var i = 0; i < self._data[0].choiceSets.length; i++ ){
+        self._renderAssignment( self._data[0].choiceSets[i].id, self._data[0].choiceSets[i].name, colors[i+1] );
+        self._storyDimensionSet[ self._data[0].choiceSets[i].id ] = colors[ i + 1 ];
+      }
+    }
+    
+    self._renderEditUI = function(){
+      self._clearBody();    
+      
+      var csName = $("<div style='width:100%; height:30px; margin-bottom: 20px'>Name: <input id='choiceset-name' type='text' style='width:140px'></div>")
+      $("#choice-set-editor-body").append( csName );
+      $("#choiceset-name")[0].value = self._data[0].name;
+                 
+      $("#choiceset-name").bind( "keyup", function( event ) {
+        self._data[0].name = event.target.value;
+        options.onDataChange();
+      } );            
+                   
+                   
+      for ( var id in self._data[0].choiceSets ){
+        self._renderChoiceSet( id );
+        
+      }
+      
+      self._renderBlankElement( );       
+    }
+    
+    self._choiceContainerTemplate = "<div style='width:180px; height:30px; border: 1px dashed black; margin:2px'>"
+    self._choiceIconTemplate      = "<div style='float:left; width:20px; height:20px; margin:5px; background-color:%COLOR%' class='ui-corner-all'>";
+    self._choiceLabelTemplate     = "<div style='float:left;  width:100px; height:25px; padding: 7px 0px 0px 5px;'></div>";
+    self._newChoiceTemplate       = "<div style='float:left;  width:100px; height:30px; padding: 2px 0px 0px 5px;'><input type='text' style='width:100px'></input></div>";
+
+    
+    self._renderAssignment = function( id, name, color )
+    {
+      var choiceContainer = $( self._choiceContainerTemplate );
+      var choiceLabel = $( self._choiceLabelTemplate);
+      choiceLabel[0].innerHTML = name;
+      choiceContainer.append( $(self._choiceIconTemplate.replace( "%COLOR%", color )) );
+      choiceContainer.append( choiceLabel );
+      choiceContainer.addClass("choiceSetAssignContainer");
+      choiceContainer.bind("click", function( event ) {
+          $(".choiceSetAssignContainer").removeClass("choiceSetAssignContainerHighlight");
+          choiceContainer.addClass( "choiceSetAssignContainerHighlight" );
+          options.onAssignModeEnter();
+          self._assignSetId = id;
+        });
+      $("#choice-set-editor-body").append( choiceContainer ) ;
+  
+    }
+    
+    self._renderChoiceSet = function( id )
+    {
+        var choiceSet = self._data[0].choiceSets[ id ];
+  
+        var elementContainer =  $("<div class='choiceSetEditContainer'/>");
+        var elementDeleteImg =  $("<a href='#' class='choiceSetDeleteButton'><img src='images/delete_new.png'/></a>");
+        
+        elementDeleteImg.click( function() {
+          log( "deleting choiceset: " + id );
+          elementContainer.remove();
+          delete self._data[0].choiceSets[id];
+          options.onDataChange();
+        });
+        
+        elementContainer.append( elementDeleteImg );
+        
+        elementContainer.bind("mouseover", function( event ) {
+            $(".choiceSetEditContainer").removeClass("choiceSetEditContainerHighlight");
+            elementContainer.addClass( "choiceSetEditContainerHighlight" );
+            
+          });
+        
+        elementEditField =  $("<input class='choiceSetEditField' type='text'></input>");
+        elementEditField[0].value = choiceSet.name;
+        elementEditField[0]["chos"] = choiceSet;
+        elementContainer.append( elementEditField );
+        
+        
+        elementEditField.bind( "keyup", function( event ) {
+          event.target["chos"].name = event.target.value;
+          options.onDataChange();
+        } );        
+  
+        elementContainer.appendTo(self._dialogBody);
+     }
+
+    
+    self._renderBlankElement = function( )
+    {
+      var elementContainer =  $("<div class='choiceSetEditContainer'/>");
+      var elementPlusImg =  $("<img src='images/plus_new.png' class='choiceSetPlusIcon'/>");
+      elementContainer.append( elementPlusImg );
+      var elementEditField =  $("<input class='choiceSetEditField' type='text'></input>");
+      elementEditField[0]["pel"] = null;
+      elementContainer.append( elementEditField );
+      
+      elementContainer.bind("mouseover", function( event ) {
+          $(".choiceSetEditContainer").removeClass("choiceSetEditContainerHighlight");
+          elementContainer.addClass( "choiceSetEditContainerHighlight" );
+          
+        });   
+        
+      elementEditField.bind( "keyup", function( event ) {
+        if ( event.target.value.length > 0 ){
+          log("do have something indeed!");
+        
+        }
+        else{
+          log("eh");
+        }
+      
+      });
+        
+      elementEditField.bind( "change", function( event ) {
+        log( "create this");
+        $(event.target).unbind( "change");
+        var choiceSet = _modelFactory.createChoiceSet( event.target.value );
+        self._data[0].choiceSets.push( choiceSet );
+        options.onDataChange();
+        this["chos"] = choiceSet;
+        elementPlusImg.remove();
+        elementDeleteImg =  $("<a href='#' class='choiceSetDeleteButton'><img src='images/delete_new.png'/></a>");
+        elementDeleteImg.click( function() {
+          log( "deleting pile element: " + pileElement.id );
+          elementContainer.remove();
+          delete self._data[0].choiceSets[choiceSet.id];
+          options.onDataChange();
+        });
+        elementDeleteImg.insertBefore( elementEditField );      
+        
+        $(this).bind( "keyup", function( event ) {
+          event.target["chos"].name = event.target.value;
+          options.onDataChange();
+        } );            
+        
+        self._renderBlankElement( );
+      } );
+  
+      elementContainer.appendTo(self._dialogBody);
+      
+      elementEditField.focus();
+    }
+    
+    self._deleteCallback = function( id ){
+      return function( event ) { 
+        event.stopPropagation();
+        log( "Deleting Pile Element: " + id );
+      };
+    }     
+      
+      
+      
+       
+    
+    self._clearBody = function()
+    {
+      while( self._dialogBody[0].firstChild ){
+         $(self._dialogBody[0].firstChild).remove();
+      }
+      options.onAssignModeLeave();
+    }
+    
+    self._finishCreateChoiceSet = function( name ){
+      // TODO: add data
+      var ch = _modelFactory.createStoryDimension( name );
+      self._data.push( ch );
+      
+      $("#mode-new").button("disable");  // only one choiceset allowed
+      $("#mode-edit").button("enable").click();      
+      $("#mode-assign").button("enable");    
+      
+      self._renderEditUI();
+      
+      options.onDataChange();
+      
+    }
+    
+    self._init();
+    
+    
+    self.choiceSetAssignment = function(){
+      return self._assignSetId;
+    }
+    
+    self.storyDimensionSpec = function(){
+      return self._storyDimensionSet;
+    }
+  }
+})(jQuery);  
