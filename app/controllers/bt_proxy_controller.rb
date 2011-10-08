@@ -236,15 +236,13 @@ class BtProxyController < ApplicationController
     puts "*************************************************************************"
     puts 
     
-=begin    
     url = URI.parse( serviceUrl )
     res = Net::HTTP.start(url.host, url.port) { |http|
       http.post(url.path, completeRequest)
     }    
     
     doc = REXML::Document.new( res.read_body )
-=end
-    doc = storyDoc
+
     
     puts
     puts "*************************************************************************"
@@ -302,6 +300,14 @@ class BtProxyController < ApplicationController
     value.text = pel["text"]
     flowElement.add( value )
     choices = REXML::Element.new("AllowedChoiceSets")
+    if ( pel["choiceSetIds"] )
+      pel["choiceSetIds"].each do | ref |
+        choiceRef = REXML::Element.new("ChoiceSetRef")
+        choiceRef.attributes["choiceSet"] = ref
+        choices.add( choiceRef )
+      end
+    end
+    
     flowElement.add( choices )    
     element.add( flowElement )
     
