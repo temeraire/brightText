@@ -527,7 +527,7 @@ var BrightTextEditor = function( divId, editable ){
     
     var options = [];
 
-    $.pileEditor( pile, options, _modelFactory );
+    $.pileEditor( pile, options, _modelFactory, self );
   }
   
   
@@ -717,6 +717,11 @@ var BrightTextEditor = function( divId, editable ){
     this.toData();
     if ( self._btChangeCallback ) self._btChangeCallback();
     
+  }
+  
+  this.commitEdits = function()
+  {
+    if ( this._btChangeCallback ) this._btChangeCallback(); 
   }
 
 }  // end BrightTextEditor
@@ -1026,9 +1031,11 @@ var _modelFactory = new ObjectFactory();
 (function($) {
   var choices;
   var submenu;
+  var btedit;
   
-  $.pileEditor = function( pile, options, modelFactory ){
+  $.pileEditor = function( pile, options, modelFactory, btEditor ){
     choices = options;
+    btedit = btEditor;
     showEditor( pile, options, modelFactory);
   };
   
@@ -1226,6 +1233,7 @@ var _modelFactory = new ObjectFactory();
       tg = tg.parentNode;
     }
     $(container).hide().empty();
+    if ( btedit ) btedit.commitEdits();
   }
   
 })(jQuery);
