@@ -403,7 +403,7 @@ var BrightTextEditor = function( divId, editable ){
       var pileElement = pile.elements[i];
       if ( typeof( pileElement.choiceSetIds ) != 'undefined' && pileElement.choiceSetIds.length > 0 && this._toneFilter ){
         add = false;
-        for ( var j = 0; i < pileElement.choiceSetIds.length; i++ ){
+        for ( var j = 0; j < pileElement.choiceSetIds.length; j++ ){
           var choice = pileElement.choiceSetIds[j];
           if ( choice == this._toneFilter ) add = true;
         }
