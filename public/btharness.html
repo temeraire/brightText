@@ -102,12 +102,15 @@
           min: 0,
           max: gradients.length - 1,
           range: false,
-          step: 1,
+          step: 0.001,
           slide: function( event, ui ) {
             var toneGradients = gradients;
-            var s1 = ui.value;
-            $( "#gradient1" ).html( gradients[ s1 ].name );
-            _bt1.handleToneSelection( gradients[s1 ].id ); 
+            var s1 = Math.round(ui.value);
+            if ( _s1 != s1 ){ // allow smooth moving of the tone selector
+              _s1 = s1;            
+              $( "#gradient1" ).html( gradients[ s1 ].name );
+              _bt1.handleToneSelection( gradients[ s1 ].id ); 
+            }
           }
         });   
         if ( gradients.length > 1) {
@@ -115,6 +118,8 @@
           $("#tone-control1").show();
         }
       }      
+      
+      var _s1, _s2;
       
       function updateToneSlider2( gradients, value )
       {
@@ -129,19 +134,21 @@
         $( "#slider2" ).slider({
           value:toneIndex,
           min: 0,
-          max: gradients.length - 1,
+          max:  gradients.length - 1,
           range: false,
-          step: 1,
-          slide: function( event, ui ) {
+          step: 0.001,
+          slide: function( event, ui ) {   
             var toneGradients = gradients;
-            
-            var s1 = ui.value;
-            $( "#gradient2" ).html( toneGradients[ s1 ].name );
-            _bt2.handleToneSelection( toneGradients[ s1 ].id ); 
+            var s2 = Math.round(ui.value);
+            if ( _s2 != s2 ){
+              _s2 = s2;
+              $( "#gradient2" ).html( toneGradients[ s2 ].name );
+              _bt2.handleToneSelection( toneGradients[ s2 ].id ); 
+            }
           }
         });   
         if ( gradients.length > 1) {
-          $( "#gradient2" ).html( gradients[ 0 ].name );
+          $( "#gradient2" ).html( gradients[ toneIndex ].name );
           $("#tone-control2").show();
         }
       }
