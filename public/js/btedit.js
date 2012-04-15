@@ -600,14 +600,22 @@ var BrightTextEditor = function( divId, editable ){
     
     log( " apply pile element: " + value + " to element " + el );
     el.innerHTML = value;
-    if ( element.choiceSetIds.length > 0 && self._toneFilter == null ){
-      // pick a tone from the list of this element's tones
-      var choiceIndex = Math.floor( Math.random() * element.choiceSetIds.length );
-      self._toneFilter = element.choiceSetIds[ choiceIndex ];
-        
-      // and auto-rewrite the whole document, keeping this one the way it is
-      this.renderStory( true, cp );
-      this.toData();      
+    if ( element.choiceSetIds.length > 0 ){
+      // check whether the current tone already belongs to one of the choiceSets in this element
+      var toneChangeRequired = true;
+      $.each( element.choiceSetIds, function(){ 
+        if ( this == self._toneFilter ) toneChangeRequired = false;
+      });
+      
+      if ( toneChangeRequired ){
+        // pick a tone from the list of this element's tones
+        var choiceIndex = Math.floor( Math.random() * element.choiceSetIds.length );
+        self._toneFilter = element.choiceSetIds[ choiceIndex ];
+          
+        // and auto-rewrite the whole document, keeping this one the way it is
+        this.renderStory( true, cp );
+        this.toData();      
+      }
     }    
     if ( this._btChangeCallback ) this._btChangeCallback(); 
   }
@@ -876,42 +884,30 @@ var _modelFactory = new ObjectFactory();
     });    
     
     $(container).removeClass("largeChoiceMenu");
+    
+    var tonedChoices = [];
+    var untonedChoices = [];
+    
     $.each(choices,function(){
-      var action = this.action;
+      var add = true;
       if ( this.choiceSetIds && this.choiceSetIds.length > 0 && filter ){
-        var add = false;
+        add = false;
         for ( var i = 0; i < this.choiceSetIds.length; i++ ){
           var choice = this.choiceSetIds[i];
-          if ( choice == filter ) add = true;
+          if ( choice == filter ){
+            add = true;
+          } 
         }
-        if (!add) return; // do not add filtered out choices
       }
-      actionElement =  $("<div></div>").text(this.label);
-      
-      actionElement.addClass( 'menuItem' );
-
-      actionElement.mouseover( function( event ) {
-        $(event.target).removeClass('menuItem').addClass( 'highlightedMenuItem' );
-      });
-      actionElement.mouseout( function( event ) {
-        $(event.target).removeClass('highlightedMenuItem').addClass( 'menuItem' );
-      });          
-      
-      actionElement.mousedown( function(clickEvent){
-        clickEvent.stopPropagation();
-        action( event.target );
-        resetMenu();
-      });
-      
-      actionElement.appendTo(container);
-      log("width: " + actionElement.width() );
-      if ( actionElement.width() > 300 ) actionElement.width( 300 );
-            
-      
-      log( "  CONTAINER HEIGHT:  "  + $(container).height() );
-      log( "  CONTAINER width:  "  + $(container).width() );
-      if ($(container).width() > 300 ) actionElement.width( 300 );
+      if ( add ){
+        tonedChoices.push( this );      
+      } else {
+        untonedChoices.push( this );
+      }
     });
+    
+    $.each( tonedChoices,   function() { self._drawChoice(this, true) } );
+    $.each( untonedChoices, function() { self._drawChoice(this, false)} );
     
     if ( $(container).height() > 400 ){
       $(container).addClass("largeChoiceMenu");
@@ -932,6 +928,35 @@ var _modelFactory = new ObjectFactory();
 
     return false;
   }
+  
+  self._drawChoice = function( choice, toned ){
+      var actionElement =  $("<div></div>").text(choice.label);
+      actionElement.addClass( 'menuItem' );
+      if ( !toned ) actionElement.addClass("untoned");
+      actionElement.mouseover( function( event ) {
+        $(event.target).removeClass('menuItem').addClass( 'highlightedMenuItem' );
+      });
+      actionElement.mouseout( function( event ) {
+        $(event.target).removeClass('highlightedMenuItem').addClass( 'menuItem' );
+      });          
+      
+      actionElement.mousedown( function(clickEvent){
+        clickEvent.stopPropagation();
+        choice.action( event.target );
+        resetMenu();
+      });
+      
+      actionElement.appendTo(container);
+      log("width: " + actionElement.width() );
+      if ( actionElement.width() > 300 ) actionElement.width( 300 );
+            
+      
+      log( "  CONTAINER HEIGHT:  "  + $(container).height() );
+      log( "  CONTAINER width:  "  + $(container).width() );
+      if ($(container).width() > 300 ) actionElement.width( 300 );
+    }  
+  
+  
   
   function resetMenu(){
     $(container).hide().empty();

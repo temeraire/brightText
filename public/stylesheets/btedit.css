@@ -191,6 +191,16 @@
         padding:0px 15px 2px 15px;	
 			}
 			
+			.menuItem.untoned{
+			  background-color:#ffffbb;
+			  color: #222222;
+			}
+			
+			.highlightedMenuItem.untoned{
+			  background-color:gray;
+			  color:ffffbb;
+			}			
+			
 			.largeChoiceMenu{
 			  height: 400px;
 			  overflow-y: scroll;
