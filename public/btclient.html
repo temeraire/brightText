@@ -137,6 +137,10 @@
           _bt2.renderData( _bt1.toData() );
         } );
         */
+        
+        _bt2.onChange( function(){
+          updateToneSlider2( _bt2.toneGradients(), _bt2.selectedTone() );        
+        });        
       
       /*  
         $("#instant_rewrite1").button();

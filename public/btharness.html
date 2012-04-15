@@ -35,7 +35,7 @@
       } 
       
       textarea.dataport{
-        width:392px; 
+        width:764px; 
         height:392px; 
         resize:none;
       }
@@ -50,7 +50,7 @@
       }      
       
       div.viewportcontainer{
-        width:400px; 
+        width:770px; 
         height:400px; 
         margin:5px; 
         padding:5px; 
@@ -59,7 +59,7 @@
       }
       
       div.btEditor{
-        width:374px;
+        width:748px;
         height:314px;
         padding:10px;
       }
@@ -87,37 +87,63 @@
       }   
       
       
-      function updateToneSlider( gradients )
-      {
-         $("#tone-control2").hide( );
-         $( "#slider2" ).slider({
-            value:0,
-            min: 0,
-            max: gradients.length - 1,
-            range: false,
-            step: 1,
-            slide: function( event, ui ) {
-              var toneGradients = gradients;
-              
-              var s1 = ui.value;
-
-              //var s1 = ui.values[0];
-              //var s2 = ui.values[1];  // needed for range editing, which could be supported
-              
-              //if ( s1 == s2 ){
-                $( "#gradient2" )[0].innerHTML = toneGradients[ ui.value ].name;
-              //} else {
-              //  $( "#gradient2" )[0].innerHTML = toneGradients[ s1 ] + " - " + toneGradients[ s2 ];
-              //} 
-              
-              // TODO: feed the resulting value back into the bt editor
-              _bt2.handleToneSelection( toneGradients[ ui.value ].id ); 
-            }
-          });   
-          if ( gradients.length > 1) {
-            $( "#gradient2" )[0].innerHTML = gradients[ 0 ].name
-            $("#tone-control2").show();
+      function updateToneSlider1( gradients, value )
+      { 
+        var toneIndex = 0;
+        for ( var i = 0; i < gradients.length; i++ ){
+          if ( gradients[i].id == value ){
+            toneIndex = i; 
+            break;
           }
+        }
+        $("#tone-control1").hide( );
+        $( "#slider1" ).slider({
+          value: toneIndex,
+          min: 0,
+          max: gradients.length - 1,
+          range: false,
+          step: 1,
+          slide: function( event, ui ) {
+            var toneGradients = gradients;
+            var s1 = ui.value;
+            $( "#gradient1" ).html( gradients[ s1 ].name );
+            _bt1.handleToneSelection( gradients[s1 ].id ); 
+          }
+        });   
+        if ( gradients.length > 1) {
+          $( "#gradient1" ).html( gradients[ toneIndex ].name );
+          $("#tone-control1").show();
+        }
+      }      
+      
+      function updateToneSlider2( gradients, value )
+      {
+        var toneIndex = 0;
+        for ( var i = 0; i < gradients.length; i++ ){
+          if ( gradients[i].id == value ){
+            toneIndex = i; 
+            break;
+          }
+        }      
+        $("#tone-control2").hide( );
+        $( "#slider2" ).slider({
+          value:toneIndex,
+          min: 0,
+          max: gradients.length - 1,
+          range: false,
+          step: 1,
+          slide: function( event, ui ) {
+            var toneGradients = gradients;
+            
+            var s1 = ui.value;
+            $( "#gradient2" ).html( toneGradients[ s1 ].name );
+            _bt2.handleToneSelection( toneGradients[ s1 ].id ); 
+          }
+        });   
+        if ( gradients.length > 1) {
+          $( "#gradient2" ).html( gradients[ 0 ].name );
+          $("#tone-control2").show();
+        }
       }
       
       $(document).ready(function(){
@@ -130,9 +156,17 @@
         _bt1.onChange( function() {
           rawData[0].value  = $.toJSON( _bt1.toData() );
           textData[0].value = _bt1.toString();
-          updateToneSlider( _bt1.toneGradients() );
+          updateToneSlider1( _bt1.toneGradients(), _bt1.selectedTone() );
+          
+          // render bt2 (reader) with updated data and update its tone selector
           _bt2.renderData( _bt1.toData() );
+          updateToneSlider2( _bt2.toneGradients(), _bt2.selectedTone() );
         } );
+        
+        
+        _bt2.onChange( function(){
+          updateToneSlider2( _bt2.toneGradients(), _bt2.selectedTone() );        
+        });
       
       
         
@@ -142,6 +176,7 @@
         });
       
        
+        $("#tone-control1").hide( );
         $("#tone-control2").hide( );
      
         
@@ -220,9 +255,9 @@
     
   </head>
   <body>
-    <div id="harness_container" style="width:900px;">
+    <div id="harness_container" style="width:1800px;">
      
-        <div id="controls1" style="width:828px; height:33px;padding:3px;margin:3px" class="ui-widget-header ui-corner-all">
+        <div id="controls1" style="width:1564px; height:33px;padding:3px;margin:3px" class="ui-widget-header ui-corner-all">
       
         Story ID:<input type="text" value="791" id="story_id"></input>
         <button id="fetchStory" onClick="fetchStory()">Load Story</button>
@@ -235,7 +270,7 @@
       <div id="main_container" class="viewportcontainer">
         
         
-        <div id="controls1" style="width:374px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
+        <div id="controls1" style="width:748px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
         
           
           <div style="border: 0px dashed grey; width:180px; padding:5px 5px 2px 10px;float:left">
@@ -243,7 +278,13 @@
           </div>
           <div style="float:right; padding: 5px 0px;">
             <button id="instant_rewrite1">Instant Rewrite</button>
-          </div>            
+          </div>  
+          <div style="border: 0px dashed grey; width:200px; padding:2px 25px 5px 10px;float:right" id="tone-control1">
+            <div id="gradient1" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;"></div>
+            <div style="padding:0px 0px 5px 0px;">Tone: </div>
+            <div id="slider1" style="width:100%;"></div>
+          </div>          
+                    
         </div>   
       
         <div id="bt_one" class="btEditor">BT Wand</div>
@@ -253,16 +294,17 @@
       
       <!-- the  "slave" bright text which dynamically updates with all the changes to the main control -->
       <div id="secon_container" class="viewportcontainer">
-        <div id="controls2" style="width:374px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
+        <div id="controls2" style="width:748px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
         
-          <div style="border: 0px dashed grey; width:200px; padding:2px 5px 2px 10px;float:left" id="tone-control2">
+
+          <div style="float:right; padding: 5px 0px;">
+            <button id="instant_rewrite2">Instant Rewrite</button>
+          </div>      
+          <div style="border: 0px dashed grey; width:200px; padding:2px 25px 2px 10px;float:right" id="tone-control2">
             <div id="gradient2" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;"></div>
             <div style="padding:0px 0px 5px 0px;">Tone: </div>
             <div id="slider2" style="width:100%;"></div>
-          </div>
-          <div style="float:right; padding: 5px 0px;">
-            <button id="instant_rewrite2">Instant Rewrite</button>
-          </div>            
+          </div>          
         </div>   
             
       

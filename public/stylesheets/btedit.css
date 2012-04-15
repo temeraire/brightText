@@ -182,13 +182,20 @@
 			.highlightedMenuItem{
 			  background-color:gray;
 			  color:white;
-        padding:0px 15px 2px 15px;			  
+        padding:0px 15px 2px 15px;	
 			}
 			
 			.menuItem{
 			  background-color:white;	
 			  color:black;
-        padding:0px 15px 2px 15px;			  
+        padding:0px 15px 2px 15px;	
+			}
+			
+			.largeChoiceMenu{
+			  height: 400px;
+			  overflow-y: scroll;
+			  width: 350px;
+			  cursor:default;
 			}
 			
 			.choiceSetIndicator{
@@ -216,7 +223,13 @@
 			  background-color:white;	
 			  color:black;
         padding:10px 5px 10px 5px;
-			}					
+			}		
+			
+			.choiceEditor-huge{
+			  height:400px;
+			  width:255px;
+			  overflow-y:scroll;
+			}
 			
 			.choiceEditContainer{
 			  background-color:white;	
@@ -237,6 +250,20 @@
 			  color:black;
         width:160px;
 			}
+			
+			.choiceEditTextArea{
+			  background-color:white;	
+			  color:black;
+        width:160px;
+        height:60px;
+			}			
+			
+			.choiceEditTextAreaHuge{
+			  background-color:white;	
+			  color:black;
+        width:160px;
+        height:100px;
+			}				
 			
 			.choiceDeleteButton{
         padding:3px 5px 0px 5px;	

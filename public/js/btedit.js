@@ -140,19 +140,23 @@ var BrightTextEditor = function( divId, editable ){
     self.rewrite();
   }
   
+  this.selectedTone = function(){
+    return self._toneFilter;  
+  }
+  
   this.renderData = function( data ){
     log("renderData");
     
-    this._toneFilter = null;
+    self._toneFilter = null;
   
-    this._meta            = data["meta"];
-    this._story           = data["story"];
-    this._piles           = data["piles"]; 
-    this._storyDimensions = data["storyDimensions"];
+    self._meta            = data["meta"];
+    self._story           = data["story"];
+    self._piles           = data["piles"]; 
+    self._storyDimensions = data["storyDimensions"];
   
-    this.renderStory();
+    self.renderStory();
     
-    if ( this._btChangeCallback ) this._btChangeCallback();
+    if ( self._btChangeCallback ) self._btChangeCallback();
   }
 
   
@@ -270,7 +274,7 @@ var BrightTextEditor = function( divId, editable ){
   /**
    *  Story rendering 
    */
-  this.renderStory = function( randomize )
+  this.renderStory = function( randomize, preserveChoice)
   {
     if ( randomize ) randomize = true;
     else randomize = false;
@@ -286,12 +290,12 @@ var BrightTextEditor = function( divId, editable ){
     
     for ( var c = 0; c <  this._story.length; c++ ){
       var pos = new DataPositioner( c );
-      this.renderContainer( storyContentDiv, this._story[c]["container"], pos, randomize );
+      this.renderContainer( storyContentDiv, this._story[c]["container"], pos, randomize, preserveChoice );
     }
   }
 
 
-  this.renderContainer = function( div, data, pos, randomize )
+  this.renderContainer = function( div, data, pos, randomize, preserveChoice )
   {
     //log( "rendering container of length: " + data.length );
     
@@ -303,7 +307,7 @@ var BrightTextEditor = function( divId, editable ){
     for ( var  i = 0; i < data.length; i++ ){
       var el = data[i];
       if ( typeof( el ) == "object" ){ // changepoint
-        var c = this.renderChangepoint( el, pos.cloneWithIndex( i ), randomize );
+        var c = this.renderChangepoint( el, pos.cloneWithIndex( i ), randomize, preserveChoice );
       } else {
         var c = this.renderText( el, pos.cloneWithIndex( i ) );
       }
@@ -315,8 +319,11 @@ var BrightTextEditor = function( divId, editable ){
   this._undimTimeout;
   this._nodeCount = 0;
 
-  this.renderChangepoint = function( el, pos, randomize )
+  this.renderChangepoint = function( el, pos, randomize, preserveChoice )
   {
+    if ( randomize && preserveChoice === el ){
+      randomize = false;
+    }
     var cpIndex = this._changePoints.length; 
     this._changePoints.push( el ); 
     
@@ -401,11 +408,11 @@ var BrightTextEditor = function( divId, editable ){
     for ( var i in pile.elements ){
       var add = true;
       var pileElement = pile.elements[i];
-      if ( typeof( pileElement.choiceSetIds ) != 'undefined' && pileElement.choiceSetIds.length > 0 && this._toneFilter ){
+      if ( typeof( pileElement.choiceSetIds ) != 'undefined' && pileElement.choiceSetIds.length > 0 && self._toneFilter ){
         add = false;
         for ( var j = 0; j < pileElement.choiceSetIds.length; j++ ){
           var choice = pileElement.choiceSetIds[j];
-          if ( choice == this._toneFilter ) add = true;
+          if ( choice == self._toneFilter ) add = true;
         }
       }    
       if ( add ) pileEls.push( pileElement );
@@ -549,7 +556,7 @@ var BrightTextEditor = function( divId, editable ){
       
       options.push( {label: pile["elements"][id]["text"], action: this._selectionCallback( pile, id, el ), choiceSetIds: choiceSetIds  } );
     }
-    $.choiceMenu( event, options, this._toneFilter );    
+    $.choiceMenu( event, options, self._toneFilter );    
   }
   
   
@@ -592,6 +599,15 @@ var BrightTextEditor = function( divId, editable ){
     
     log( " apply pile element: " + value + " to element " + el );
     el.innerHTML = value;
+    if ( element.choiceSetIds.length > 0 && self._toneFilter == null ){
+      // pick a tone from the list of this element's tones
+      var choiceIndex = Math.floor( Math.random() * element.choiceSetIds.length );
+      self._toneFilter = element.choiceSetIds[ choiceIndex ];
+        
+      // and auto-rewrite the whole document, keeping this one the way it is
+      this.renderStory( true, cp );
+      this.toData();      
+    }    
     if ( this._btChangeCallback ) this._btChangeCallback(); 
   }
   
@@ -848,10 +864,17 @@ var _modelFactory = new ObjectFactory();
   function showmenu(event, choices, filter ){
     event.stopPropagation();
     resetMenu();
-    $(document.body).mousedown(function( ){
+    $(document.body).mousedown(function( event ){
+      if ( $(event.target).hasClass("largeChoiceMenu")){
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
       resetMenu();
+      $(document.body).unbind('mousedown');
     });    
     
+    $(container).removeClass("largeChoiceMenu");
     $.each(choices,function(){
       var action = this.action;
       if ( this.choiceSetIds && this.choiceSetIds.length > 0 && filter ){
@@ -862,10 +885,10 @@ var _modelFactory = new ObjectFactory();
         }
         if (!add) return; // do not add filtered out choices
       }
-      actionElement =  $(document.createElement($.conmenu.choicesType)).html(this.label);
+      actionElement =  $("<div></div>").text(this.label);
       
       actionElement.addClass( 'menuItem' );
-      
+
       actionElement.mouseover( function( event ) {
         $(event.target).removeClass('menuItem').addClass( 'highlightedMenuItem' );
       });
@@ -880,7 +903,18 @@ var _modelFactory = new ObjectFactory();
       });
       
       actionElement.appendTo(container);
+      log("width: " + actionElement.width() );
+      if ( actionElement.width() > 300 ) actionElement.width( 300 );
+            
+      
+      log( "  CONTAINER HEIGHT:  "  + $(container).height() );
+      log( "  CONTAINER width:  "  + $(container).width() );
+      if ($(container).width() > 300 ) actionElement.width( 300 );
     });
+    
+    if ( $(container).height() > 400 ){
+      $(container).addClass("largeChoiceMenu");
+    }    
 		var size = {
       'height':$(window).height(),
       'width':$(window).width(),
@@ -937,12 +971,16 @@ var _modelFactory = new ObjectFactory();
         self._resetMenu();
       });    
       
+      //$(container).height( 10 )
       $.each( choices,function(){
         var action  = this.action;
         var label   = this.label;
         var chosIds = this.choiceSetIds;
         self._renderAction( action, label, chosIds);     
       });
+      //if ( $(container).height() > 400 ){
+      //  $(container).addClass("choiceEditor-huge");
+      //}       
       var size = {
         'height':$(window).height(),
         'width':$(window).width(),
@@ -1041,8 +1079,6 @@ var _modelFactory = new ObjectFactory();
   
   //defaults
   $.pileEditor.containerType = 'div';
-  $.pileEditor.elementContainerType = 'div';
-  $.pileEditor.elementContainerType = 'input';
   
   
   var modelFactory;
@@ -1062,14 +1098,16 @@ var _modelFactory = new ObjectFactory();
       resetMenu( event );
     });    
     
+    $(container).removeClass("choiceEditor-huge");    
     for ( var id in pile.elements ){
       renderPileElement( id, pile );
-      
     }
     
     renderBlankElement( pile );
      
-    
+    if ( $(container).height() > 400 ){
+      $(container).addClass("choiceEditor-huge");
+    } 
     
     
 		var size = {
@@ -1109,10 +1147,21 @@ var _modelFactory = new ObjectFactory();
           
         });
       
-      elementEditField =  $("<input class='choiceEditField' type='text'></input>");
-      elementEditField[0].value = pileElement.text;
+      if ( pileElement.text.length < 32 ){
+        elementEditField =  $("<input class='choiceEditField' type='text'></input>");
+        elementEditField[0].value = pileElement.text;
+      }
+      else {
+        elementEditField =  $("<textarea></textarea>");
+        if ( pileElement.text.length > 150 ){
+          elementEditField.addClass("choiceEditTextAreaHuge");
+        } else {
+          elementEditField.addClass("choiceEditTextArea");
+        }
+        elementEditField.val( pileElement.text );      
+      }
       elementEditField[0]["pel"] = pileElement;
-      elementContainer.append( elementEditField );
+      elementContainer.append( elementEditField );      
       
       
       elementEditField.bind( "keyup", function( event ) {
@@ -1214,6 +1263,10 @@ var _modelFactory = new ObjectFactory();
     elementContainer.appendTo(container);
     
     elementEditField.focus();
+    
+    if ( $(container).height() > 400 ){
+      $(container).addClass("choiceEditor-huge");
+    }    
   }
   
   function deleteCallback( id ){
