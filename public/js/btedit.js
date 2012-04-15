@@ -138,6 +138,7 @@ var BrightTextEditor = function( divId, editable ){
     self._toneFilter = toneId;
     log(" tone filter: " + toneId );
     self.rewrite();
+    this.toData();
   }
   
   this.selectedTone = function(){
