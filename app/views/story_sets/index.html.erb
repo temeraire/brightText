@@ -1,0 +1,68 @@
+<script>
+  $( function() {
+    $("#new_button").button().click( function(){
+       document.location.href='/story_sets/new';
+    });
+  });
+  
+  function onFilterSelect()
+  {
+    var selector =  $("#filterSelector")[0];
+    document.location.href = "/story_sets?filter=" + selector.options[ selector.selectedIndex ].value;
+  }  
+</script>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+<button id="new_button" style="float:left">New Question</button>
+<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Filter By Survey:
+<select id="filterSelector" onChange="onFilterSelect()">
+<%
+  selected = 'selected' if @filter.empty?
+%>
+ <option <%= selected %>></option>
+<%
+  selected = ''
+  selected = 'selected' if @filter == "__unassigned"
+%>
+ <option <%= selected %> value="__unassigned">-- unassigned --</option>
+<%
+
+  @categories.each do | category |
+    selected = ''
+    selected = 'selected' if @filter == category.id.to_s    
+%>
+    <option value="<%=category.id%>" <%= selected %>><%= category.name %></option>
+<%
+  end
+%>
+</select>
+</div>
+
+
+<div style="height=60px; width:100px">&nbsp;</div>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+
+
+<table>
+  <tr>
+    <td style="height:50px; width:200px"><b>Name</td>
+    <td style="height:50px; width:200px"><b>Survey</td>
+    <td style="height:50px; width:50px"><b>Rank</td>
+    <td></td>
+    <td></td>
+  </tr>
+
+<% @story_sets.each do |story_set| %>
+  <tr>
+    <td style="width:200px"><%= story_set.name %></td>
+    <td style="width:200px"><%= story_set.category %></td>
+    <td style="width:50px"><%= story_set.rank %></td>
+    
+    <td><%= link_to 'Edit', edit_story_set_path(story_set) %></td>
+  </tr>
+<% end %>
+</table>
+
+
+

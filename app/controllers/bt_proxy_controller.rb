@@ -15,6 +15,8 @@ class BtProxyController < ApplicationController
     
     doc = REXML::Document.new(open(uri).read)
 
+    puts ' XML\n' + doc.to_s
+
     result = xmlToJson( doc )
 
     if params[:callback]

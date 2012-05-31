@@ -1,0 +1,62 @@
+<script>
+  $( function() {
+    $("#new_button").button().click( function(){
+       document.location.href='/story_set_categories/new';
+    });
+  });
+  
+  function onFilterSelect()
+  {
+    var selector =  $("#filterSelector")[0];
+    document.location.href = "/story_set_categories?filter=" + selector.options[ selector.selectedIndex ].value;
+  }    
+</script>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+<button id="new_button" style="float:left">New Survey</button>
+<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Filter By Application:
+<select id="filterSelector" onChange="onFilterSelect()">
+<%
+  selected = 'selected' if @filter.empty?
+%>
+ <option <%= selected %>></option>
+<%
+  selected = ''
+  selected = 'selected' if @filter == "__unassigned"
+%>
+ <option <%= selected %> value="__unassigned">-- unassigned --</option>
+<%
+
+  @applications.each do | app |
+    selected = ''
+    selected = 'selected' if @filter == app.id.to_s   
+%>
+    <option value="<%=app.id%>" <%= selected %>><%= app.name %></option>
+<%
+  end
+%>
+</select>
+</div>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+
+
+<table>
+  <tr>
+    <td width="150"><b>Name</b></td>
+    <td width="150"><b>Application</b></td>
+    <td width="350"><b>Description</b></td>
+    <td></td>
+    <td></td>
+  </tr>
+
+<% @story_set_categories.each do |story_set_category| %>
+  <tr>
+    <td><%= story_set_category.name %></td>
+    <td><%= story_set_category.application %></td>
+    <td><%= story_set_category.description %></td>
+    <td><%= link_to 'Edit', edit_story_set_category_path(story_set_category) %></td>
+    <td><%= link_to 'Destroy', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>

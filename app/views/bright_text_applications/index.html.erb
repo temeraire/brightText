@@ -1,0 +1,29 @@
+<script>
+  $( function() {
+    $("#new_button").button().click( function(){
+       document.location.href='/bright_text_applications/new';
+    });
+  });
+</script>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+<button id="new_button">New Application</button>
+<div style="height=60px; width:100px">&nbsp;</div>
+
+<table>
+  <tr>
+    <td width="70"><b>ID</b></td>
+    <td width="400"><b>Name</b></td>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @bt_applications.each do |bt_application| %>
+  <tr>
+    <td><%= bt_application.id %></td>
+    <td><%= bt_application.name %></td>
+    <td><%= link_to 'Edit', '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
+    <td><%= link_to 'Destroy', bt_application, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>

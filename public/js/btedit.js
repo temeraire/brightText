@@ -1157,7 +1157,7 @@ var _modelFactory = new ObjectFactory();
       var pileElement = pile.elements[ id ];
 
       var elementContainer =  $("<div class='choiceEditContainer'/>");
-      var elementDeleteImg =  $("<a href='#' class='choiceDeleteButton'><img src='images/delete_new.png'/></a>");
+      var elementDeleteImg =  $("<a href='#' class='choiceDeleteButton'><img src='/images/delete_new.png'/></a>");
       
       elementDeleteImg.click( function() {
         log( "deleting pile element: " + id );
@@ -1195,7 +1195,7 @@ var _modelFactory = new ObjectFactory();
       } );
       
       /*
-      var elementExpandImg = $("<img src='images/expand.png' class='expandPileElement'/>");
+      var elementExpandImg = $("<img src='/images/expand.png' class='expandPileElement'/>");
       
       elementContainer.append( elementExpandImg );
       
@@ -1228,7 +1228,7 @@ var _modelFactory = new ObjectFactory();
   function renderBlankElement( pile )
   {
     var elementContainer =  $("<div class='choiceEditContainer'/>");
-    var elementPlusImg =  $("<img src='images/plus_new.png' class='elementPlusIcon'/>");
+    var elementPlusImg =  $("<img src='/images/plus_new.png' class='elementPlusIcon'/>");
     elementContainer.append( elementPlusImg );
     var elementEditField =  $("<input class='choiceEditField' type='text'></input>");
     elementEditField[0]["pel"] = null;
@@ -1258,7 +1258,7 @@ var _modelFactory = new ObjectFactory();
       pile.elements[pileElement.id] = pileElement;
       this["pel"] = pileElement;
       elementPlusImg.remove();
-      elementDeleteImg =  $("<a href='#' class='choiceDeleteButton'><img src='images/delete_new.png'/></a>");
+      elementDeleteImg =  $("<a href='#' class='choiceDeleteButton'><img src='/images/delete_new.png'/></a>");
       elementDeleteImg.click( function() {
         log( "deleting pile element: " + pileElement.id );
         elementContainer.remove();
@@ -1267,7 +1267,7 @@ var _modelFactory = new ObjectFactory();
       elementDeleteImg.insertBefore( elementEditField );      
       
       /*
-      var elementExpandImg = $("<img src='images/expand.png' class='expandPileElement'/>");
+      var elementExpandImg = $("<img src='/images/expand.png' class='expandPileElement'/>");
       elementExpandImg.insertAfter( elementEditField );
       
       elementExpandImg.bind( "mouseover", function( event ) {
@@ -1562,7 +1562,7 @@ function log( msg )
         var choiceSet = self._data[0].choiceSets[ id ];
   
         var elementContainer =  $("<div class='choiceSetEditContainer'/>");
-        var elementDeleteImg =  $("<a href='#' class='choiceSetDeleteButton'><img src='images/delete_new.png'/></a>");
+        var elementDeleteImg =  $("<a href='#' class='choiceSetDeleteButton'><img src='/images/delete_new.png'/></a>");
         
         elementDeleteImg.click( function() {
           log( "deleting choiceset: " + id );
@@ -1597,7 +1597,7 @@ function log( msg )
     self._renderBlankElement = function( )
     {
       var elementContainer =  $("<div class='choiceSetEditContainer'/>");
-      var elementPlusImg =  $("<img src='images/plus_new.png' class='choiceSetPlusIcon'/>");
+      var elementPlusImg =  $("<img src='/images/plus_new.png' class='choiceSetPlusIcon'/>");
       elementContainer.append( elementPlusImg );
       var elementEditField =  $("<input class='choiceSetEditField' type='text'></input>");
       elementEditField[0]["pel"] = null;
@@ -1628,7 +1628,7 @@ function log( msg )
         options.onDataChange();
         this["chos"] = choiceSet;
         elementPlusImg.remove();
-        elementDeleteImg =  $("<a href='#' class='choiceSetDeleteButton'><img src='images/delete_new.png'/></a>");
+        elementDeleteImg =  $("<a href='#' class='choiceSetDeleteButton'><img src='/images/delete_new.png'/></a>");
         elementDeleteImg.click( function() {
           log( "deleting pile element: " + pileElement.id );
           elementContainer.remove();

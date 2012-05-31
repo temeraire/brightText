@@ -1,0 +1,73 @@
+<script>
+  $( function() {
+    $("#new_button").button().click( function(){
+       document.location.href='/stories/new';
+    });
+  });
+  
+  function onFilterSetSelect()
+  {
+    var selector =  $("#setSelector")[0];
+    document.location.href = "/stories?filter=" + selector.options[ selector.selectedIndex ].value;
+  }
+    
+</script>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+<button id="new_button" style="float:left">New Answer</button>
+<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Filter By Question:
+<select id="setSelector" onChange="onFilterSetSelect()" >
+<%
+  storySetFilter = @filter
+  selected = 'selected' if storySetFilter.empty?
+%>
+
+ <option <%= selected %>></option>
+ 
+<%
+  selected = ''
+  selected = 'selected' if storySetFilter == "__unassigned"
+%>
+ <option <%= selected %> value="__unassigned">-- unassigned --</option>
+<%
+
+  @story_sets.each do | set |
+    selected = ''
+    selected = 'selected' if storySetFilter == set.id.to_s  
+%>
+    <option value="<%=set.id%>" <%= selected %>><%= set.name %></option>
+<%
+  end
+%>
+</select>
+</div>
+<div style="height=60px; width:100px">&nbsp;</div>
+<table>
+  <tr>
+    <td width="200"><b>Name</b></td>
+    <td width="400"><b>Summary</b></td>
+    <td width="200"><b>Question</b></td> 
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @stories.each do |story| %>
+  <tr>
+    <td style="width:100px"><%= story.name %></td>
+    <td style="width:300px"><%= 
+      if ( story.description )
+        value = story.description[0, 120]
+        if ( story.description.length > 120 )
+          value = value + "..."
+        else 
+          value
+        end
+      end
+     %></td>
+    <td style="width:100px"><%= story.set %></td>
+    <td><%= link_to 'Edit', edit_story_path(story) %></td>
+    <td><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>    
+  </tr>
+<% end %>
+</table>
+
