@@ -92,9 +92,9 @@ end
   
   <script>
 <% if session[:domain].nickname == "Admin" %>
-    var landing = [ "/app/domains" ];
+    var landing = [ "/domains" ];
 <% else %>    
-    var landing = [ "/app/story_groups", "/app/stories" ];
+    var landing = [ "/bright_text_applications", "/story_set_categories", "/story_sets", "/stories" ];
 <% end %>
   
     if ( document.location.href.indexOf("http://localhost:3000") == 0 ){
