@@ -3,7 +3,7 @@
    $("#save_survey_btn").button(); 
    $("#back_btn").button().click( function(e){
     e.preventDefault();
-    document.location.href='/story_set_categories'; 
+    document.location.href = '/story_set_categories?filter=' + @story_set_category.application_id.to_s
     return false;    
    }); 
   });

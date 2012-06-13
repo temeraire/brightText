@@ -107,7 +107,7 @@ end
   
   
     $(function() {
-      var selectedTabIndex = -1;
+      var selectedTabIndex = 0;
       for ( var i = 0; i < landing.length; i++ ){
         if ( document.location.href.indexOf( landing[i] ) != -1 ){
            selectedTabIndex = i;
@@ -147,6 +147,7 @@ end
   <ul >
 <% if session[:domain].nickname == "Admin" %>
     <li><a href="#tab-content">Admin</a></li>
+    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>    
 <% else %>  
     <li><a href="#tab-content">Applications</a></li>
     <li><a href="#tab-content">Surveys</a></li>

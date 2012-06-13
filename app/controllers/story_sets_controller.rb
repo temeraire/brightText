@@ -17,7 +17,7 @@ class StorySetsController < ApplicationController
       end
     end
   
-    @story_sets = StorySet.find_by_sql ["select * from story_sets where " + queryAndParts.join(" AND "), queryParams].flatten
+    @story_sets = StorySet.find_by_sql ["select * from story_sets where " + queryAndParts.join(" AND ") + " order by rank asc", queryParams].flatten
     @categories = StorySetCategory.find_by_sql [ "select * from story_set_categories where domain_id = ?", session[:domain].id ]
 
     respond_to do |format|
@@ -51,7 +51,10 @@ class StorySetsController < ApplicationController
   # GET /story_sets/new.xml
   def new
     @story_set = StorySet.new
-
+    filter = params[:filter]
+    if ( filter != nil && filter != "__unassigned" )
+      @story_set.category_id = filter.to_i
+    end
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @story_set }
@@ -71,7 +74,7 @@ class StorySetsController < ApplicationController
     @story_set.domain_id = session[:domain].id
     respond_to do |format|
       if @story_set.save
-        format.html { redirect_to(story_sets_url) }
+        format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s ) }
         format.xml  { render :xml => @story_set, :status => :created, :location => @story_set }
       else
         format.html { render :action => "new" }
@@ -87,7 +90,7 @@ class StorySetsController < ApplicationController
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set.update_attributes(params[:story_set])
-        format.html { redirect_to(story_sets_url) }
+        format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -104,7 +107,7 @@ class StorySetsController < ApplicationController
     @story_set.destroy
 
     respond_to do |format|
-      format.html { redirect_to(story_sets_url) }
+      format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s) }
       format.xml  { head :ok }
     end
   end

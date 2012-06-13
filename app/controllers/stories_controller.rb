@@ -40,7 +40,10 @@ class StoriesController < ApplicationController
   # GET /stories/new.xml
   def new
     @story = Story.new
-
+    filter = params[:filter]
+    if ( filter != nil && filter != "__unassigned" )
+      @story.story_set_id = filter.to_i
+    end
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @story }
@@ -61,7 +64,7 @@ class StoriesController < ApplicationController
     
     respond_to do |format|
       if @story.save
-        format.html { redirect_to(stories_url, :notice => 'Story was successfully created.') }
+        format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
         format.html { render :action => "new" }
@@ -79,7 +82,7 @@ class StoriesController < ApplicationController
     raise ' not owner ' unless @story.domain_id == session[:domain].id
     respond_to do |format|
       if @story.update_attributes(params[:story])
-        format.html { redirect_to(stories_url, :notice => 'Story was successfully updated.') }
+        format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -96,7 +99,7 @@ class StoriesController < ApplicationController
     @story.destroy
 
     respond_to do |format|
-      format.html { redirect_to(stories_url) }
+      format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
     end
   end

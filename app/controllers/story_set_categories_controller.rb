@@ -45,7 +45,10 @@ class StorySetCategoriesController < ApplicationController
   # GET /story_categories/new.xml
   def new
     @story_set_category = StorySetCategory.new
-
+    filter = params[:filter]
+    if ( filter != nil && filter != "__unassigned" )
+      @story_set_category.application_id = filter.to_i
+    end
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @story_set_category }
@@ -63,9 +66,11 @@ class StorySetCategoriesController < ApplicationController
   def create
     @story_set_category = StorySetCategory.new(params[:story_set_category])
     @story_set_category.domain_id = session[:domain].id
+    
+    
     respond_to do |format|
       if @story_set_category.save
-        format.html { redirect_to(story_set_categories_url) }
+        format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { render :xml => @story_set_category, :status => :created, :location => @story_set_category }
       else
         format.html { render :action => "new" }
@@ -81,7 +86,7 @@ class StorySetCategoriesController < ApplicationController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to(story_set_categories_url) }
+        format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -98,7 +103,7 @@ class StorySetCategoriesController < ApplicationController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to(story_set_categories_url) }
+      format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
       format.xml  { head :ok }
     end
   end

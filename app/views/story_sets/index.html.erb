@@ -1,7 +1,7 @@
 <script>
   $( function() {
     $("#new_button").button().click( function(){
-       document.location.href='/story_sets/new';
+       document.location.href='/story_sets/new?filter=<%= @filter %>';
     });
   });
   
@@ -14,7 +14,7 @@
 
 <div style="height=60px; width:100px">&nbsp;</div>
 <button id="new_button" style="float:left">New Question</button>
-<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Filter By Survey:
+<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Show For Survey:
 <select id="filterSelector" onChange="onFilterSelect()">
 <%
   selected = 'selected' if @filter.empty?
@@ -36,29 +36,39 @@
   end
 %>
 </select>
+<%
+  parentObj = StorySetCategory.find_by_id( @filter )
+  parentId = "__undefined"
+  parentId = parentObj.application_id.to_s unless parentObj == nil
+%>
+<a href="/story_set_categories?filter=<%= parentId %>">Back To Survey</a>
 </div>
 
 
-<div style="height=60px; width:100px">&nbsp;</div>
-
-<div style="height=60px; width:100px">&nbsp;</div>
+<div style="height:110px; width:100px">&nbsp;</div>
 
 
 <table>
   <tr>
-    <td style="height:50px; width:200px"><b>Name</td>
-    <td style="height:50px; width:200px"><b>Survey</td>
-    <td style="height:50px; width:50px"><b>Rank</td>
+    <td style="width:50px"><b>Rank</td>
+    <td style="width:200px"><b>Name</td>
+    <td style="width:200px"><b>Survey</td>
+    <td style="width:200px"><b>Answers</b></td>
     <td></td>
     <td></td>
   </tr>
 
-<% @story_sets.each do |story_set| %>
+<% @story_sets.each do |story_set|
+  countQuery = StorySet.find_by_sql ["select count( id ) as count from stories where story_set_id = ?", story_set.id ]
+  count = countQuery[0].count
+  label = "Answer"
+  label = label + "s" unless count == 1
+%>
   <tr>
-    <td style="width:200px"><%= story_set.name %></td>
+    <td style="width:50px"><%= story_set.rank %></td>  
+    <td style="width:250px"><%= story_set.name %></td>
     <td style="width:200px"><%= story_set.category %></td>
-    <td style="width:50px"><%= story_set.rank %></td>
-    
+    <td><%= count %> <%= label %> <a href="/stories?filter=<%= story_set.id %>">(show/edit)</a></td>
     <td><%= link_to 'Edit', edit_story_set_path(story_set) %></td>
   </tr>
 <% end %>

@@ -89,8 +89,8 @@ class DomainsController < ApplicationController
     end
     
     
-    storyGroup = StoryGroup.new( {:name => "Default", :domain_id => @domain.id} )
-    storyGroup.save
+    #storyGroup = StorySet.new( {:name => "Default", :domain_id => @domain.id} )
+    #storyGroup.save
     
   end
 

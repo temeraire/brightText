@@ -14,7 +14,7 @@ class SessionController < ApplicationController
         if @domain.id == 1
           redirect_to "/domains"
         else
-          redirect_to "/stories"
+          redirect_to "/bright_text_applications"
         end
       
       else

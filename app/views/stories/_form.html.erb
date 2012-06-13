@@ -69,7 +69,7 @@
    $("#save_story_btn").button(); 
    $("#back_btn").button().click( function(e){
     e.preventDefault();
-    document.location.href='/stories'; 
+    document.location.href='/stories?filter=<%=@story.story_set_id.to_s%>'; 
     return false;    
    }); 
   });
@@ -161,14 +161,16 @@
     <% 
       sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
       sets.each do | set |
-        selected = "selected='true'" if set.id == @story.story_set_id 
+        if set.id == @story.story_set_id 
+          selected = "selected='true'" 
+        end
      %>
          <option <%= selected %> value="<%= set.id %>"><%= set.name %></option>
      <%
        end
     %>    
     </select>
-    <%= f.hidden_field :story_set_id, :id=>:storySetId, :value => sets[0].id %>
+    <%= f.hidden_field :story_set_id, :id=>:storySetId, :value => @story.story_set_id %>
     
   </div>
   

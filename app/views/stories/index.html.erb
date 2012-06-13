@@ -1,7 +1,7 @@
 <script>
   $( function() {
     $("#new_button").button().click( function(){
-       document.location.href='/stories/new';
+       document.location.href='/stories/new?filter=<%= @filter %>';
     });
   });
   
@@ -15,7 +15,7 @@
 
 <div style="height=60px; width:100px">&nbsp;</div>
 <button id="new_button" style="float:left">New Answer</button>
-<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Filter By Question:
+<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Show For Question:
 <select id="setSelector" onChange="onFilterSetSelect()" >
 <%
   storySetFilter = @filter
@@ -40,8 +40,14 @@
   end
 %>
 </select>
+<%
+  parentObj = StorySet.find_by_id( @filter )
+  parentId = "__undefined"
+  parentId = parentObj.category_id.to_s unless parentObj == nil
+%>
+<a href="/story_sets?filter=<%= parentId %>">Back To Questions</a>
 </div>
-<div style="height=60px; width:100px">&nbsp;</div>
+<div style="height:110px; width:100px">&nbsp;</div>
 <table>
   <tr>
     <td width="200"><b>Name</b></td>
