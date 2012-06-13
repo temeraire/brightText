@@ -3,7 +3,7 @@
    $("#save_story_set_btn").button(); 
    $("#back_btn").button().click( function(e){
     e.preventDefault();
-    document.location.href="/story_sets?filter=" + @story_set.category_id.to_s; 
+    document.location.href="/story_sets?filter=<%= @story_set.category_id.to_s %>"; 
     return false;    
    });; 
   });

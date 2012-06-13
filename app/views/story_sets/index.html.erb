@@ -70,6 +70,7 @@
     <td style="width:200px"><%= story_set.category %></td>
     <td><%= count %> <%= label %> <a href="/stories?filter=<%= story_set.id %>">(show/edit)</a></td>
     <td><%= link_to 'Edit', edit_story_set_path(story_set) %></td>
+    <td><%= link_to 'Destroy', story_set, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
