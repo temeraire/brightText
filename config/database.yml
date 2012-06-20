@@ -16,7 +16,10 @@ test:
   timeout: 5000
 
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
+  adapter: mysql2  # Rails 3.x uses the mysql2 adapter
+  encoding: utf8
+  database: rails
   pool: 5
-  timeout: 5000
+  username: contextit
+  password: contextit
+  host: localhost
