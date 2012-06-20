@@ -7,7 +7,7 @@ class DomainsController < ApplicationController
     @myDomain = session[:domain]
     
       
-    @domains = Domain.find_by_sql( ["SELECT * from \"domains\" WHERE \"owner_domain_id\" = ?", @myDomain.id ]  )
+    @domains = Domain.find_by_sql( ["SELECT * from `domains` WHERE `owner_domain_id` = ?", @myDomain.id ]  )
   
     puts "number of results: " + @domains.length.to_s
   
