@@ -32,9 +32,9 @@ class BtProxyController < ApplicationController
   def related
     resource = params[:id]
     
-    uri = "http://localhost/contextit/btrails/RelatedStories.xml"
+    #uri = "http://localhost/contextit/btrails/RelatedStories.xml"
     
-    #uri = "http://test.contextit.com/ProcessTemplateRequest.aspx?cmd=getrelatedstories&storyID=" + resource + "&validationKey=1"
+    uri = "http://test.contextit.com/ProcessTemplateRequest.aspx?cmd=getrelatedstories&storyID=" + resource + "&validationKey=1"
     doc = REXML::Document.new(open(uri).read)
     
     stories = [];

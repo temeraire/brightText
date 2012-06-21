@@ -49,6 +49,15 @@ class StoriesController < ApplicationController
       format.xml  { render :xml => @story }
     end
   end
+  
+  # GET /stories/XX/clone
+  def clone
+    @sourceStory = Story.find(params[:id])    
+    @story = Story.new( {:name => @sourceStory.name + " Clone", :descriptor => @sourceStory.descriptor, :story_set_id => @sourceStory.story_set_id, :domain_id => session[:domain].id } )
+    respond_to do |format|
+        format.html { render :action => "new" }
+    end
+  end  
 
   # GET /stories/1/edit
   def edit
