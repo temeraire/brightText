@@ -257,6 +257,7 @@ class Story < ActiveRecord::Base
           story.domain_id = 2
           puts '  *** generated intermediate story ' + story.id.to_s 
         end
+        story.story_set_id = existingSet.id
       end
     end
   end
