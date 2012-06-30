@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 6) do
 
   create_table "bright_text_applications", :force => true do |t|
     t.integer  "domain_id"
@@ -64,6 +64,15 @@ ActiveRecord::Schema.define(:version => 5) do
     t.integer  "user_id"
     t.integer  "category_id"
     t.integer  "rank"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "name"
+    t.integer  "domain_id"
+    t.string   "password"
+    t.string   "nickname"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
