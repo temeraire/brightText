@@ -27,7 +27,7 @@ namespace :migrate do
   
   task :run do
     BrightText::Application.initialize!
-    (170...200).each do |val|
+    (1...1200).each do |val|
       puts '    '
       puts ' *************   MIGRATING STORY SET  ' + val.to_s + " *************"
       
