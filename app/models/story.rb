@@ -250,14 +250,12 @@ class Story < ActiveRecord::Base
     
       queryParams = []
       storyIds.each do | id |
-        story = Story.find_by_di id.to_i
-        while ( story == nil && story.id != id.to_i ) do
-          if ( story == nil )
-            story = Story.new
-            story.save
-            story.domain_id = 2
-            puts '  *** generated intermediate story ' + story.id.to_s 
-          end
+        story = Story.find_by_id id.to_i
+        while ( story == nil || story.id != id.to_i ) do
+          story = Story.new
+          story.save
+          story.domain_id = 2
+          puts '  *** generated intermediate story ' + story.id.to_s 
         end
       end
     end
