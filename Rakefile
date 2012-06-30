@@ -29,9 +29,9 @@ namespace :migrate do
     BrightText::Application.initialize!
     (170...200).each do |val|
       puts '    '
-      puts ' *************   MIGRATING STORY  ' + val.to_s + " *************"
+      puts ' *************   MIGRATING STORY SET  ' + val.to_s + " *************"
       
-      Story.migrate_helper_import( val )
+      #Story.migrate_helper_import( val )
       Story.migrate_helper_related( val )
       sleep(2)
       

@@ -258,6 +258,8 @@ class Story < ActiveRecord::Base
           puts '  *** generated intermediate story ' + story.id.to_s 
         end
         story.story_set_id = existingSet.id
+        puts '  *** asocciated story set id ' + existingStory.story_set_id.to_s + ' with story ' + story.id.to_s    
+        story.save
       end
     end
   end
