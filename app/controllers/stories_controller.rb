@@ -112,4 +112,32 @@ class StoriesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  def legacyxml
+    @story = Story.find(params[:id])
+    
+    #invoke the save proxy to get xml
+    result = REXML::Document.new("<Story/>")      
+    result.root.attributes["id"]   = @story.id
+    result.root.attributes["name"] = @story.name
+    @story.to_xml( result.root )
+    
+    #return the xml
+    render :xml => result 
+  end
+  
+  def clonesxml
+    @story = Story.find(params[:id])
+    setid = @story.story_set_id
+    
+    result = REXML::Document.new("<RelatedStories/>")
+    if ( setid )
+      stories = Story.find_by_sql [ "select id from stories where story_set_id = ? and id <> ?", setid, @story.id ];
+      stories.each do | story |
+        storiesEl = result.root.add_element("StoryId")
+        storiesEl.text = story.id.to_s
+      end
+    end
+    render :xml => result 
+  end
 end
