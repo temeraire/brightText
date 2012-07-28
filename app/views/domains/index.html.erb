@@ -17,14 +17,17 @@
     <td style="width:100px"></td>
     <td style="width:100px"></td>
   </tr>
-<% @domains.each do |domain| %>
+<% @domains.each do |domain|
+     domainStyle = DomainStyle.find_by_domain_id domain.id
+%>
   <tr>
     <td style="width:300px"><%= domain.nickname %></td>
     <td style="width:300px"><%= domain.enabled %></td>
     <td style="width:300px"><%= domain.priveleged %></td>
     <td style="width:300px"><%= domain.self_created %></td>    
     <td style="width:100px"><%= link_to 'Edit', edit_domain_path(domain) %></td>
-    <td style="width:100px"><%= link_to 'Destroy', domain, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td style="width:100px"><%= link_to 'Style', "/domain_styles/" + domainStyle.id.to_s + "/edit" %></td>
+    <td style="width:100px"><%= link_to 'Delete', domain, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>

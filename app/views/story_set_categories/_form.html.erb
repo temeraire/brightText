@@ -38,7 +38,7 @@
   </div>
   
   <div class="field form-field" style="float:left; padding-right:20px;">
-    <div class="form-field-label">Application:</div>
+    <div class="form-field-label"><%= session[:style].app_alias.titleize %>:</div>
     <div class="form-field-value"><select onChange="onApplicationSelect()" id="applicationSelector">
       <%
           selected = "selected='true'" if @story_set_category.application_id == nil
@@ -60,6 +60,6 @@
     
   </div>  
   <div class="actions" style="padding-top:200px">
-    <button style="height:28px; margin-right:420px" id="back_btn">Back</button><%= f.submit :value => 'Save Survey', :id => "save_survey_btn" %>
+    <button style="height:28px; margin-right:420px" id="back_btn">Back</button><%= f.submit :value => 'Save ' + session[:style].group_alias.titleize, :id => "save_survey_btn" %>
   </div>
 <% end %>

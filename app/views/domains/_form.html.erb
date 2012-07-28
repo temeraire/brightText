@@ -1,3 +1,15 @@
+<script>
+  $(function(){
+   $("#save_style_btn").button(); 
+   $("#back_btn").button().click( function(e){
+    e.preventDefault();
+    document.location.href="/domains"; 
+    return false;    
+   });
+  });
+  
+</script>
+
 <%= form_for(@domain) do |f| %>
   <% if @domain.errors.any? %>
     <div id="error_explanation">
@@ -11,56 +23,56 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :nickname %><br />
-    <%= f.text_field :nickname %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :nickname %></div>
+    <div class="form-field-value"><%= f.text_field :nickname %></div>
   </div>
   
-  <div class="field">
-    <%= f.label :name_first %><br />
-    <%= f.text_field :name_first %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :name_first %></div>
+    <div class="form-field-value"><%= f.text_field :name_first %></div>
   </div>
   
-  <div class="field">
-    <%= f.label :name_last %><br />
-    <%= f.text_field :name_last %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :name_last %></div>
+    <div class="form-field-value"><%= f.text_field :name_last %></div>
   </div>
   
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.text_field :email %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :email %></div>
+    <div class="form-field-value"><%= f.text_field :email %></div>
   </div>
   
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :password %></div>
+    <div class="form-field-value"><%= f.password_field :password %></div>
   </div>  
   
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :password_confirmation %></div>
+    <div class="form-field-value"><%= f.password_field :password_confirmation %></div>
   </div>   
   
-  <div class="field">
-    <%= f.label :enabled %><br />
-    <%= f.check_box :enabled %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :enabled %></div>
+    <div class="form-field-value"><%= f.check_box :enabled %></div>
   </div>
   
-  <div class="field">
-    <%= f.label :priveleged %><br />
-    <%= f.check_box :priveleged %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :priveleged %></div>
+    <div class="form-field-value"><%= f.check_box :priveleged %></div>
   </div>
   
-  <div class="field">
-    <%= f.label :self_created %><br />
-    <%= f.check_box :self_created %>
+  <div class="field form-field">
+    <div class="form-field-label"><%= f.label :self_created %></div>
+    <div class="form-field-value"><%= f.check_box :self_created %></div>
   </div>  
   
   
   
-  <div class="actions">
     <%= f.hidden_field :owner_domain_id %>
   
-    <%= f.submit %>
-  </div>
+  <div class="actions" style="padding-top:30px">
+    <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_style_btn", :value => "Save" %>
+  </div>  
 <% end %>

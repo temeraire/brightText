@@ -10,6 +10,7 @@ class SessionController < ApplicationController
       
       if @domain
         session[:domain] = @domain
+        session[:style]  = DomainStyle.find_by_domain_id @domain.id
       
         if @domain.id == 1
           redirect_to "/domains"

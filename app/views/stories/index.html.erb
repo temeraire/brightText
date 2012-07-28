@@ -14,8 +14,8 @@
 </script>
 
 <div style="height=60px; width:100px">&nbsp;</div>
-<button id="new_button" style="float:left">New Answer</button>
-<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Show For Question:
+<button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
+<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
 <select id="setSelector" onChange="onFilterSetSelect()" >
 <%
   storySetFilter = @filter
@@ -45,14 +45,14 @@
   parentId = "__undefined"
   parentId = parentObj.category_id.to_s unless parentObj == nil
 %>
-<a href="/story_sets?filter=<%= parentId %>">Back To Questions</a>
+<a href="/story_sets?filter=<%= parentId %>">Back To <%= session[:style].set_alias.titleize %></a>
 </div>
 <div style="height:110px; width:100px">&nbsp;</div>
 <table>
   <tr>
     <td width="200"><b>Name</b></td>
     <td width="400"><b>Summary</b></td>
-    <td width="200"><b>Question</b></td> 
+    <td width="200"><b><%= session[:style].set_alias.titleize %></b></td> 
     <th></th>
     <th></th>
   </tr>

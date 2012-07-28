@@ -1,6 +1,8 @@
 BrightText::Application.routes.draw do
 
 
+  resources :domain_styles
+
   resources :users
 
   match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story

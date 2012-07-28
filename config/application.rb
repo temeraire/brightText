@@ -4,6 +4,7 @@ require 'rails/all'
 require 'rexml/document'
 require 'rexml/formatters/transitive'
 require 'open-uri'
+require 'active_support/inflector'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.

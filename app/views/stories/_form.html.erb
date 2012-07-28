@@ -152,11 +152,11 @@
 
 <div style="width:700px; height:50px">
 <%= form_for(@story) do |f| %>
-  <div class="field form-field" style="float:left; padding-right:20px;">
+  <div class="field form-field" style="float:left; padding-right:20px; width:700px">
     Name:
     <%= f.text_field :name %>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-    Set:
+    <%= session[:style].set_alias.titleize %>:
     <select onChange="onSetSelect()" id="setSelector">
     <% 
       sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]

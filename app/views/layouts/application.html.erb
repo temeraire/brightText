@@ -3,14 +3,37 @@
 <head>
   <title>BrightText</title>
   
+  
+  
+  
+<%
+  uiTheme = "/stylesheets/jquery-flick/jquery-ui.css"
+    if session[:domain]
+      
+      style = DomainStyle.find_by_domain_id( session[:domain].id )
+      
+      case style.style_id
+        when 1  #default
+          uiTheme = "/stylesheets/jquery-flick/jquery-ui.css"
+        when 2  # blue
+          uiTheme = "/stylesheets/jquery-cupertino/jquery-ui-1.8.22.custom.css"
+        when 3
+          uiTheme = "/stylesheets/jquery-swanky-purse/jquery-ui-1.8.22.custom.css"
+        when 4
+          uiTheme = "/stylesheets/jquery-eggplant/jquery-ui-1.8.22.custom.css"
+        when 5
+          uiTheme = "/stylesheets/jquery-vader/jquery-ui-1.8.22.custom.css"
+      end
+    end
+%>  
 <%
 if request.url.index "/app/"
 %>
-  <link type="text/css" href="/app/stylesheets/jquery-flick/jquery-ui.css" rel="stylesheet" />	
+  <link type="text/css" href="/app<%= uiTheme %>" rel="stylesheet" />	
 <%
 else
 %>
-  <link type="text/css" href="/stylesheets/jquery-flick/jquery-ui.css" rel="stylesheet" />	
+  <link type="text/css" href="<%= uiTheme %>" rel="stylesheet" />	
 <%
 end
 %>
@@ -19,21 +42,23 @@ end
   <%= javascript_include_tag :defaults %>
   
 <%
+  jqueryUiSrc = "/js/jquery/jquery-ui-1.8.22.custom.min.js"
+%>
+  
+<%
 if request.url.index "/app/"
 %>  
   <script src="/app/js/jquery/jquery.json-2.2.min.js"></script>
-  <script src="/app/js/jquery/jquery-ui-1.8.20.custom.min.js"></script>  
+  <script src="/app<%= jqueryUiSrc %>"></script>  
   <script src="/app/js/jquery/jquery.conmenu.js"></script>  
-  
-  
+  <script src="/app/js/jquery/jquery.cookie.js"></script> 
 <%
 else
 %>  
   <script src="/js/jquery/jquery.json-2.2.min.js"></script>
-  <script src="/js/jquery/jquery-ui-1.8.20.custom.min.js"></script>  
-  <script src="/js/jquery/jquery.conmenu.js"></script> 
+  <script src="<%= jqueryUiSrc %>"></script> 
   <script src="/js/jquery/jquery.cookie.js"></script> 
-  
+  <script src="/js/jquery/jquery.conmenu.js"></script>  
 <%
 end
 %>  
@@ -149,10 +174,10 @@ end
     <li><a href="#tab-content">Admin</a></li>
     <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>    
 <% else %>  
-    <li><a href="#tab-content">Applications</a></li>
-    <li><a href="#tab-content">Surveys</a></li>
-    <li><a href="#tab-content">Questions</a></li>
-    <li><a href="#tab-content">Answers</a></li>
+    <li><a href="#tab-content"><%= session[:style].app_alias.pluralize.titleize %></a></li>
+    <li><a href="#tab-content"><%= session[:style].group_alias.pluralize.titleize %></a></li>
+    <li><a href="#tab-content"><%= session[:style].set_alias.pluralize.titleize %></a></li>
+    <li><a href="#tab-content"><%= session[:style].story_alias.pluralize.titleize %></a></li>
     <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>
     
 <% end %>      

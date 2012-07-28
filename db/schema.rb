@@ -10,12 +10,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "bright_text_applications", :force => true do |t|
     t.integer  "domain_id"
     t.integer  "user_id"
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "domain_styles", :force => true do |t|
+    t.integer  "domain_id"
+    t.integer  "style_id"
+    t.string   "app_alias"
+    t.string   "group_alias"
+    t.string   "set_alias"
+    t.string   "story_alias"
+    t.string   "logo"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
