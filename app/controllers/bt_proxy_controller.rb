@@ -55,27 +55,27 @@ class BtProxyController < ApplicationController
   end 
   
   
-  def xmlToJson( doc )
+  def xmlToJson( root )
     
     story = {}
     data = [];
     
     story["meta"] = meta = {}
     
-    story["meta"]["id"]         = doc.root.attributes["id"];
+    story["meta"]["id"]         = root.attributes["id"];
     
-    if doc.root.attributes["templateID"] != nil   # only non-null in clone stories
-      story["meta"]["templateId"] = doc.root.attributes["templateID"];
+    if root.attributes["templateID"] != nil   # only non-null in clone stories
+      story["meta"]["templateId"] = root.attributes["templateID"];
     end
     
-    meta["authorId"  ]  = doc.root.get_elements("/Story/MetaData/Author")[0].attributes["id"];
-    meta["authorName"]  = doc.root.get_elements("/Story/MetaData/Author/Name")[0].text;
-    meta["title"     ]  = doc.root.get_elements("/Story/MetaData/Title")[0].text;
-    meta["created"   ]  = doc.root.get_elements("/Story/MetaData/Date/Created")[0].text;
-    meta["modified"  ]  = doc.root.get_elements("/Story/MetaData/Date/Modified")[0].text;
+    meta["authorId"  ]  = root.get_elements("MetaData/Author")[0].attributes["id"] unless root.get_elements("MetaData/Author"       ).count == 0;
+    meta["authorName"]  = root.get_elements("MetaData/Author/Name")[0].text        unless root.get_elements("MetaData/Author/Name"  ).count == 0;
+    meta["title"     ]  = root.get_elements("MetaData/Title")[0].text              unless root.get_elements("MetaData/Title"        ).count == 0;
+    meta["created"   ]  = root.get_elements("MetaData/Date/Created")[0].text       unless root.get_elements("MetaData/Date/Created" ).count == 0;
+    meta["modified"  ]  = root.get_elements("MetaData/Date/Modified")[0].text      unless root.get_elements("MetaData/Date/Modified").count == 0;
     
     
-    contentElement = doc.root.get_elements( "//Content" )[0];
+    contentElement = root.get_elements( "Content" )[0];
     
     contentElement.elements.each do |element|
       if element.name == "P"
@@ -89,7 +89,7 @@ class BtProxyController < ApplicationController
     
     
     piles = {}
-    doc.root.get_elements( "//Pile").each do | pileElement |
+    root.get_elements( "PileContainer/Pile").each do | pileElement |
       pile = {}
       pileElements = {}
       pile["id"] = pileElement.attributes["id"]
@@ -113,7 +113,7 @@ class BtProxyController < ApplicationController
     end
     
     storyDimensions = []
-    doc.root.get_elements( "//StoryDimension").each do | dimensionElement |
+    root.get_elements( "StoryDimensionContainer/StoryDimension").each do | dimensionElement |
       storyDimension = {}
       choiceSets = []
       storyDimension["name"] = dimensionElement.attributes["name"];
