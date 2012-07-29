@@ -76,10 +76,10 @@ class DomainsController < ApplicationController
   # POST /domains.xml
   def create
     @domain = Domain.new(params[:domain])
-   
+    
     
     respond_to do |format|
-      if @domain.save
+      if @domain.save && DomainStyle.new({:domain_id => @domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => "/static/default_logo.png" } ).save
         format.html { redirect_to(domains_url) }
         format.xml  { render :xml => @domain, :status => :created, :location => @domain }
       else
