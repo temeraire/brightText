@@ -11,13 +11,6 @@ class CreateDomainStyles < ActiveRecord::Migration
 
       t.timestamps
     end
-    
-    Domain.all.each do | domain |
-      puts " Creating style for domain " + domain.nickname
-      style = DomainStyle.new( {:domain_id => domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => "/static/default_logo.png" } )
-      style.save
-    end
-    
   end
 
   def self.down

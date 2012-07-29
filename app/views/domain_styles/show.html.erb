@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Domain:</b>
+  <%= @domain_style.domain_id %>
+</p>
+
+<p>
+  <b>Style:</b>
+  <%= @domain_style.style_id %>
+</p>
+
+<p>
+  <b>App button:</b>
+  <%= @domain_style.app_button %>
+</p>
+
+<p>
+  <b>Groups button:</b>
+  <%= @domain_style.groups_button %>
+</p>
+
+<p>
+  <b>Sets button:</b>
+  <%= @domain_style.sets_button %>
+</p>
+
+<p>
+  <b>Stories button:</b>
+  <%= @domain_style.stories_button %>
+</p>
+
+
+<%= link_to 'Edit', edit_domain_style_path(@domain_style) %> |
+<%= link_to 'Back', domain_styles_path %>

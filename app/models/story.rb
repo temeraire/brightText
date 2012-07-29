@@ -5,7 +5,7 @@ class Story < ActiveRecord::Base
     return setObj[0].name unless setObj == nil || setObj.count < 1
   end
 
-  def to_xml( storyEl )
+  def toXml( storyEl )
     story = JSON.parse( descriptor )
 
     storyEl.attributes["id"] = id.to_s;

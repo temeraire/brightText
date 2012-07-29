@@ -1,0 +1,2 @@
+module DomainStylesHelper
+end

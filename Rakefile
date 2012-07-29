@@ -8,7 +8,18 @@ BrightText::Application.load_tasks
 
 namespace :migrate do
 
-
+  task :style do
+    BrightText::Application.initialize!
+     
+    Domain.all.each do | domain |
+      style = DomainStyle.find_by_domain_id domain.id
+      if ( style == nil )
+        puts " Creating style for domain " + domain.nickname
+        style = DomainStyle.new( {:domain_id => domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => "/static/default_logo.png" } )
+        style.save
+      end
+    end     
+  end
 
   task :single, [:story_id] do |t, args|
     # request a story
