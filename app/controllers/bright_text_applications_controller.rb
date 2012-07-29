@@ -58,7 +58,7 @@ class BrightTextApplicationsController < ApplicationController
               storyEl = storiesEl.add_element("Story")      
               storyEl.attributes["id"]   = storyEntry.id
               storyEl.attributes["name"] = storyEntry.name
-              storyEntry.to_xml( storyEl )
+              storyEntry.toXml( storyEl )
               # puke out the xml-ified story data
             end
           end
