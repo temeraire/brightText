@@ -39,7 +39,7 @@ class BrightTextApplicationsController < ApplicationController
 =end      
       
         result = REXML::Document.new("<Application/>")
-        result.attributes["id"] = @bt_application.id.to_s
+        result.root.attributes["id"] = @bt_application.id.to_s
         categoriesEl = result.root.add_element("StorySetCategories")
         categoryObjects = StorySetCategory.find_by_sql ["select * from story_set_categories where application_id = ?", @bt_application.id ]
         categoryObjects.each do | category |

@@ -1,6 +1,8 @@
 BrightText::Application.routes.draw do
 
 
+  resources :app_submissions
+
   resources :domain_styles
 
   resources :users

@@ -120,7 +120,7 @@ class StoriesController < ApplicationController
     result = REXML::Document.new("<Story/>")      
     result.root.attributes["id"]   = @story.id
     result.root.attributes["name"] = @story.name
-    @story.to_xml( result.root )
+    @story.toXml( result.root )
     
     #return the xml
     render :xml => result 
