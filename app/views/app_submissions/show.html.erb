@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Bright text application:</b>
+  <%= @app_submission.bright_text_application_id %>
+</p>
+
+<p>
+  <b>Domain:</b>
+  <%= @app_submission.domain_id %>
+</p>
+
+<p>
+  <b>Story set values:</b>
+  <%= @app_submission.story_set_values %>
+</p>
+
+<p>
+  <b>Story set digests:</b>
+  <%= @app_submission.story_set_digests %>
+</p>
+
+
+<%= link_to 'Edit', edit_app_submission_path(@app_submission) %> |
+<%= link_to 'Back', app_submissions_path %>

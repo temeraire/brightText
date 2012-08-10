@@ -15,6 +15,7 @@ BrightText::Application.routes.draw do
   match 'stories/:id/legacy'  => 'stories#legacyxml'
   match 'stories/:id/clones'  => 'stories#clonesxml'
   
+  match 'applications/:id/submitxml'  => 'app_submissions#submit'
   
   
   

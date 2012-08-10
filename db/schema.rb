@@ -10,7 +10,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 7) do
+ActiveRecord::Schema.define(:version => 8) do
+
+  create_table "app_submissions", :force => true do |t|
+    t.integer  "bright_text_application_id"
+    t.integer  "domain_id"
+    t.text     "story_set_values"
+    t.text     "story_set_digests"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "descriptor"
+  end
 
   create_table "bright_text_applications", :force => true do |t|
     t.integer  "domain_id"
