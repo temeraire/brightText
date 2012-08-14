@@ -68,6 +68,38 @@ class BrightTextApplicationsController < ApplicationController
       }
     end
   end
+  
+  def result
+    appid = params[:id]
+    
+    submissions = AppSubmission.find_by_sql( ["select * from app_submissions where bright_text_application_id = ?", appid ] )
+    
+    stories = []
+    result  = { :app => appid, :submissions => stories }
+    
+    submissions.each do | submission |
+      
+      answers = []
+      story = { :created => submission.created_at.to_s, :answers => answers }
+      
+      values  = JSON.parse( submission.story_set_values )
+      digests = JSON.parse( submission.story_set_digests )
+      
+      values.each_with_index do | value, index | 
+        digest = digests[ index ]
+        value[:digest] = digest["digest"]
+        answers << value
+      end
+      
+      stories << story
+      
+    end
+    
+    render :js => result.to_json
+    headers['content-type']='text/javascript'
+    
+    
+  end
 
   # GET /applications/new
   # GET /applications/new.xml

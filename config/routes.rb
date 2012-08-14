@@ -12,11 +12,12 @@ BrightText::Application.routes.draw do
   match 'story/save'        => 'bt_proxy#save'
   match 'stories/:id/clone'  => 'stories#clone'
   
+  
   match 'stories/:id/legacy'  => 'stories#legacyxml'
   match 'stories/:id/clones'  => 'stories#clonesxml'
   
   match 'applications/:id/submitxml'  => 'app_submissions#submit'
-  
+  match 'applications/:id/results'  => 'bright_text_applications#result'
   
   
   match "/session/:id" => "session#create"   
