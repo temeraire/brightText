@@ -12,10 +12,10 @@
       
       <% 
       @questions.each_with_index do | question, index |
-        digest = @wordData [index]["digest"]
-        tone   = @numData  [index]["value"]
+        digest = @wordData [index][:digest]
+        tone   = @numData  [index][:value]
       %>
-        <tr><td><%= question %></td><td><%= tone %></td><td><%= digest %></td></td>
+        <tr><td><%= question %></td><td><%= tone %></td><td><%= digest %></td></tr>
       <%
       end
       %>

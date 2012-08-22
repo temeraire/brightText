@@ -124,7 +124,7 @@ class AppSubmissionsController < ApplicationController
     
     
     
-    SurveyMailer.survey_result_email( questions, values, digests )
+    SurveyMailer.survey_result_email( questions, values, digests ).deliver
     
     render :js => { :submission_id => @app_submission.id }.to_json
     headers['content-type']='text/javascript';    
