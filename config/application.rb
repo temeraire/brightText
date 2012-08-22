@@ -1,4 +1,5 @@
 require File.expand_path('../boot', __FILE__)
+#require 'tlsmail'
 
 require 'rails/all'
 require 'rexml/document'
@@ -42,5 +43,6 @@ module BrightText
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
   end
 end

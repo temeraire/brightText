@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>Survey Submitted</h1>
+    <br/>
+    <br/>
+    <table>
+      <tr><td>QUESTION</td><td>VALUE</td><td>ANSWER</td></tr>
+      
+      <% 
+      @questions.each_with_index do | question, index |
+        digest = @wordData [index]["digest"]
+        tone   = @numData  [index]["value"]
+      %>
+        <tr><td><%= question %></td><td><%= tone %></td><td><%= digest %></td></td>
+      <%
+      end
+      %>
+    </table>  
+  </body>
+</html>

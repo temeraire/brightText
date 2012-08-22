@@ -103,6 +103,7 @@ class AppSubmissionsController < ApplicationController
     
     values = []
     digests = []
+    questions = []
     
     doc.root.each_element( "//StorySet" ) do | storySet |  
       storySetId  = storySet.attributes["id"].to_i
@@ -112,6 +113,7 @@ class AppSubmissionsController < ApplicationController
       
       values << { :id => storySetId, :value => sliderValue, :range => sliderRange }
       digests << { :id => storySetId, :digest => digest }
+      questions << StorySet.find( storySetId ).name 
       
     end 
     
@@ -119,6 +121,10 @@ class AppSubmissionsController < ApplicationController
     @app_submission.story_set_digests = digests.to_json
     
     @app_submission.save
+    
+    
+    
+    SurveyMailer.survey_result_email( questions, values, digests )
     
     render :js => { :submission_id => @app_submission.id }.to_json
     headers['content-type']='text/javascript';    
