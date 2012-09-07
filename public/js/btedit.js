@@ -155,6 +155,32 @@ var BrightTextEditor = function( divId, editable ){
     self._piles           = data["piles"]; 
     self._storyDimensions = data["storyDimensions"];
   
+    for ( var pile in self._piles ){
+      var pileMeta = self._piles[ pile ];
+      var id = pileMeta["id"];
+      _modelFactory.recordUsedId( id );
+      
+      for ( var pileElement in pileMeta["elements"] ){
+        var pileElementMeta = pileMeta["elements"][ pileElement ];
+        id = pileElementMeta["id"];
+        _modelFactory.recordUsedId( id );   
+      }
+    }
+    
+    for ( var dimension in self._storyDimensions ){
+      var dimensionMeta = self._storyDimensions[ dimension ];
+      id = dimensionMeta[ "id" ];
+      _modelFactory.recordUsedId( id );
+      
+      for ( var choiceSet in dimensionMeta["choiceSets"] ){
+        var choiceSetMeta = dimensionMeta["choiceSets"][ choiceSet ];
+        id = choiceSetMeta[ "id" ];
+        _modelFactory.recordUsedId( id );
+      }
+    }
+    
+  
+  
     self.renderStory();
     
     if ( self._btChangeCallback ) self._btChangeCallback();
@@ -840,6 +866,13 @@ var ObjectFactory = function(){
 
   this.generateId = function(){
     return this._idCounter--;
+  }
+  
+  this.recordUsedId = function( val ){
+    if ( val < this._idCounter ){
+      this._idCounter = val - 1;
+      log("ObjectFactory::updated id counter: " + this._idCounter );
+    }
   }
 }
 

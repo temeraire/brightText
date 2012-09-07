@@ -72,7 +72,8 @@
      %></td>
     <td style="width:100px"><%= story.set %></td>
     <td><%= link_to 'Edit', edit_story_path(story) %></td>
-    <td><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>    
+    <td><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
+    <td><%= link_to 'Destroy', story, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
