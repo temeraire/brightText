@@ -5,6 +5,7 @@ class CreateAppSubmissions < ActiveRecord::Migration
       t.integer :domain_id
       t.text :story_set_values
       t.text :story_set_digests
+      t.text :submission_metadata
 
       t.timestamps
     end

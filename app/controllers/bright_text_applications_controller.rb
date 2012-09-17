@@ -80,10 +80,14 @@ class BrightTextApplicationsController < ApplicationController
     submissions.each do | submission |
       
       answers = []
-      story = { :created => submission.created_at.to_s, :answers => answers }
+      
+      meta = { :company => "" } # default for older apps
       
       values  = JSON.parse( submission.story_set_values )
       digests = JSON.parse( submission.story_set_digests )
+      meta    = JSON.parse( submission.submission_metadata ) unless submission.submission_metadata == nil
+      
+      story = { :created => submission.created_at.to_s, :company => meta["company"], :answers => answers }
       
       values.each_with_index do | value, index | 
         digest = digests[ index ]
@@ -95,10 +99,26 @@ class BrightTextApplicationsController < ApplicationController
       
     end
     
-    render :js => result.to_json
-    headers['content-type']='text/javascript'
-    
-    
+    logger.info " request format " + request.format.to_s
+    case request.format.to_s
+    when 'text/csv'
+      rows = []
+      stories.each do | story |
+        cols = []
+        cols << story[:created]
+        cols << story[:company]
+        story[:answers].each do | answer |
+          cols << answer["value"]
+        end
+        rows << cols.join(",")
+      end
+      send_data rows.join("\n")
+      headers['content-type']='text/comma-separated-values'
+      
+    when 'text/javascript'
+      render :js => result.to_json
+      headers['content-type']='text/javascript'    
+    end
   end
 
   # GET /applications/new

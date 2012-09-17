@@ -117,14 +117,18 @@ class AppSubmissionsController < ApplicationController
       
     end 
     
-    @app_submission.story_set_values  = values .to_json
-    @app_submission.story_set_digests = digests.to_json
+    companyEl = doc.root.get_elements("//SurveyResultMeta/Company");
+    submissionMeta = { :company => companyEl[0].text }
+    
+    @app_submission.story_set_values    = values .to_json
+    @app_submission.story_set_digests   = digests.to_json
+    @app_submission.submission_metadata = submissionMeta.to_json
     
     @app_submission.save
     
     
     
-    SurveyMailer.survey_result_email( questions, values, digests ).deliver
+    SurveyMailer.survey_result_email( questions, values, digests, submissionMeta ).deliver
     
     render :js => { :submission_id => @app_submission.id }.to_json
     headers['content-type']='text/javascript';    

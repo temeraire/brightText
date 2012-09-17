@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "domain_id"
     t.text     "story_set_values"
     t.text     "story_set_digests"
+    t.text     "submission_metadata"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "descriptor"
