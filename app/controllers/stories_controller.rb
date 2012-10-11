@@ -33,7 +33,7 @@ class StoriesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @story }
-      format.js   { render :js => @story.descriptor }
+      format.js   { render :js => request[:callback] + "(" + @story.descriptor + ")" }
     end
   end
 

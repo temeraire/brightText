@@ -75,7 +75,7 @@
       {
         var scriptTag = document.createElement("script");
         scriptTag.id = "story_data";
-        scriptTag.src = "/proxy/" + id + "/story?callback=loadStoryCallback";
+        scriptTag.src = "/stories/" + id + ".js?callback=loadStoryCallback";
         head = document.getElementsByTagName("head").item(0);  
         head.appendChild( scriptTag );
       }
