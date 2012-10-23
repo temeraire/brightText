@@ -98,7 +98,7 @@ class StorySetCategoriesController < ApplicationController
   # DELETE /story_categories/1
   # DELETE /story_categories/1.xml
   def destroy
-    @story_set_category = StoryCategory.find(params[:id])
+    @story_set_category = StorySetCategory.find(params[:id])
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     @story_set_category.destroy
 
