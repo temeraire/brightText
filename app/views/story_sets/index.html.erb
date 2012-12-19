@@ -53,9 +53,9 @@
     <td style="width:50px"><b>Rank</td>
     <td style="width:200px"><b>Name</td>
     <td style="width:200px"><b><%= session[:style].set_alias.titleize %></td>
-    <td style="width:200px"><b><%= session[:style].story_alias.pluralize.titleize %></b></td>
-    <td></td>
-    <td></td>
+    <td><b>Sets</b></td>
+    <td style="width:150px"></td>   
+    <td><b><%= session[:style].story_alias.pluralize.titleize %></b></td>
   </tr>
 
 <% @story_sets.each do |story_set|
@@ -68,9 +68,9 @@
     <td style="width:50px"><%= story_set.rank %></td>  
     <td style="width:250px"><%= story_set.name %></td>
     <td style="width:200px"><%= story_set.category %></td>
-    <td><%= count %> <%= label %> <a href="/stories?filter=<%= story_set.id %>">(show/edit)</a></td>
     <td><%= link_to 'Edit', edit_story_set_path(story_set) %></td>
     <td><%= link_to 'Destroy', story_set, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= count %> <%= label %> <a href="/stories?filter=<%= story_set.id %>">(show/edit)</a></td>  
   </tr>
 <% end %>
 </table>
