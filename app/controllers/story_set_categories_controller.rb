@@ -99,11 +99,15 @@ class StorySetCategoriesController < ApplicationController
   # DELETE /story_categories/1.xml
   def destroy
     @story_set_category = StorySetCategory.find(params[:id])
+    @filter = request[:filter]
+    if ( @filter == nil )
+      @filter = ""
+    end
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+      format.html { redirect_to('/story_set_categories?filter=' + @filter) }
       format.xml  { head :ok }
     end
   end
