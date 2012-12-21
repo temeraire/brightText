@@ -5,20 +5,35 @@ class StoriesController < ApplicationController
     @filter = request[:filter]
     @filter = "" if @filter == nil  
     
-    queryAndParts = ["domain_id = ?"]
-    queryParams   = [session[:domain].id ]
+    #queryAndParts = ["domain_id = ?"]
+    #queryParams   = [session[:domain].id ]
+    story_set_id = true
     
     if ( @filter.empty? != true  && @filter != "__none")
       if @filter == "__unassigned"
-        queryAndParts << "story_set_id IS NULL"
+        #queryAndParts << "story_set_id IS NULL"
+        story_set_id = nil
       else 
-        queryAndParts << "story_set_id = ?"
-        queryParams   << @filter
+        #queryAndParts << "story_set_id = ?"
+        story_set_id   = @filter
       end
     end
     
-    @stories = Story.find_by_sql ["select * from stories where " + queryAndParts.join(" AND "), queryParams].flatten
-    @story_sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
+    if(params[:q].blank?)
+      @stories = Story.where(
+        {:domain_id => session[:domain].id}.merge(
+          ( @filter.empty? != true  && @filter != "__none")? {:story_set_id => story_set_id} : {}
+        )
+      )
+      @highlighted_phreses = ""
+    else
+      @stories = Story.search_for(params[:q])
+      @highlighted_phreses = params[:q].split()
+    end
+    
+    @story_sets = StorySet.where(:domain_id => session[:domain].id)
+    #@stories = Story.find_by_sql ["select * from stories where " + queryAndParts.join(" AND "), queryParams].flatten
+    #@story_sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stories }

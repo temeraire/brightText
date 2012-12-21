@@ -40,12 +40,21 @@
   end
 %>
 </select>
+
+
+
 <%
   parentObj = StorySet.find_by_id( @filter )
   parentId = "__undefined"
   parentId = parentObj.category_id.to_s unless parentObj == nil
 %>
 <a href="/story_sets?filter=<%= parentId %>">Back To <%= session[:style].set_alias.titleize %></a>
+</div>
+<div style="margin-right: 100px; float: right;">
+	<%= form_tag(stories_path, :method => :get) do %>
+		<%= text_field_tag :q %>
+		<%= submit_tag 'Search' %>
+	<% end %>
 </div>
 <div style="height:110px; width:100px">&nbsp;</div>
 <table>
@@ -59,7 +68,7 @@
 
 <% @stories.each do |story| %>
   <tr>
-    <td style="width:100px"><%= story.name %></td>
+    <td style="width:100px"><%= highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>') %></td>
     <td style="width:300px"><%= 
       if ( story.description )
         value = story.description[0, 120]
@@ -69,6 +78,7 @@
           value
         end
       end
+      highlight(value, @highlighted_phreses, :highlighter=>'<b>\1</b>')
      %></td>
     <td style="width:100px"><%= story.set %></td>
     <td><%= link_to 'Edit', edit_story_path(story) %></td>

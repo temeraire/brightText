@@ -1,5 +1,8 @@
 class Story < ActiveRecord::Base
 
+  scoped_search :on => :name
+  scoped_search :on => :description
+  
   def set
     setObj = StorySet.find_by_sql [ "select * from story_sets where id = ?", story_set_id ]
     return setObj[0].name unless setObj == nil || setObj.count < 1
