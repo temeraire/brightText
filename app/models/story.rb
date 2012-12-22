@@ -1,5 +1,7 @@
 class Story < ActiveRecord::Base
 
+  belongs_to :story_set
+  
   scoped_search :on => :name
   scoped_search :on => :description
   

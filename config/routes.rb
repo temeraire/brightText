@@ -24,7 +24,14 @@ BrightText::Application.routes.draw do
   
 
   resources :domains
-  resources :stories 
+  
+  get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
+  
+  resources :stories do
+    collection do
+      post :update_stories_rank
+    end
+  end
   resources :story_sets
   resources :story_set_categories
   resources :bright_text_applications

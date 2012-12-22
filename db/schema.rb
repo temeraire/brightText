@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 20121222083500) do
 
   create_table "app_submissions", :force => true do |t|
     t.integer  "bright_text_application_id"
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "user_id"
     t.integer  "story_set_id"
     t.text     "descriptor"
+    t.integer  "rank"
   end
 
   create_table "story_set_categories", :force => true do |t|

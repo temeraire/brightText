@@ -19,7 +19,7 @@ gem 'scoped_search'
 # gem 'capistrano'
 
 # To use debugger
-# gem 'ruby-debug'
+# gem 'debugger'
 
 # Bundle the extra gems:
 # gem 'bj'

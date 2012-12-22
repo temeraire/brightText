@@ -8,6 +8,7 @@ class StoriesController < ApplicationController
     #queryAndParts = ["domain_id = ?"]
     #queryParams   = [session[:domain].id ]
     story_set_id = true
+    @highlighted_phreses = params[:q]
     
     if ( @filter.empty? != true  && @filter != "__none")
       if @filter == "__unassigned"
@@ -24,8 +25,8 @@ class StoriesController < ApplicationController
         {:domain_id => session[:domain].id}.merge(
           ( @filter.empty? != true  && @filter != "__none")? {:story_set_id => story_set_id} : {}
         )
-      )
-      @highlighted_phreses = ""
+      ).order(( @filter.empty? != true  && @filter != "__none")? "rank" : nil)
+      
     else
       @stories = Story.search_for(params[:q])
       @highlighted_phreses = params[:q].split()
@@ -159,5 +160,21 @@ class StoriesController < ApplicationController
       end
     end
     render :xml => result 
+  end
+  
+  def reorder_stories_rank
+    if( params[:story_set_id].blank? )
+      redirect_to stories_path     
+    elsif( params[:story_set_id] ==  "__unassigned")
+      @stories = Story.where("story_set_id IS NULL").order(:rank)
+    else
+      @stories = Story.where(:story_set_id => params[:story_set_id]).order(:rank)
+    end
+  end
+  
+  def update_stories_rank
+    p params.to_yaml
+    @stories = Story.update(params[:stories].keys, params[:stories].values)    
+    redirect_to stories_path(:filter => params[:filter])
   end
 end

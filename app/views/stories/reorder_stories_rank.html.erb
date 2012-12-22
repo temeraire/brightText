@@ -1,0 +1,75 @@
+<script>
+  $( function() {  	
+  	$( "#sortable" ).sortable({
+  		cursor: 'move',
+  		items: "tr:not(.fixed_row)"	
+  	});
+  	$( "#sortable" ).disableSelection();
+  });
+  
+
+
+  function update_stories_order(){
+  	$(".sortable_row_cells input:hidden").each(function(i,v){  	
+		$(this).val(i+1);
+		//console.log($(this)); 
+	}); 
+	$("#reorder_stories_rank").submit();
+  } 
+</script>
+
+<style>
+	.sortable_row_cells{   
+	    background: none repeat scroll 0 0 #F3F2F1;
+	    border-bottom: 1px solid #FFFFFF;
+	    border-top: 1px solid transparent;
+	    color: #666699;
+	    padding: 8px 8px 8px 0;
+	}
+	.sortable_column_header{   
+	    background: none repeat scroll 0 0 #DFDFDF;
+	    border-bottom: 1px solid #FFFFFF;
+	    border-top: 1px solid transparent;
+	    color: #666699;
+	    padding: 8px 8px 8px 0;
+	}
+</style>
+<div style="height=60px; width:100px">&nbsp;</div>
+
+<%= form_tag update_stories_rank_stories_path, :id=> "reorder_stories_rank" do %>
+	<%= hidden_field_tag :filter, params[:story_set_id]%>
+	<table id="stories_table" cellspacing="0">
+		<tbody id="sortable">
+		  <tr class="fixed_row" >
+		    <td class="sortable_column_header" width="200"><b>Name</b></td>
+		    <td class="sortable_column_header" width="400"><b>Summary</b></td>
+		    <td class="sortable_column_header" width="200"><b>Rank</b>
+		    <td class="sortable_column_header" width="200"><b><%= session[:style].set_alias.titleize %></b></td> 
+
+		  </tr>
+			
+			<% @stories.each do |story| %>
+			  <tr class="stories_info_row">
+			    <td class="sortable_row_cells" style="width:100px"><%= (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>') %></td>
+			    <td class="sortable_row_cells" style="width:300px">
+			    	<%= highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>') %>
+			     	<%= fields_for "stories[]",  story do |f| %>
+			     		<% f.hidden_field :rank %>
+			     	<% end %>
+			    </td>
+			    <td class="sortable_row_cells"><%= story.rank %></td>
+			    <td class="sortable_row_cells" style="width:100px"><%= story.set %></td>			    
+			  </tr>
+			  
+			<% end %>
+			<tr class="fixed_row">
+			  	<td colspan="2">
+			  		<button onclick="window.location.assign('<%= stories_path(:filter => params[:story_set_id] )%>'); return false;">Cancel Reordering</button>
+			  	</td>
+			  	<td>
+			  		<button onclick="update_stories_order(); return false;">Update order</button>
+			  	</td>
+			 </tr>
+		</tbody>
+	</table>
+<% end %>

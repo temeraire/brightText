@@ -1,4 +1,6 @@
 class StorySet < ActiveRecord::Base
+  has_many :stories
+  
   def category
     return "-- unassigned --" if ( category_id == nil ) 
     
