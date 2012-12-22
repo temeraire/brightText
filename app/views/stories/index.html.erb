@@ -64,7 +64,12 @@
     <td width="200"><b><%= session[:style].set_alias.titleize %></b></td> 
     <th></th>
     <th></th>
+    <th></th>
+    <% if !storySetFilter.empty? %>
+      <td><b>Rank</b></td>
+    <% end %>
   </tr>
+
 
 <% @stories.each do |story| %>
   <tr>
@@ -83,7 +88,16 @@
     <td style="width:100px"><%= story.set %></td>
     <td><%= link_to 'Edit', edit_story_path(story) %></td>
     <td><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
-    <td><%= link_to 'Destroy', story, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td width="100"><%= link_to 'Destroy', story, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td>
+      <% if !storySetFilter.empty? %>
+        <%= form_tag '/story/rank', :story => story, :remote => true do %>
+          <%= hidden_field :story, :id, :value => story.id %>
+          <%= text_field :story, :rank, :placeholder => story.rank, :style =>  "width: 50px; float: left" %>
+          <%= submit_tag "OK" %>
+        <% end %>
+      <% end %>
+    </td>
   </tr>
 <% end %>
 </table>

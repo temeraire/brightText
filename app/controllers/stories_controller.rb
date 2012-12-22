@@ -24,7 +24,7 @@ class StoriesController < ApplicationController
         {:domain_id => session[:domain].id}.merge(
           ( @filter.empty? != true  && @filter != "__none")? {:story_set_id => story_set_id} : {}
         )
-      )
+      ).order :rank
       @highlighted_phreses = ""
     else
       @stories = Story.search_for(params[:q])
@@ -86,6 +86,7 @@ class StoriesController < ApplicationController
   def create
     @story = Story.new(params[:story])
     @story.domain_id = session[:domain].id
+    @story.rank = 0
     
     respond_to do |format|
       if @story.save
@@ -131,6 +132,12 @@ class StoriesController < ApplicationController
       format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
     end
+  end
+
+  def rank
+    @story = Story.find(params[:story][:id])
+    @story.rank =  params[:story][:rank]
+    @story.save!
   end
   
   def legacyxml

@@ -22,6 +22,7 @@ BrightText::Application.routes.draw do
   
   match "/session/:id" => "session#create"   
   
+  match "/story/rank" => "stories#rank"
 
   resources :domains
   resources :stories 
