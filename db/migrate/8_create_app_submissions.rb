@@ -6,10 +6,11 @@ class CreateAppSubmissions < ActiveRecord::Migration
       t.text :story_set_values
       t.text :story_set_digests
       t.text :submission_metadata
+      t.string :descriptor
 
       t.timestamps
     end
-    execute 'ALTER TABLE app_submissions ADD COLUMN descriptor MEDIUMTEXT'
+    #execute 'ALTER TABLE app_submissions ADD COLUMN descriptor MEDIUMTEXT'
   end
 
   def self.down
