@@ -16,6 +16,9 @@ class Story < ActiveRecord::Base
     storyEl.attributes["id"] = id.to_s;
     content = story["story"]
     
+    rankEl = storyEl.add_element("Rank")
+    rankEl.text = rank.blank? ? "0" : rank.to_s
+    
     puts content.class
     
     

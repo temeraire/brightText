@@ -53,11 +53,11 @@ class BrightTextApplicationsController < ApplicationController
             storySetEl.attributes["id"]   = storySet.id
             storySetEl.attributes["name"] = storySet.name
             storiesEl = storySetEl.add_element("Stories")
-            storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ?", storySet.id ]
+            storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ? order by rank", storySet.id ]
             storyEntries.each do | storyEntry |
               storyEl = storiesEl.add_element("Story")      
               storyEl.attributes["id"]   = storyEntry.id
-              storyEl.attributes["name"] = storyEntry.name
+              storyEl.attributes["name"] = storyEntry.name              
               storyEntry.toXml( storyEl )
               # puke out the xml-ified story data
             end

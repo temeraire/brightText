@@ -50,9 +50,9 @@
 			
 			<% @stories.each do |story| %>
 			  <tr class="stories_info_row">
-			    <td class="sortable_row_cells" style="width:100px"><%= (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>') %></td>
+			    <td class="sortable_row_cells" style="width:100px"><%= story.name %></td>
 			    <td class="sortable_row_cells" style="width:300px">
-			    	<%= highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>') %>
+			    	<%= truncate(story.description, :length => 120) %>
 			     	<%= fields_for "stories[]",  story do |f| %>
 			     		<% f.hidden_field :rank %>
 			     	<% end %>
