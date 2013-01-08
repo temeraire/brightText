@@ -6,7 +6,7 @@ class CreateAppSubmissions < ActiveRecord::Migration
       t.text :story_set_values
       t.text :story_set_digests
       t.text :submission_metadata
-      t.text :descriptor, :limit => 16777215
+      t.text :descriptor, :limit => 10485760
       t.timestamps
     end
     #execute 'ALTER TABLE app_submissions ADD COLUMN descriptor MEDIUMTEXT'

@@ -7,7 +7,7 @@ class CreateStories < ActiveRecord::Migration
       t.integer     :domain_id
       t.integer     :user_id
       t.integer     :story_set_id
-      t.text        :description, :limit => 16777215
+      t.text        :description, :limit => 10485760
     end
     #execute 'ALTER TABLE stories ADD COLUMN descriptor MEDIUMTEXT'
     
