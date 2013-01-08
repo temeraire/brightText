@@ -7,9 +7,9 @@ gem 'rake', '0.8.7'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2'
-gem 'sqlite3-ruby', :require => 'sqlite3'
-#gem 'pg'
+#gem 'mysql2'
+#gem 'sqlite3-ruby', :require => 'sqlite3'
+gem 'pg'
 gem 'jquery-rails'
 
 gem 'scoped_search'
