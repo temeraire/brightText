@@ -50,7 +50,7 @@
 <% if(!storySetFilter.empty?) %>
 	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder stories rank</button>	
 <% end %>
-<a href="/story_sets?filter=<%= parentId %>">Back To <%= session[:style].set_alias.titleize %></a>
+<!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
 </div>
 <div style="margin-right: 100px; float: right;">
 	<%= form_tag(stories_path, :method => :get) do %>
