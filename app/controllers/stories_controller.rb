@@ -3,19 +3,13 @@ class StoriesController < ApplicationController
   # GET /stories.xml
   def index
     @filter = request[:filter]
-    @filter = "" if @filter == nil  
-    
-    #queryAndParts = ["domain_id = ?"]
-    #queryParams   = [session[:domain].id ]
-    story_set_id = true
-    @highlighted_phreses = params[:q]
+    @filter = "" if @filter == nil
+     @highlighted_phreses = params[:q]
     
     if ( @filter.empty? != true  && @filter != "__none")
       if @filter == "__unassigned"
-        #queryAndParts << "story_set_id IS NULL"
         story_set_id = nil
       else 
-        #queryAndParts << "story_set_id = ?"
         story_set_id   = @filter
       end
     end
@@ -33,8 +27,6 @@ class StoriesController < ApplicationController
     end
     
     @story_sets = StorySet.where(:domain_id => session[:domain].id)
-    #@stories = Story.find_by_sql ["select * from stories where " + queryAndParts.join(" AND "), queryParams].flatten
-    #@story_sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stories }
@@ -86,6 +78,7 @@ class StoriesController < ApplicationController
   # POST /stories.xml
   def create
     @story = Story.new(params[:story])
+    @story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
     
     respond_to do |format|
@@ -166,14 +159,14 @@ class StoriesController < ApplicationController
     if( params[:story_set_id].blank? )
       redirect_to stories_path     
     elsif( params[:story_set_id] ==  "__unassigned")
-      @stories = Story.where("story_set_id IS NULL").order(:rank)
+      @stories = Story.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
-      @stories = Story.where(:story_set_id => params[:story_set_id]).order(:rank)
+      @stories = Story.where(:story_set_id => params[:story_set_id], :domain_id => session[:domain].id).order(:rank)
     end
   end
   
   def update_stories_rank
-    p params.to_yaml
+    #p params.to_yaml
     @stories = Story.update(params[:stories].keys, params[:stories].values)    
     redirect_to stories_path(:filter => params[:filter])
   end
