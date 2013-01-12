@@ -1,5 +1,6 @@
 class StorySet < ActiveRecord::Base
-  has_many :stories
+  has_many :stories, :dependent => :destroy
+  belongs_to :story_set_category
   
   def category
     return "-- unassigned --" if ( category_id == nil ) 

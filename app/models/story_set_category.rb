@@ -1,4 +1,6 @@
 class StorySetCategory < ActiveRecord::Base
+  has_many :story_sets, :dependent => :destroy
+  belongs_to :bright_text_application
   def application
     return "-- unassigned --" if ( application_id == nil ) 
     

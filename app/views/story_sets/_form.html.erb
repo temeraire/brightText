@@ -38,7 +38,7 @@
     <div class="form-field-value"><%= f.text_field :rank, :style => "width:40px" %> (number - lower to move up)</div>
   </div>
   
-  <div class="field form-field" style="float:left; padding-right:20px;">
+  <div class="field form-field" >
     <div class="form-field-label"><%= session[:style].group_alias.titleize %>:</div>
     <div class="form-field-value"><select onChange="onCategorySelect()" id="categorySelector">
       <%
@@ -60,7 +60,16 @@
     </div>
     
   </div>
-  
+  <% unless @stories.blank? %>
+  	  <%= hidden_field_tag :original_story_set, @stories_set_original.id%>
+	  <div class="field form-field" style="height: auto;">
+	  	<% @stories.each do |story| %>
+		    <div class="form-field-label"><%= check_box_tag "stories[]", story.id, true %></div>
+		    <div class="form-field-value"><%= story.name %></div>
+		    <br style="clear: both;" />
+	    <% end %>
+	  </div>
+  <% end %>
   <div class="actions" style="padding-top:200px">
     <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_story_set_btn", :value => "Save" %>
   </div>
