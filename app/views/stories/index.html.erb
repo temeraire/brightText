@@ -48,7 +48,7 @@
   parentId = parentObj.category_id.to_s unless parentObj == nil
 %>
 <% if(!storySetFilter.empty?) %>
-	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder stories rank</button>	
+	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder Stories</button>	
 <% end %>
 <!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
 </div>
