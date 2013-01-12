@@ -74,7 +74,7 @@
     <% if(!@filter.empty?) %>
     	<td><%= story_set_category.rank %></td>
     <% end %>
-    <td><%= count %> <%= label %> <a href="/story_sets?filter=<%= story_set_category.id %>">(show/edit)</a></td>
+    <td><a href="/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
     <td></td>
     <td><%= link_to 'Edit', edit_story_set_category_path(story_set_category) %></td>
     <td><%= link_to 'Destroy', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td>   

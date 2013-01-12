@@ -31,7 +31,7 @@
   <tr>
     <td><%= bt_application.id %></td>
     <td><%= bt_application.name %></td>
-    <td><%= count %> <%= label %> <a href="/story_set_categories?filter=<%= bt_application.id %>">(show/edit)</a></td>
+    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
     <td></td><!-- spacer -->
     
     <td><%= link_to 'Edit', '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
