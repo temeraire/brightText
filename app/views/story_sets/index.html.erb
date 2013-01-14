@@ -36,6 +36,9 @@
   end
 %>
 </select>
+<% if(!@filter.empty?) %>
+	<button onclick="window.location.assign('<%= reorder_story_sets_rank_path(@filter) %>')">Reorder Categories</button>	
+<% end %>
 <%
   parentObj = StorySetCategory.find_by_id( @filter )
   parentId = "__undefined"

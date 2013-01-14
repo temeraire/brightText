@@ -132,6 +132,22 @@ class StorySetsController < ApplicationController
     end
   end
   
+  def reorder_story_sets_rank
+    if( params[:category_id].blank? )
+      redirect_to story_sets_path
+    elsif( params[:category_id] ==  "__unassigned")
+      @story_sets = StorySet.where("category_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
+    else
+      @story_sets = StorySet.where(:category_id => params[:category_id], :domain_id => session[:domain].id).order(:rank)
+    end
+  end
+  
+  def update_story_sets_rank
+    p params.to_yaml
+    StorySet.update(params[:story_sets].keys, params[:story_sets].values)
+    redirect_to story_sets_path(:filter => params[:filter])
+  end
+  
   private
   def clone_stories(story_ids, story_set_id)
     story_ids.each do |id|

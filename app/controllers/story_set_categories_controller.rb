@@ -121,7 +121,7 @@ class StorySetCategoriesController < ApplicationController
   end
 
   def update_story_set_categories_rank
-    p params.to_yaml
+    #p params.to_yaml
     @story_set_categories = StorySetCategory.update(params[:story_set_categories].keys, params[:story_set_categories].values)
     redirect_to story_set_categories_path(:filter => params[:filter])
   end
