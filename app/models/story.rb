@@ -1,5 +1,18 @@
 class Story < ActiveRecord::Base
 
+  belongs_to :story_set
+  
+  scoped_search :on => :name
+  scoped_search :on => :description
+  
+  before_save :set_rank
+  
+  def set_rank
+    if self.rank.blank? || self.rank == 0 || self.story_set_id_changed?
+      self.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", self.story_set_id]).to_i
+    end
+  end
+  
   def set
     setObj = StorySet.find_by_sql [ "select * from story_sets where id = ?", story_set_id ]
     return setObj[0].name unless setObj == nil || setObj.count < 1
@@ -10,6 +23,9 @@ class Story < ActiveRecord::Base
 
     storyEl.attributes["id"] = id.to_s;
     content = story["story"]
+    
+    rankEl = storyEl.add_element("Rank")
+    rankEl.text = rank.blank? ? "0" : rank.to_s
     
     puts content.class
     

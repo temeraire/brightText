@@ -3,22 +3,30 @@ class StoriesController < ApplicationController
   # GET /stories.xml
   def index
     @filter = request[:filter]
-    @filter = "" if @filter == nil  
-    
-    queryAndParts = ["domain_id = ?"]
-    queryParams   = [session[:domain].id ]
+    @filter = "" if @filter == nil
+     @highlighted_phreses = params[:q]
     
     if ( @filter.empty? != true  && @filter != "__none")
       if @filter == "__unassigned"
-        queryAndParts << "story_set_id IS NULL"
+        story_set_id = nil
       else 
-        queryAndParts << "story_set_id = ?"
-        queryParams   << @filter
+        story_set_id   = @filter
       end
     end
     
-    @stories = Story.find_by_sql ["select * from stories where " + queryAndParts.join(" AND "), queryParams].flatten
-    @story_sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
+    if(params[:q].blank?)
+      @stories = Story.where(
+        {:domain_id => session[:domain].id}.merge(
+          ( @filter.empty? != true  && @filter != "__none")? {:story_set_id => story_set_id} : {}
+        )
+      ).order(( @filter.empty? != true  && @filter != "__none")? "rank" : nil)
+      
+    else
+      @stories = Story.search_for(params[:q])
+      @highlighted_phreses = params[:q].split()
+    end
+    
+    @story_sets = StorySet.where(:domain_id => session[:domain].id)
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stories }
@@ -70,13 +78,16 @@ class StoriesController < ApplicationController
   # POST /stories.xml
   def create
     @story = Story.new(params[:story])
+    #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
     
     respond_to do |format|
       if @story.save
+        format.json{ render :json=> {:success => "true"} }
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
+        format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "new" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
       end
@@ -92,9 +103,11 @@ class StoriesController < ApplicationController
     raise ' not owner ' unless @story.domain_id == session[:domain].id
     respond_to do |format|
       if @story.update_attributes(params[:story])
+        format.json{ render :json=> {:success => "true"} }
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
       end
@@ -140,5 +153,21 @@ class StoriesController < ApplicationController
       end
     end
     render :xml => result 
+  end
+  
+  def reorder_stories_rank
+    if( params[:story_set_id].blank? )
+      redirect_to stories_path     
+    elsif( params[:story_set_id] ==  "__unassigned")
+      @stories = Story.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
+    else
+      @stories = Story.where(:story_set_id => params[:story_set_id], :domain_id => session[:domain].id).order(:rank)
+    end
+  end
+  
+  def update_stories_rank
+    #p params.to_yaml
+    @stories = Story.update(params[:stories].keys, params[:stories].values)    
+    redirect_to stories_path(:filter => params[:filter])
   end
 end

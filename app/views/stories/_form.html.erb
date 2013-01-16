@@ -42,7 +42,7 @@
     height:314px;
     padding:10px;
   }
-  
+  .no-close .ui-dialog-titlebar-close {display: none }
 </style>
 
 
@@ -54,14 +54,49 @@
   }
   
   function saveStory(){
-    try{
-      $(".edit_story")[0].submit();
-    } catch (e) {}
-    try{
-      $(".new_story")[0].submit();  
-    } catch (e) {}
-  }
+  	var form, type;
+  	
+    // try{
+      // $(".edit_story")[0].submit();
+    // } catch (e) {}
+    // try{
+      // $(".new_story")[0].submit();  
+    // } catch (e) {}
+
+    if($(".new_story")[0] == undefined){
+    	form = $(".edit_story")[0];
+    	type = "PUT";
+    }
+    else{
+    	form = $(".new_story")[0];
+    	type = "POST";
+    }
+    $.ajax({
+    	type: type,
+    	url: $(form).attr("action"),
+    	data: $(form).serialize(),
+    	dataType: "json",
+    	success: function(data){
+    				if(data["success"] == "true")
+    					show_response_dialog("Story saved successfully");
+    				else
+    					show_response_dialog("Something went wrong! Please try again later.");
+    			}
+    });
+  }  
   
+  function show_response_dialog(dialog_text){
+  	$("#dialog p").html(dialog_text);
+  	$( "#dialog" ).dialog({
+    	autoOpen: true,
+    	resizable: false,
+    	show: {effect: "fadeOut", duration: 500},
+    	hide: {effect: "fadeOut", duration: 500},
+    	dialogClass: 'no-close' 
+    });
+  	//$( "#dialog" ).dialog( "open" );
+  	setTimeout(function(){$( "#dialog" ).dialog("close")},2500);
+  }
 </script>
 
 <script>
@@ -116,6 +151,7 @@
   
   
   $(document).ready(function(){
+    
     _bt1 = new BrightTextEditor( "bt_one", true );
     
     var rawData  = $("#fieldDescriptor");
@@ -214,4 +250,9 @@
   <div class="actions">
     <button style="height:28px; margin-right:420px" id="back_btn">Back</button><button onclick='saveStory()'id="save_story_btn"> Save </button>
   </div>
+  
+  <div id="dialog" title="Basic dialog" display="none" >
+    <p></p>
+  </div>
+  
 

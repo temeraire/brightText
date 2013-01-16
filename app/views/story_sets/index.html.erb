@@ -19,7 +19,7 @@
 <%
   selected = 'selected' if @filter.empty?
 %>
- <option <%= selected %>></option>
+ <option <%= selected %>>All</option>
 <%
   selected = ''
   selected = 'selected' if @filter == "__unassigned"
@@ -41,7 +41,7 @@
   parentId = "__undefined"
   parentId = parentObj.application_id.to_s unless parentObj == nil
 %>
-<a href="/story_set_categories?filter=<%= parentId %>">Back To <%= session[:style].group_alias.titleize %></a>
+<!-- <a href="/story_set_categories?filter=<%#= parentId %>">Back To <%#= session[:style].group_alias.titleize %></a> -->
 </div>
 
 
@@ -52,10 +52,11 @@
   <tr>
     <td style="width:50px"><b>Rank</td>
     <td style="width:200px"><b>Name</td>
-    <td style="width:200px"><b><%= session[:style].set_alias.titleize %></td>
-    <td style="width:200px"><b><%= session[:style].story_alias.pluralize.titleize %></b></td>
-    <td></td>
-    <td></td>
+    <td style="width:200px"><b>Category</b></td>
+    <td><b>Sets</b></td>
+    <td></td>  
+    <td style="width:150px"></td>  
+    <td><b><%= session[:style].story_alias.pluralize.titleize %></b></td>
   </tr>
 
 <% @story_sets.each do |story_set|
@@ -68,9 +69,10 @@
     <td style="width:50px"><%= story_set.rank %></td>  
     <td style="width:250px"><%= story_set.name %></td>
     <td style="width:200px"><%= story_set.category %></td>
-    <td><%= count %> <%= label %> <a href="/stories?filter=<%= story_set.id %>">(show/edit)</a></td>
+    <td><%= link_to 'Clone', clone_story_set_path(story_set)%></td>
     <td><%= link_to 'Edit', edit_story_set_path(story_set) %></td>
     <td><%= link_to 'Destroy', story_set, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><a href="/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>  
   </tr>
 <% end %>
 </table>

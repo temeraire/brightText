@@ -41,7 +41,7 @@ class BrightTextApplicationsController < ApplicationController
         result = REXML::Document.new("<Application/>")
         result.root.attributes["id"] = @bt_application.id.to_s
         categoriesEl = result.root.add_element("StorySetCategories")
-        categoryObjects = StorySetCategory.find_by_sql ["select * from story_set_categories where application_id = ?", @bt_application.id ]
+        categoryObjects = StorySetCategory.find_by_sql ["select * from story_set_categories where application_id = ? order by rank asc", @bt_application.id ]
         categoryObjects.each do | category |
           categoryEl = categoriesEl.add_element("StoryCategory")
           categoryEl.attributes["id"]   = category.id
@@ -53,11 +53,11 @@ class BrightTextApplicationsController < ApplicationController
             storySetEl.attributes["id"]   = storySet.id
             storySetEl.attributes["name"] = storySet.name
             storiesEl = storySetEl.add_element("Stories")
-            storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ?", storySet.id ]
+            storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ? order by rank", storySet.id ]
             storyEntries.each do | storyEntry |
               storyEl = storiesEl.add_element("Story")      
               storyEl.attributes["id"]   = storyEntry.id
-              storyEl.attributes["name"] = storyEntry.name
+              storyEl.attributes["name"] = storyEntry.name              
               storyEntry.toXml( storyEl )
               # puke out the xml-ified story data
             end
