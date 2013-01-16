@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.text     "submission_metadata"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "descriptor"
+    t.text     "descriptor",                 :limit => 16777215
   end
 
   create_table "bright_text_applications", :force => true do |t|
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
-    t.text     "descriptor"
+    t.text     "descriptor",   :limit => 16777215
   end
 
   create_table "story_set_categories", :force => true do |t|
