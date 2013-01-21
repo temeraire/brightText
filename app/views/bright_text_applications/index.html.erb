@@ -28,13 +28,13 @@
   label = label.pluralize unless count == 1
 
 %>
-  <tr>
+  <tr class="info_row">
     <td><%= bt_application.id %></td>
-    <td><%= bt_application.name %></td>
+    <td><%= link_to bt_application.name, '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
     <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
     <td></td><!-- spacer -->
     
-    <td><%= link_to 'Edit', '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
+    
     <td><%= link_to 'Destroy', bt_application, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>

@@ -14,7 +14,7 @@
 
 <div style="height=60px; width:100px">&nbsp;</div>
 <button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
-<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
+<div class="toolbar" style="float:left; padding:5px 0px 0px 50px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
 <select id="setSelector" onChange="onFilterSetSelect()" >
 <%
   storySetFilter = @filter
@@ -47,12 +47,14 @@
   parentId = "__undefined"
   parentId = parentObj.category_id.to_s unless parentObj == nil
 %>
-<% if(!storySetFilter.empty?) %>
+<% if(@filter != "__none") %>
 	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder Stories</button>	
+<% else %>
+	<button disabled="disabled" onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder Stories</button>	
 <% end %>
 <!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
 </div>
-<div style="margin-right: 100px; float: right;">
+<div style="margin-right: 100px; float: right; padding: 5px 0 0 5px;">
 	<%= form_tag(stories_path, :method => :get) do %>
 		<%= text_field_tag :q %>
 		<%= submit_tag 'Search' %>
@@ -65,26 +67,23 @@
 	  <tr>
 	    <td width="200"><b>Name</b></td>
 	    <td width="400"><b>Summary</b></td>
-	    <% if(!storySetFilter.empty?) %>
-	    	<td width="200"><b>Rank</b>
-	    <% end%>
+	    <td width="200"><b>Rank</b>
 	    <td width="200"><b><%= session[:style].set_alias.titleize %></b></td> 
 	    <th></th>
 	    <th></th>
 	  </tr>
 		
 		<% @stories.each do |story| %>
-		  <tr class="stories_info_row">
-		    <td style="width:100px"><%= (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>') %></td>
+		  <tr class="stories_info_row info_row">
+		    <td style="width:100px">
+		    	<%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_story_path(story) %>
+		    </td>
 		    <td style="width:300px">
-		    	<%= story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>') %>
+		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>
 		     
 		    </td>
-		    <% if(!storySetFilter.empty?) %>
-		    	<td><%= story.rank %></td>
-		    <% end %>
+	    	<td><%= story.rank %></td>
 		    <td style="width:100px"><%= story.set %></td>
-		    <td class="story_management"><%= link_to 'Edit', edit_story_path(story) %></td>
 		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
 		    <td class="story_management"><%= link_to 'Destroy', story, :confirm => 'Are you sure?', :method => :delete %></td>
 		  </tr>

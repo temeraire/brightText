@@ -36,8 +36,10 @@
   end
 %>
 </select>
-<% if(!@filter.empty?) %>
+<% if(@filter != "__none") %>
 	<button onclick="window.location.assign('<%= reorder_story_set_categories_rank_path(@filter) %>')">Reorder Categories</button>	
+<% else %>
+	<button disabled="disabled" onclick="window.location.assign('<%= reorder_story_set_categories_rank_path(@filter) %>')">Reorder Categories</button>
 <% end %>
 
 <!-- <a href="/bright_text_applications">Back To <%#= session[:style].app_alias.pluralize.titleize %></a> -->
@@ -67,16 +69,15 @@
   label = label.pluralize unless count == 1
 
 %>
-  <tr>
-    <td><%= story_set_category.name %></td>
+  <tr class="info_row">
+    <td><%= link_to story_set_category.name, edit_story_set_category_path(story_set_category) %></td>
     <td><%= story_set_category.application %></td>
-    <td><%= story_set_category.description %></td>
+    <td><%= link_to story_set_category.description, edit_story_set_category_path(story_set_category)  %></td>
     <% if(!@filter.empty?) %>
     	<td><%= story_set_category.rank %></td>
     <% end %>
     <td><a href="/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
     <td></td>
-    <td><%= link_to 'Edit', edit_story_set_category_path(story_set_category) %></td>
     <td><%= link_to 'Destroy', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td>   
   </tr>
 <% end %>

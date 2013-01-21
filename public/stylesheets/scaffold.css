@@ -91,3 +91,8 @@ div.field, div.actions {
   height:28px;
 }
 
+tr.info_row td{
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid #30273A;
+    padding: 8px 8px 8px 0;
+}
