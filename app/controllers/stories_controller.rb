@@ -1,10 +1,10 @@
 class StoriesController < ApplicationController
+  before_filter :find_filter, :only => [:index, :destroy]
+  
   # GET /stories
   # GET /stories.xml
   def index
-    @filter = request[:filter]
-    @filter = "" if @filter == nil
-     @highlighted_phreses = params[:q]
+    @highlighted_phreses = params[:q]
     
     if ( @filter.empty? != true  && @filter != "__none")
       if @filter == "__unassigned"
@@ -123,7 +123,7 @@ class StoriesController < ApplicationController
     @story.destroy
 
     respond_to do |format|
-      format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
+      format.html { redirect_to("/stories?filter=" + @filter) }
       format.xml  { head :ok }
     end
   end
@@ -170,5 +170,20 @@ class StoriesController < ApplicationController
     #p params.to_yaml
     @stories = Story.update(params[:stories].keys, params[:stories].values)    
     redirect_to stories_path(:filter => params[:filter])
+  end
+  
+  private
+  def find_filter    
+    # @filter = request[:filter]
+    # @filter = "" if @filter == nil
+    #
+    if request[:filter] == "" || !request[:filter].blank?
+      @filter = request[:filter]
+    elsif session[:br_story_set_id] == "" || !session[:br_story_set_id].blank?
+      @filter = session[:br_story_set_id]
+    else
+      @filter = StorySet.where(:domain_id => session[:domain].id).first.id.to_s
+    end
+    session[:br_story_set_id] = @filter
   end
 end

@@ -1,6 +1,6 @@
 class StorySet < ActiveRecord::Base
   has_many :stories, :dependent => :destroy
-  belongs_to :story_set_category
+  belongs_to :category, :class_name => :story_set_category, :foreign_key => :category_id
 
   before_save :set_rank
   

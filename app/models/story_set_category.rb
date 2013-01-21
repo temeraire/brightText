@@ -1,5 +1,5 @@
 class StorySetCategory < ActiveRecord::Base
-  has_many :story_sets, :dependent => :destroy
+  has_many :story_sets, :foreign_key => :category_id, :dependent => :destroy
   belongs_to :bright_text_application
   
   validates :name, 

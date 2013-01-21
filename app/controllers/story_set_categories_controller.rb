@@ -1,11 +1,11 @@
 require 'rexml/document'
 
 class StorySetCategoriesController < ApplicationController
+  before_filter :find_filter, :only => [:index, :destroy]
+  
   # GET /story_categories
   # GET /story_categories.xml
   def index
-    @filter = request[:filter]
-    @filter = "" if @filter == nil
 
     queryAndParts = ["domain_id = ?"]
     queryParams   = [session[:domain].id ]
@@ -97,10 +97,11 @@ class StorySetCategoriesController < ApplicationController
   # DELETE /story_categories/1.xml
   def destroy
     @story_set_category = StorySetCategory.find(params[:id])
-    @filter = request[:filter]
-    if ( @filter == nil )
-      @filter = ""
-    end
+    # @filter = @story_set_category.application_id.to_s
+    # if ( @filter == nil || @filter == "0")
+      # @filter = ""
+    # end
+    #
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     @story_set_category.destroy
 
@@ -124,5 +125,20 @@ class StorySetCategoriesController < ApplicationController
     #p params.to_yaml
     @story_set_categories = StorySetCategory.update(params[:story_set_categories].keys, params[:story_set_categories].values)
     redirect_to story_set_categories_path(:filter => params[:filter])
+  end
+  
+  private
+  def find_filter    
+    # @filter = request[:filter]
+    # @filter = "" if @filter == nil
+    #
+    if request[:filter] == "" || !request[:filter].blank?
+      @filter = request[:filter]
+    elsif session[:br_application_id] == "" || !session[:br_application_id].blank?
+      @filter = session[:br_application_id]
+    else
+      @filter = BrightTextApplication.where(:domain_id => session[:domain].id).first.id.to_s
+    end
+    session[:br_application_id] = @filter
   end
 end

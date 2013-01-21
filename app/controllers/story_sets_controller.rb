@@ -1,10 +1,9 @@
 class StorySetsController < ApplicationController
+  before_filter :find_filter, :only => [:index, :destroy]
+  
   # GET /story_sets
   # GET /story_sets.xml
   def index
-    @filter = request[:filter]
-    @filter = "" if @filter == nil
-
     queryAndParts = ["domain_id = ?"]
     queryParams   = [session[:domain].id ]
 
@@ -116,7 +115,7 @@ class StorySetsController < ApplicationController
     @story_set.destroy
 
     respond_to do |format|
-      format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s) }
+      format.html { redirect_to("/story_sets?filter=" + @filter) }
       format.xml  { head :ok }
     end
   end
@@ -156,5 +155,19 @@ class StorySetsController < ApplicationController
       story.story_set_id = story_set_id
       story.save
     end
+  end
+  
+  def find_filter    
+    # @filter = request[:filter]
+    # @filter = "" if @filter == nil
+    #debugger
+    if request[:filter] == "" || !request[:filter].blank?
+      @filter = request[:filter]
+    elsif session[:br_application_id] == "" || !session[:br_category_id].blank?
+      @filter = session[:br_category_id]
+    else
+      @filter = StorySetCategory.where(:domain_id => session[:domain].id).first.id.to_s
+    end    
+    session[:br_category_id] = @filter
   end
 end

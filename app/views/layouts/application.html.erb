@@ -149,7 +149,32 @@ end
       }
       $( "#tabs" ).bind( "tabsshow", function(event, ui) {
         var selectedTab = $( "#tabs" ).tabs( "option", "selected" );
-        document.location.href = landing[ selectedTab ]      
+        
+        
+        
+        <% if !session[:br_application_id].blank? %>
+        	application_filter = "<%= session[:br_application_id] %>";
+        <% end %>
+        <% if !session[:br_category_id].blank? %>
+        	category_filter = "<%= session[:br_category_id] %>";
+        <% end %>
+        <% if !session[:br_story_set_id].blank? %>
+        	story_set_filter = "<%= session[:br_story_set_id] %>";
+        <% end %>
+        
+        if(selectedTab == 1 && application_filter.length > 0){ // categories tab - app_id in selection list
+        	document.location.href = landing[ selectedTab ] + "?filter=" + application_filter;
+        }
+        else if(selectedTab == 2 && category_filter.length > 0){// story_set tab - category_id in selection list
+        	document.location.href = landing[ selectedTab ] + "?filter=" + category_filter;
+        }
+        else if(selectedTab == 3 && story_set_filter.length > 0){// stories tab - story_set_id in selection list
+        	document.location.href = landing[ selectedTab ] + "?filter=" + story_set_filter;
+        }
+        else{
+        	document.location.href = landing[ selectedTab ]
+        }
+              
       });   
       
       

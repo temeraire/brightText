@@ -19,7 +19,7 @@
 <%
   selected = 'selected' if @filter.empty?
 %>
- <option <%= selected %>>All</option>
+ <option <%= selected %> value="__none" >All</option>
 <%
   selected = ''
   selected = 'selected' if @filter == "__unassigned"
