@@ -87,7 +87,8 @@ class StoriesController < ApplicationController
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
-        format.json{ render :json=> {:success => "false"} }
+        #debugger
+        format.json{ render :json=> @story.errors }
         format.html { render :action => "new" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
       end

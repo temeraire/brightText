@@ -77,8 +77,16 @@
     	data: $(form).serialize(),
     	dataType: "json",
     	success: function(data){
+    				settings = window[$('form[data-validate]').attr('id')];
+    				element = $("#story_name");
+    				clientSideValidations.formBuilders[settings.type].remove(element, settings);
     				if(data["success"] == "true")
     					show_response_dialog("Story saved successfully");
+    				else if(data["name"]){    					
+    					message = data["name"];
+    					clientSideValidations.formBuilders[settings.type].add(element, settings, message);
+    				}
+    					
     				else
     					show_response_dialog("Something went wrong! Please try again later.");
     			}
@@ -174,8 +182,13 @@
     $("#fetchStory").button();
     $("#saveStory").button();
   
-    $("#edit_choicesets").button().click( _bt1.editChoicesets );
-  
+    $("#edit_choicesets").button().click( _bt1.editChoicesets );  	
+  	
+  //set client_side_validation for selection list
+   $("#story_story_set_id").change(function(){
+		var settings = window[$('form[data-validate]').attr('id')];
+		$("#story_name").isValid(settings.validators);	
+   });	
   
 <%  if    @story.descriptor != nil &&  !@story.descriptor.empty?  %>
     _bt1.renderData( <%=raw @story.descriptor %> );  
@@ -187,31 +200,18 @@
 
 
 <div style="width:700px; height:50px">
-<%= form_for(@story) do |f| %>
-  <div class="field form-field" style="float:left; padding-right:20px; width:700px">
-    Name:
-    <%= f.text_field :name %>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-    <%= session[:style].set_alias.titleize %>:
-    <select onChange="onSetSelect()" id="setSelector">
-    <% 
-      sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
-      sets.each do | set |
-        if set.id == @story.story_set_id 
-          selected = "selected='true'" 
-        end
-     %>
-         <option <%= selected %> value="<%= set.id %>"><%= set.name %></option>
-     <%
-       end
-    %>    
-    </select>
-    <%= f.hidden_field :story_set_id, :id=>:storySetId, :value => @story.story_set_id %>
-    
+<%= form_for(@story, :validate => true) do |f| %>
+  <div class="field form-field" style="float:left; padding-right:60px; width:700px">
+    <div class="form-field-label">Name:</div>
+    <div class="form-field-value"><%= f.text_field :name, :onfocus=>"this.value = this.value;" %></div>
   </div>
-  
-  
-
+  <div class="field form-field" style="float:left; padding-right:60px; width:700px">
+    <div class="form-field-label"><%= session[:style].set_alias.titleize %>:</div>
+    <div class="form-field-value">
+    	<%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id), :id, :name, @story.story_set_id)%>
+    </div>
+    
+  </div> 
   <%= f.hidden_field :description, :id => "fieldSummary" %>
   <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
 </div>

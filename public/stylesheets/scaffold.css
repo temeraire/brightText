@@ -24,13 +24,23 @@ div.field, div.actions {
   color: green;
 }
 
-.field_with_errors {
-  padding: 2px;
-  background-color: red;
+.field_with_errors{
   display: table;
+  color: red;
+}
+
+
+.field_with_errors input{
+    border: 3px solid red;
+}
+
+.field_with_errors_label{
+    float: left;
+    color: white  !important;
 }
 
 #error_explanation {
+  display: none;
   width: 450px;
   border: 2px solid red;
   padding: 7px;
@@ -60,7 +70,7 @@ div.field, div.actions {
 
 .form-field {
   padding:10px 0px 0px 20px; 
-  height:35px; 
+  min-height:35px; 
   width:600px; 
   border:1px dashed #cccccc;
 }
@@ -69,14 +79,15 @@ div.field, div.actions {
   width:100px; 
   float:left; 
   padding-top:3px; 
-  font-weight:bold;field
+  font-weight:bold;
 }
 
 .form-field-value{
-  width:400px; 
-  float:left;
+  min-width:400px; 
+  float:none;
 }
 
 .back-button{
   height:28px;
 }
+

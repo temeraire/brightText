@@ -1,6 +1,11 @@
 class StorySetCategory < ActiveRecord::Base
   has_many :story_sets, :dependent => :destroy
   belongs_to :bright_text_application
+  
+  validates :name, 
+              :uniqueness => { :scope => :application_id, :message => "This name is already taken. Please select another name" }, 
+              :presence => {:message => "Please insert a name."}
+              
   def application
     return "-- unassigned --" if ( application_id == nil ) 
     
