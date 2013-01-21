@@ -150,7 +150,9 @@ end
       $( "#tabs" ).bind( "tabsshow", function(event, ui) {
         var selectedTab = $( "#tabs" ).tabs( "option", "selected" );
         
-        
+        var application_filter = "";
+        var category_filter = "";
+        var story_set_filter = "";        
         
         <% if !session[:br_application_id].blank? %>
         	application_filter = "<%= session[:br_application_id] %>";
