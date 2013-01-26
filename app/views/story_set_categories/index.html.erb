@@ -50,16 +50,11 @@
 
 <table>
   <tr>
+  	<td width="50"><b> Order </b></td>
     <td width="200"><b>Name</b></td>
-    <td width="100"><b><%= session[:style].app_alias.titleize %></b></td>
-    <td width="200"><b>Description</b></td>
-    <% if(!@filter.empty?) %>
-    	<td width="200"><b> Rank </b></td>
-    <% end %>
-    <td width="200"><b><%= session[:style].set_alias.pluralize.titleize %><b></td>
-    <td width="10"></td>
-    <td></td>
-    <td></td>
+    <td width="300"><b>Description</b></td>
+    <td width="150"></td>    
+    <td width="100"><b><%= session[:style].set_alias.pluralize.titleize %><b></td>
   </tr>
 
 <% @story_set_categories.each do |story_set_category| 
@@ -70,15 +65,15 @@
 
 %>
   <tr class="info_row">
+  	<td>
+  		<% if(!@filter.empty?) %>
+    		<%= story_set_category.rank %>
+    	<% end %>
+    </td>
     <td><%= link_to story_set_category.name, edit_story_set_category_path(story_set_category) %></td>
-    <td><%= story_set_category.application %></td>
     <td><%= link_to story_set_category.description, edit_story_set_category_path(story_set_category)  %></td>
-    <% if(!@filter.empty?) %>
-    	<td><%= story_set_category.rank %></td>
-    <% end %>
+    <td><%= link_to 'Destroy', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td> 
     <td><a href="/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
-    <td></td>
-    <td><%= link_to 'Destroy', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td>   
   </tr>
 <% end %>
 </table>

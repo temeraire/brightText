@@ -6,15 +6,12 @@ class StorySetCategoriesController < ApplicationController
   # GET /story_categories
   # GET /story_categories.xml
   def index
-
-    queryAndParts = ["domain_id = ?"]
-    queryParams   = [session[:domain].id ]
-
     if ( @filter.empty? != true && @filter != "__none" )
       if @filter == "__unassigned"
         application_id = nil
       else        
         application_id = @filter
+        @application = BrightTextApplication.find(application_id)
       end
     end
 
@@ -141,4 +138,5 @@ class StorySetCategoriesController < ApplicationController
     end
     session[:br_application_id] = @filter
   end
+  
 end

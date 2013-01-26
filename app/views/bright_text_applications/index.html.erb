@@ -15,10 +15,8 @@
   <tr>
     <td width="70"><b>ID</b></td>
     <td width="300"><b>Name</b></td>
+    <td width="150"></td>
     <td width="200"><b><%= session[:style].group_alias.pluralize.titleize %></b></td>
-    <td width="50"></td>
-    <th></th>
-    <th></th>
   </tr>
 
 <% @bt_applications.each do |bt_application| 
@@ -31,11 +29,12 @@
   <tr class="info_row">
     <td><%= bt_application.id %></td>
     <td><%= link_to bt_application.name, '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
-    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
-    <td></td><!-- spacer -->
-    
-    
     <td><%= link_to 'Destroy', bt_application, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
+    
+    
+    
+    
   </tr>
 <% end %>
 </table>

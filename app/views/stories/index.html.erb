@@ -65,25 +65,22 @@
 <table id="stories_table" cellspacing="0">
 	<tbody id="sortable">
 	  <tr>
+	  	<td width="50"><b> Order </b></td>
 	    <td width="200"><b>Name</b></td>
 	    <td width="400"><b>Summary</b></td>
-	    <td width="200"><b>Rank</b>
-	    <td width="200"><b><%= session[:style].set_alias.titleize %></b></td> 
 	    <th></th>
 	    <th></th>
 	  </tr>
 		
 		<% @stories.each do |story| %>
 		  <tr class="stories_info_row info_row">
+		  	<td><%= story.rank %></td>
 		    <td style="width:100px">
 		    	<%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_story_path(story) %>
 		    </td>
-		    <td style="width:300px">
-		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>
-		     
+		    <td style="width:400px">
+		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>	     
 		    </td>
-	    	<td><%= story.rank %></td>
-		    <td style="width:100px"><%= story.set %></td>
 		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
 		    <td class="story_management"><%= link_to 'Destroy', story, :confirm => 'Are you sure?', :method => :delete %></td>
 		  </tr>
