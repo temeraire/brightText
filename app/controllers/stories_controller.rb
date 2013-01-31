@@ -1,32 +1,45 @@
 class StoriesController < ApplicationController
-  before_filter :find_filter, :only => [:index, :destroy]
-  
   # GET /stories
   # GET /stories.xml
   def index
     @highlighted_phreses = params[:q]
-    
-    if ( @filter.empty? != true  && @filter != "__none")
-      if @filter == "__unassigned"
-        story_set_id = nil
-      else 
-        story_set_id   = @filter
-      end
-    end
+    @filter = request[:filter]
     
     if(params[:q].blank?)
-      @stories = Story.where(
-        {:domain_id => session[:domain].id}.merge(
-          ( @filter.empty? != true  && @filter != "__none")? {:story_set_id => story_set_id} : {}
-        )
-      ).order(( @filter.empty? != true  && @filter != "__none")? "rank" : nil)
-      
+      @application = find_application
+
+      if @filter == "__unassigned"
+        @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
+      else
+        @story_set = StorySet.find_by_id @filter
+        if @story_set.blank?
+          @application = find_application
+          @category = find_category_for @application
+          unless @category.blank?
+            #debugger
+            @story_sets = @category.story_sets.order(:name)
+            @story_set = @story_sets.find_by_id session[:br_story_set_id]
+            @story_set = @story_sets.first if @story_set.blank?             
+          end
+        else
+          @category = @story_set.story_set_category
+          @application = @category.bright_text_application unless @category.blank?
+          @story_sets = @category.story_sets.order(:name) unless @category.blank?        
+        end
+        @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
+                        {"stories.domain_id" => session[:domain].id, 
+                        "bright_text_applications.id" => @application,
+                        "story_set_categories.id" => @category}.merge(
+                            @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
+      end
+      session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
+      @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
     else
-      @stories = Story.search_for(params[:q])
+      @stories = Story.where(:domain_id => session[:domain].id).search_for(params[:q])
       @highlighted_phreses = params[:q].split()
     end
     
-    @story_sets = StorySet.where(:domain_id => session[:domain].id)
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stories }
@@ -123,7 +136,7 @@ class StoriesController < ApplicationController
     @story.destroy
 
     respond_to do |format|
-      format.html { redirect_to("/stories?filter=" + @filter) }
+      format.html { redirect_to("/stories?filter=" + @story.story_set_id) }
       format.xml  { head :ok }
     end
   end
@@ -173,17 +186,12 @@ class StoriesController < ApplicationController
   end
   
   private
-  def find_filter    
-    # @filter = request[:filter]
-    # @filter = "" if @filter == nil
-    #
-    if request[:filter] == "" || !request[:filter].blank?
-      @filter = request[:filter]
-    elsif session[:br_story_set_id] == "" || !session[:br_story_set_id].blank?
-      @filter = session[:br_story_set_id]
-    else
-      @filter = StorySet.where(:domain_id => session[:domain].id).first.id.to_s
+  def find_category_for(application)
+    if application.instance_of? BrightTextApplication
+      category = application.story_set_categories.find_by_id session[:br_category_id] 
+      category = application.story_set_categories.first if category.blank?
     end
-    session[:br_story_set_id] = @filter
+    category
   end
+
 end

@@ -1,24 +1,37 @@
 class StorySetsController < ApplicationController
-  before_filter :find_filter, :only => [:index, :destroy]
+  before_filter :login_required
   
   # GET /story_sets
   # GET /story_sets.xml
-  def index
-    queryAndParts = ["domain_id = ?"]
-    queryParams   = [session[:domain].id ]
-
-    if ( @filter.empty? != true  && @filter != "__none")
-      if @filter == "__unassigned"
-        queryAndParts << "category_id IS NULL"
-      else
-        queryAndParts << "category_id = ?"
-      queryParams   << @filter
+  def index 
+    @filter = request[:filter] 
+    @category = StorySetCategory.find_by_id @filter
+    if @category.blank?
+      @application = find_application 
+      
+      unless @application.blank?
+        @categories = @application.story_set_categories.order(:name)
+        @category = @categories.find_by_id session[:br_category_id]
+        @category = @categories.first if @category.blank?             
       end
+    else
+      @application = @category.bright_text_application
+      @categories = @application.story_set_categories.order(:name) unless @application.blank?
+    end
+    
+    session[:br_category_id] = @category.id unless @category.blank? 
+    
+    if @filter == "__unassigned"
+      @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
+    else
+      @story_sets = StorySet.joins(:story_set_category => :bright_text_application).where(
+                      {"story_sets.domain_id" => session[:domain].id, 
+                       "bright_text_applications.id" => @application}.merge(
+                           @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
     end
 
-    @story_sets = StorySet.find_by_sql ["select * from story_sets where " + queryAndParts.join(" AND ") + " order by rank asc", queryParams].flatten
-    @categories = StorySetCategory.find_by_sql [ "select * from story_set_categories where domain_id = ?", session[:domain].id ]
-
+    @filter = @category.id.to_s if @filter.blank? && !@category.blank? #update @filter for selection list and breadcrumbs similar values
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @story_sets }
@@ -113,9 +126,9 @@ class StorySetsController < ApplicationController
     @story_set = StorySet.find(params[:id])
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     @story_set.destroy
-
+    
     respond_to do |format|
-      format.html { redirect_to("/story_sets?filter=" + @filter) }
+      format.html { redirect_to story_sets_path(:filter => @story_set.category_id) }
       format.xml  { head :ok }
     end
   end
@@ -155,19 +168,5 @@ class StorySetsController < ApplicationController
       story.story_set_id = story_set_id
       story.save
     end
-  end
-  
-  def find_filter    
-    # @filter = request[:filter]
-    # @filter = "" if @filter == nil
-    #debugger
-    if request[:filter] == "" || !request[:filter].blank?
-      @filter = request[:filter]
-    elsif session[:br_application_id] == "" || !session[:br_category_id].blank?
-      @filter = session[:br_category_id]
-    else
-      @filter = StorySetCategory.where(:domain_id => session[:domain].id).first.id.to_s
-    end    
-    session[:br_category_id] = @filter
   end
 end

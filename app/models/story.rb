@@ -246,7 +246,7 @@ class Story < ActiveRecord::Base
       
       puts '  ** story set count ** ' + existingSetId.count.to_s
       
-      existingSet = StorySet.find_by_id ( existingSetId[0].story_set_id ) if existingSetId.count == 1    
+      existingSet = StorySet.find_by_id(existingSetId[0].story_set_id) if existingSetId.count == 1    
     
     
       #  create story set if not

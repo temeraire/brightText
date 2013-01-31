@@ -1,6 +1,6 @@
 class StorySetCategory < ActiveRecord::Base
   has_many :story_sets, :foreign_key => :category_id, :dependent => :destroy
-  belongs_to :bright_text_application
+  belongs_to :bright_text_application, :foreign_key => :application_id
   
   validates :name, 
               :uniqueness => { :scope => :application_id, :message => "This name is already taken. Please select another name" }, 

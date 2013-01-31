@@ -18,7 +18,7 @@
 <select id="setSelector" onChange="onFilterSetSelect()" >
 <%
   storySetFilter = @filter
-  selected = 'selected' if storySetFilter.empty?
+  selected = 'selected' if storySetFilter.blank?
 %>
 
  <option <%= selected %> value="__none" >All</option>
@@ -47,10 +47,10 @@
   parentId = "__undefined"
   parentId = parentObj.category_id.to_s unless parentObj == nil
 %>
-<% if(@filter != "__none") %>
-	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder Stories</button>	
+<% if(@filter != "__none" && !@story_set.blank?) %>
+	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@story_set) %>')">Reorder Stories</button>	
 <% else %>
-	<button disabled="disabled" onclick="window.location.assign('<%= reorder_stories_rank_path(@filter) %>')">Reorder Stories</button>	
+	<button disabled="disabled" >Reorder Stories</button>	
 <% end %>
 <!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
 </div>
@@ -77,12 +77,14 @@
 		  	<td><%= story.rank %></td>
 		    <td style="width:100px">
 		    	<%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_story_path(story) %>
+		    	
 		    </td>
 		    <td style="width:400px">
 		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>	     
 		    </td>
 		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
-		    <td class="story_management"><%= link_to 'Destroy', story, :confirm => 'Are you sure?', :method => :delete %></td>
+		    <td class="story_management"><%= link_to 'Delete', story, :confirm => 'Are you sure?', :method => :delete %></td>
+		  	<td><%= story.set %></td>
 		  </tr>
 		  
 		<% end %>

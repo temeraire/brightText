@@ -177,32 +177,7 @@ end
       $( "#tabs" ).bind( "tabsshow", function(event, ui) {
         var selectedTab = $( "#tabs" ).tabs( "option", "selected" );
         
-        var application_filter = "";
-        var category_filter = "";
-        var story_set_filter = "";        
-        
-        <% if !session[:br_application_id].blank? %>
-        	application_filter = "<%= session[:br_application_id] %>";
-        <% end %>
-        <% if !session[:br_category_id].blank? %>
-        	category_filter = "<%= session[:br_category_id] %>";
-        <% end %>
-        <% if !session[:br_story_set_id].blank? %>
-        	story_set_filter = "<%= session[:br_story_set_id] %>";
-        <% end %>
-        
-        if(selectedTab == 1 && application_filter.length > 0){ // categories tab - app_id in selection list
-        	document.location.href = landing[ selectedTab ] + "?filter=" + application_filter;
-        }
-        else if(selectedTab == 2 && category_filter.length > 0){// story_set tab - category_id in selection list
-        	document.location.href = landing[ selectedTab ] + "?filter=" + category_filter;
-        }
-        else if(selectedTab == 3 && story_set_filter.length > 0){// stories tab - story_set_id in selection list
-        	document.location.href = landing[ selectedTab ] + "?filter=" + story_set_filter;
-        }
-        else{
-        	document.location.href = landing[ selectedTab ]
-        }
+        document.location.href = landing[ selectedTab ]
               
       });   
       
@@ -240,13 +215,15 @@ end
   <% if controller_name != "bright_text_applications" && !@application.blank? %>
 	  <div id="breadcrumbs">
 	    <ul>
-	  		<li><%= link_to @application.name %></li>
+	  		<li><%= link_to @application.name, story_set_categories_path(:filter => @application.id) %></li>
 	  		<li>-></li>
-	  		<li>Category </li>
-	  		<li>-></li>
-	  		<li>Story Set</li>
-	  		<li>-></li>
-	  		<li>Story</li>
+	  		<% if !@category.blank? %>
+		  		<li><%= link_to @category.name, story_sets_path(:filter => @category.id) %> </li>
+		  		<li>-></li>
+		  		<% if !@story_set.blank? %>
+		  			<li><%= link_to @story_set.name, stories_path(:filter => @story_set.id) %></li>
+		  		<% end %>
+		  	<% end %>
 	  	</ul>
 	  </div>
   <% end %>
