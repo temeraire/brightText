@@ -21,7 +21,7 @@
   selected = 'selected' if storySetFilter.blank?
 %>
 
- <option <%= selected %> value="__none" >All</option>
+ <option <%= selected %> value="__none" >All<%= @category.blank? ? "" : " in "+ @category.name %></option>
  
 <%
   selected = ''
@@ -67,7 +67,7 @@
 	  <tr>
 	  	<td width="50"><b> Order </b></td>
 	    <td width="200"><b>Name</b></td>
-	    <td width="400"><b>Summary</b></td>
+	    <td width="400"><b>Sample</b></td>
 	    <th></th>
 	    <th></th>
 	  </tr>
@@ -84,7 +84,7 @@
 		    </td>
 		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
 		    <td class="story_management"><%= link_to 'Delete', story, :confirm => 'Are you sure?', :method => :delete %></td>
-		  	<td><%= story.set %></td>
+		  	
 		  </tr>
 		  
 		<% end %>

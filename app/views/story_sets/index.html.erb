@@ -19,7 +19,7 @@
 <%
   selected = 'selected' if @filter.blank?
 %>
- <option <%= selected %> value="__none" >All in <%= @application.name %></option>
+ <option <%= selected %> value="__none" >All<%= @application.blank? ? "" : " in " + @application.name %></option>
 <%
   selected = ''
   selected = 'selected' if @filter == "__unassigned"
