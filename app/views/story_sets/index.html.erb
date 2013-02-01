@@ -53,31 +53,34 @@
 <div style="height:110px; width:100px">&nbsp;</div>
 
 
-<table>
-  <tr>
-    <td style="width:50px"><b>Order</td>
-    <td style="width:300px"><b>Name</td>
-    <td></td>
-    <td style="width:150px"></td>  
-    <td><b><%= session[:style].story_alias.pluralize.titleize %></b></td>
-    <td></td>
-  </tr>
-
-<% @story_sets.each do |story_set|
-  countQuery = StorySet.find_by_sql ["select count( id ) as count from stories where story_set_id = ?", story_set.id ]
-  count = countQuery[0].count
-  label = session[:style].story_alias
-  label = label.pluralize unless count == 1
-%>
-  <tr class="info_row">
-    <td style="width:50px"><%= story_set.rank %></td>  
-    <td style="width:250px"><%= link_to story_set.name, edit_story_set_path(story_set) %></td>    
-    <td><%= link_to 'Clone', clone_story_set_path(story_set)%></td>
-    <td><%= link_to 'Delete', story_set, :confirm => 'Are you sure?', :method => :delete %></td>
-    <td><a href="/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>  
-    
-  </tr>
-<% end %>
+<table class="sortable_header" >
+	<thead>  
+		<tr>
+		    <th style="width:55px" data-sort="int" ><b>Order</b></th>
+		    <th style="width:300px" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
+		    <th></th>
+		    <th style="width:150px"></th>  
+		    <th data-sort="int" ><b><%= session[:style].story_alias.pluralize.titleize %></b></th>
+		    <th></th>
+		 </tr>
+	</thead>
+	<tbody>
+		<% @story_sets.each do |story_set|
+		  countQuery = StorySet.find_by_sql ["select count( id ) as count from stories where story_set_id = ?", story_set.id ]
+		  count = countQuery[0].count
+		  label = session[:style].story_alias
+		  label = label.pluralize unless count == 1
+		%>
+		  <tr class="info_row">
+		    <td style="width:50px"><%= story_set.rank %></td>  
+		    <td style="width:250px"><%= link_to story_set.name, edit_story_set_path(story_set) %></td>    
+		    <td><%= link_to 'Clone', clone_story_set_path(story_set)%></td>
+		    <td style="text-align: left;"><%= link_to 'Delete', story_set, :confirm => 'Are you sure?', :method => :delete %></td>
+		    <td><a href="/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>  
+		    
+		  </tr>
+		<% end %>
+	</tbody>
 </table>
 
 

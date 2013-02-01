@@ -136,7 +136,7 @@ class StoriesController < ApplicationController
     @story.destroy
 
     respond_to do |format|
-      format.html { redirect_to("/stories?filter=" + @story.story_set_id) }
+      format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
     end
   end

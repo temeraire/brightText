@@ -108,7 +108,7 @@ class StorySetCategoriesController < ApplicationController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to story_set_categories_path(:filter => @story_set_category.application_id) }
+      format.html { redirect_to story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
       format.xml  { head :ok }
     end
   end

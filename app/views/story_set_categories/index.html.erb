@@ -48,32 +48,35 @@
 <div style="height:110px; width:100px">&nbsp;</div>
 
 
-<table>
-  <tr>
-  	<td width="50"><b> Order </b></td>
-    <td width="200"><b>Name</b></td>
-    <td width="300"><b>Description</b></td>
-    <td width="150"></td>    
-    <td width="100"><b><%= session[:style].set_alias.pluralize.titleize %><b></td>
-  </tr>
-
-<% @story_set_categories.each do |story_set_category| 
-  questionCountQuery = StorySet.find_by_sql ["select count( id ) as count from story_sets where category_id = ?", story_set_category.id ]
-  count = questionCountQuery[0].count
-  label = session[:style].set_alias
-  label = label.pluralize unless count == 1
-
-%>
-  <tr class="info_row">
-  	<td>
-  		<% if(!@filter.blank?) %>
-    		<%= story_set_category.rank %>
-    	<% end %>
-    </td>
-    <td><%= link_to story_set_category.name, edit_story_set_category_path(story_set_category) %></td>
-    <td><%= link_to story_set_category.description, edit_story_set_category_path(story_set_category)  %></td>
-    <td><%= link_to 'Delete', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td> 
-    <td><a href="/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
-  </tr>
-<% end %>
+<table class="sortable_header" >
+	<thead>
+	  <tr>
+	  	<th width="55" data-sort="int" ><b> Order </b></th>
+	    <th width="200" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
+	    <th width="300" data-sort="string" ><b>Description</b></th>
+	    <th width="150"></th>    
+	    <th width="100" data-sort="int" ><b><%= session[:style].set_alias.pluralize.titleize %><b></th>
+	  </tr>
+	</thead>
+	<tbody>
+		<% @story_set_categories.each do |story_set_category| 
+		  questionCountQuery = StorySet.find_by_sql ["select count( id ) as count from story_sets where category_id = ?", story_set_category.id ]
+		  count = questionCountQuery[0].count
+		  label = session[:style].set_alias
+		  label = label.pluralize unless count == 1
+		
+		%>
+		  <tr class="info_row">
+		  	<td>
+		  		<% if(!@filter.blank?) %>
+		    		<%= story_set_category.rank %>
+		    	<% end %>
+		    </td>
+		    <td><%= link_to story_set_category.name, edit_story_set_category_path(story_set_category) %></td>
+		    <td><%= link_to story_set_category.description, edit_story_set_category_path(story_set_category)  %></td>
+		    <td><%= link_to 'Delete', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td> 
+		    <td><a href="/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
+		  </tr>
+		<% end %>
+	</tbody>
 </table>
