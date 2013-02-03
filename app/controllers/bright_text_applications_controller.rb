@@ -146,6 +146,7 @@ class BrightTextApplicationsController < ApplicationController
     @bt_application.domain_id = session[:domain].id
     respond_to do |format|
       if @bt_application.save
+        clone_categories(params[:category_ids], @bt_application.id) unless params[:category_ids].blank?
         format.html { redirect_to(bright_text_applications_url) }
         format.xml  { render :xml => @bt_application, :status => :created, :location => @bt_application }
       else
@@ -182,5 +183,17 @@ class BrightTextApplicationsController < ApplicationController
       format.html { redirect_to(bright_text_applications_url) }
       format.xml  { head :ok }
     end
+  end
+  
+  def clone
+    @bt_application_original = BrightTextApplication.find(params[:id])
+    @bt_application = @bt_application_original.clone
+    number_of_similar_name_applications = BrightTextApplication.count(:conditions => ["name like ?", @bt_application_original.name + "%"])
+    @bt_application.name = @bt_application.name + "-" + (number_of_similar_name_applications + 1).to_s
+    @categories = @bt_application_original.story_set_categories(:include => :stories)
+    #debugger
+    respond_to do |format|
+      format.html { render :action => "new" }
+    end 
   end
 end

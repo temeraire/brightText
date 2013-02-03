@@ -45,10 +45,18 @@ BrightText::Application.routes.draw do
   
   get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
   resources :story_set_categories do
+    member do
+      get :clone
+    end
     collection do 
       post :update_story_set_categories_rank
     end
   end
-  resources :bright_text_applications
+  
+  resources :bright_text_applications do
+    member do 
+      get :clone
+    end
+  end
   
 end

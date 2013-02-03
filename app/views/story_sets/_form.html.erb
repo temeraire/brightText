@@ -47,9 +47,10 @@
     </div>
     
   </div>
-  <% unless @stories.blank? %>
-  	  <%= hidden_field_tag :original_story_set, @stories_set_original.id%>
+  <% unless @stories.blank? %>  	  
 	  <div class="field form-field" style="height: auto;">
+	    <div class="form-field-label" style="width: auto; float: none;">Select Stories to clone:</div>
+		<br />
 	  	<% @stories.each do |story| %>
 		    <div class="form-field-label"><%= check_box_tag "stories[]", story.id, true %></div>
 		    <div class="form-field-value"><%= story.name %></div>

@@ -75,7 +75,9 @@ class StoriesController < ApplicationController
   # GET /stories/XX/clone
   def clone
     @sourceStory = Story.find(params[:id])    
-    @story = Story.new( {:name => @sourceStory.name + " Clone", :descriptor => @sourceStory.descriptor, :story_set_id => @sourceStory.story_set_id, :domain_id => session[:domain].id } )
+    @story = @sourceStory.clone
+    number_of_similar_named_stories = Story.count(:conditions => ["story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%"])
+    @story.name = @story.name + "-" + (number_of_similar_named_stories + 1).to_s
     respond_to do |format|
         format.html { render :action => "new" }
     end

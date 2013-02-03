@@ -136,7 +136,7 @@ class StorySetsController < ApplicationController
   def clone
     @stories_set_original = StorySet.find(params[:id])
     @story_set = @stories_set_original.clone
-    number_similar_named_storysets = StorySet.count(:conditions => ["name like ?", @story_set.name + "%"])
+    number_similar_named_storysets = StorySet.count(:conditions => ["category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%"])
     @story_set.name = @story_set.name + "-" + (number_similar_named_storysets + 1).to_s    
     @stories = @stories_set_original.stories
     #debugger
@@ -159,14 +159,5 @@ class StorySetsController < ApplicationController
     p params.to_yaml
     StorySet.update(params[:story_sets].keys, params[:story_sets].values)
     redirect_to story_sets_path(:filter => params[:filter])
-  end
-  
-  private
-  def clone_stories(story_ids, story_set_id)
-    story_ids.each do |id|
-      story = Story.find(id).clone
-      story.story_set_id = story_set_id
-      story.save
-    end
   end
 end

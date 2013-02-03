@@ -54,6 +54,7 @@
 	  	<th width="55" data-sort="int" ><b> Order </b></th>
 	    <th width="200" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
 	    <th width="300" data-sort="string" ><b>Description</b></th>
+	    <th></th>
 	    <th width="150"></th>    
 	    <th width="100" data-sort="int" ><b><%= session[:style].set_alias.pluralize.titleize %><b></th>
 	  </tr>
@@ -74,7 +75,8 @@
 		    </td>
 		    <td><%= link_to story_set_category.name, edit_story_set_category_path(story_set_category) %></td>
 		    <td><%= link_to story_set_category.description, edit_story_set_category_path(story_set_category)  %></td>
-		    <td><%= link_to 'Delete', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td> 
+		    <td><%= link_to 'Clone', clone_story_set_category_path(story_set_category) %></td> 
+		    <td style="text-align: left;"><%= link_to 'Delete', story_set_category, :confirm => 'Are you sure?', :method => :delete %></td> 
 		    <td><a href="/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
 		  </tr>
 		<% end %>
