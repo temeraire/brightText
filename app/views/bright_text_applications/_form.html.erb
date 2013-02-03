@@ -26,7 +26,7 @@
   </div>
   <% unless @categories.blank? %>
 	<div class="field form-field" style="height: auto;">
-		<div class="form-field-label" style="width: auto; float: none;">Select Story Sets to clone:</div>
+		<div class="form-field-label" style="width: auto; float: none;">Select Categories to clone:</div>
 		<br />
 	  	<% @categories.each do |category| %>
 		    <div class="form-field-label"><%= check_box_tag "category_ids[]", category.id, true %></div>
