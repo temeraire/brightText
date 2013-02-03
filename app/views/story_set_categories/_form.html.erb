@@ -41,8 +41,7 @@
   <div class="field form-field" >
     <div class="form-field-label"><%= session[:style].app_alias.titleize %>:</div>
     <div class="form-field-value">
-    	<%= f.select :application_id, 
-    	"<option>-- unassigned --</option>" + options_from_collection_for_select(BrightTextApplication.where(:domain_id => session[:domain].id), :id, :name, @story_set_category.application_id) %>
+    	<%= f.select :application_id, options_from_collection_for_select(BrightTextApplication.where(:domain_id => session[:domain].id), :id, :name, @story_set_category.application_id) %>
     </div>
   </div>  
   <% unless @story_sets.blank? %>

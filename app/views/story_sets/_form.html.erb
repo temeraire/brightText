@@ -43,7 +43,7 @@
   <div class="field form-field" >
     <div class="form-field-label"><%= session[:style].group_alias.titleize %>:</div>
     <div class="form-field-value">
-    	<%= f.select :category_id, "<option>-- unassigned --</option>" + options_from_collection_for_select(StorySetCategory.where(:domain_id => session[:domain].id), :id, :name, @story_set.category_id) %>
+    	<%= f.select :category_id, options_from_collection_for_select(StorySetCategory.where(:domain_id => session[:domain].id), :id, :name, @story_set.category_id) %>
     </div>
     
   </div>
