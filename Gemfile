@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 #gem 'tlsmail'
 
-gem 'rails', '3.0.0'
+gem 'rails', '3.0.20'
 gem 'rake', '0.8.7'
 
 # Bundle edge Rails instead:
@@ -13,6 +13,8 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'jquery-rails'
 
 gem 'scoped_search'
+gem 'client_side_validations', '3.0.4'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

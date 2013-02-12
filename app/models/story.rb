@@ -7,6 +7,10 @@ class Story < ActiveRecord::Base
   
   before_save :set_rank
   
+  validates :name, 
+              :uniqueness => { :scope => :story_set_id, :message => "This name is already taken. Please select another name" }, 
+              :presence => {:message => "Please insert a name."}
+  
   def set_rank
     if self.rank.blank? || self.rank == 0 || self.story_set_id_changed?
       self.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", self.story_set_id]).to_i
@@ -242,7 +246,7 @@ class Story < ActiveRecord::Base
       
       puts '  ** story set count ** ' + existingSetId.count.to_s
       
-      existingSet = StorySet.find_by_id ( existingSetId[0].story_set_id ) if existingSetId.count == 1    
+      existingSet = StorySet.find_by_id(existingSetId[0].story_set_id) if existingSetId.count == 1    
     
     
       #  create story set if not

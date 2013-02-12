@@ -1,25 +1,37 @@
 class StorySetsController < ApplicationController
+  before_filter :login_required
+  
   # GET /story_sets
   # GET /story_sets.xml
-  def index
-    @filter = request[:filter]
-    @filter = "" if @filter == nil
-
-    queryAndParts = ["domain_id = ?"]
-    queryParams   = [session[:domain].id ]
-
-    if ( @filter.empty? != true  && @filter != "__none")
-      if @filter == "__unassigned"
-        queryAndParts << "category_id IS NULL"
-      else
-        queryAndParts << "category_id = ?"
-      queryParams   << @filter
+  def index 
+    @filter = request[:filter] 
+    @category = StorySetCategory.find_by_id @filter
+    if @category.blank?
+      @application = find_application 
+      
+      unless @application.blank?
+        @categories = @application.story_set_categories.order(:name)
+        @category = @categories.find_by_id session[:br_category_id]
+        @category = @categories.first if @category.blank?             
       end
+    else
+      @application = @category.bright_text_application
+      @categories = @application.story_set_categories.order(:name) unless @application.blank?
+    end
+    
+    session[:br_category_id] = @category.id unless @category.blank? 
+    
+    if @filter == "__unassigned"
+      @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
+    else
+      @story_sets = StorySet.joins(:story_set_category => :bright_text_application).where(
+                      {"story_sets.domain_id" => session[:domain].id, 
+                       "bright_text_applications.id" => @application}.merge(
+                           @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
     end
 
-    @story_sets = StorySet.find_by_sql ["select * from story_sets where " + queryAndParts.join(" AND ") + " order by rank asc", queryParams].flatten
-    @categories = StorySetCategory.find_by_sql [ "select * from story_set_categories where domain_id = ?", session[:domain].id ]
-
+    @filter = @category.id.to_s if @filter.blank? && !@category.blank? #update @filter for selection list and breadcrumbs similar values
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @story_sets }
@@ -54,6 +66,7 @@ class StorySetsController < ApplicationController
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
     @story_set.category_id = filter.to_i
+    
     end
     respond_to do |format|
       format.html # new.html.erb
@@ -113,9 +126,9 @@ class StorySetsController < ApplicationController
     @story_set = StorySet.find(params[:id])
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     @story_set.destroy
-
+    
     respond_to do |format|
-      format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s) }
+      format.html { redirect_to story_sets_path(:filter => @story_set.category_id.to_s) }
       format.xml  { head :ok }
     end
   end
@@ -123,7 +136,7 @@ class StorySetsController < ApplicationController
   def clone
     @stories_set_original = StorySet.find(params[:id])
     @story_set = @stories_set_original.clone
-    number_similar_named_storysets = StorySet.count(:conditions => ["name like ?", @story_set.name + "%"])
+    number_similar_named_storysets = StorySet.count(:conditions => ["category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%"])
     @story_set.name = @story_set.name + "-" + (number_similar_named_storysets + 1).to_s    
     @stories = @stories_set_original.stories
     #debugger
@@ -132,12 +145,19 @@ class StorySetsController < ApplicationController
     end
   end
   
-  private
-  def clone_stories(story_ids, story_set_id)
-    story_ids.each do |id|
-      story = Story.find(id).clone
-      story.story_set_id = story_set_id
-      story.save
+  def reorder_story_sets_rank
+    if( params[:category_id].blank? )
+      redirect_to story_sets_path
+    elsif( params[:category_id] ==  "__unassigned")
+      @story_sets = StorySet.where("category_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
+    else
+      @story_sets = StorySet.where(:category_id => params[:category_id], :domain_id => session[:domain].id).order(:rank)
     end
+  end
+  
+  def update_story_sets_rank
+    p params.to_yaml
+    StorySet.update(params[:story_sets].keys, params[:story_sets].values)
+    redirect_to story_sets_path(:filter => params[:filter])
   end
 end

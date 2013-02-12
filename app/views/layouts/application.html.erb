@@ -63,7 +63,8 @@ else
 end
 %>  
 
-  
+  <%= javascript_include_tag "rails.validations"%>
+  <%= javascript_include_tag "stupidtable"%>
   <%= stylesheet_link_tag :all %>
   
   <style>
@@ -110,6 +111,33 @@ end
       height:25px;
     }  
     
+
+	#breadcrumbs {
+	   float:left;
+	   width:100%;	   
+	   height: 25px;
+	   overflow:hidden;
+	   position:relative;
+	}
+	#breadcrumbs ul {
+	   clear:left;
+	   list-style:none;
+	   margin:2px;
+	   padding:0;
+	   position:relative;
+	   left:50%;
+	   text-align:center;
+	}
+	#breadcrumbs ul li {
+	   display:block;
+	   float:left;
+	   list-style:none;
+	   margin:0 3px;
+	   padding:0;
+	   position:relative;
+	   right:50%;
+	   font-weight: bold;
+	}
   </style>
 
 
@@ -149,7 +177,9 @@ end
       }
       $( "#tabs" ).bind( "tabsshow", function(event, ui) {
         var selectedTab = $( "#tabs" ).tabs( "option", "selected" );
-        document.location.href = landing[ selectedTab ]      
+        
+        document.location.href = landing[ selectedTab ]
+              
       });   
       
       
@@ -172,19 +202,35 @@ end
   <ul >
 <% if session[:domain].nickname == "Admin" %>
     <li><a href="#tab-content">Admin</a></li>
-    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>    
+    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/logout'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>    
 <% else %>  
     <li><a href="#tab-content"><%= session[:style].app_alias.pluralize.titleize %></a></li>
     <li><a href="#tab-content"><%= session[:style].group_alias.pluralize.titleize %></a></li>
     <li><a href="#tab-content"><%= session[:style].set_alias.pluralize.titleize %></a></li>
     <li><a href="#tab-content"><%= session[:style].story_alias.pluralize.titleize %></a></li>
-    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>
+    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/logout'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>
     
 <% end %>      
 
   </ul>
+  <% if controller_name != "bright_text_applications" && !@application.blank? %>
+	  <div id="breadcrumbs">
+	    <ul>
+	  		<li><%= link_to @application.name, story_set_categories_path(:filter => @application.id) %></li>
+	  		<li>-></li>
+	  		<% if !@category.blank? %>
+		  		<li><%= link_to @category.name, story_sets_path(:filter => @category.id) %> </li>
+		  		<li>-></li>
+		  		<% if !@story_set.blank? %>
+		  			<li><%= link_to @story_set.name, stories_path(:filter => @story_set.id) %></li>
+		  		<% end %>
+		  	<% end %>
+	  	</ul>
+	  </div>
+  <% end %>
   </div>
   <div id="tab-content" class="page_content">
+
   <%= yield %>	
   </div>
 </div>

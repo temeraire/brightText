@@ -24,7 +24,18 @@
     <div class="form-field-label"><%= f.label :name %>:</div>
     <div class="form-field-value"><%= f.text_field :name %></div>
   </div>
-  <div class="actions" style="padding-top:200px">
+  <% unless @categories.blank? %>
+	<div class="field form-field" style="height: auto;">
+		<div class="form-field-label" style="width: auto; float: none;">Select Categories to clone:</div>
+		<br />
+	  	<% @categories.each do |category| %>
+		    <div class="form-field-label"><%= check_box_tag "category_ids[]", category.id, true %></div>
+		    <div class="form-field-value"><%= category.name %></div>
+		    <br style="clear: both;" />
+	    <% end %>
+	</div>
+  <% end %> 
+  <div class="actions" style="padding-top:100px">
     <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_application_btn", :value => "Save" %>
   </div>
 <% end %>

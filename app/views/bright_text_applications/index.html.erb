@@ -11,31 +11,31 @@
 
 <div style="height:110px; width:100px">&nbsp;</div>
 
-<table>
-  <tr>
-    <td width="70"><b>ID</b></td>
-    <td width="300"><b>Name</b></td>
-    <td width="200"><b><%= session[:style].group_alias.pluralize.titleize %></b></td>
-    <td width="50"></td>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @bt_applications.each do |bt_application| 
-  countQuery = StorySet.find_by_sql ["select count( id ) as count from story_set_categories where application_id = ?", bt_application.id ]
-  count = countQuery[0].count
-  label = session[:style].group_alias
-  label = label.pluralize unless count == 1
-
-%>
-  <tr>
-    <td><%= bt_application.id %></td>
-    <td><%= bt_application.name %></td>
-    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
-    <td></td><!-- spacer -->
-    
-    <td><%= link_to 'Edit', '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
-    <td><%= link_to 'Destroy', bt_application, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+<table class="sortable_header" >
+	<thead>
+	  <tr>
+	    <th width="70" data-sort="int" ><b>ID</b></th>
+	    <th width="300" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
+	    <th></th>
+	    <th width="150"></th>
+	    <th data-sort="int" ><b><%= session[:style].group_alias.pluralize.titleize %></b></th>
+	  </tr>
+	</thead>
+	<tbody>
+		<% @bt_applications.each do |bt_application| 
+		  countQuery = StorySet.find_by_sql ["select count( id ) as count from story_set_categories where application_id = ?", bt_application.id ]
+		  count = countQuery[0].count
+		  label = session[:style].group_alias
+		  label = label.pluralize unless count == 1
+		
+		%>
+		  <tr class="info_row">
+		    <td><%= bt_application.id %></td>
+		    <td><%= link_to bt_application.name, '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
+		    <td><%= link_to "Clone", clone_bright_text_application_path(bt_application)%></td>
+		    <td style="text-align: left;"><%= link_to 'Delete', bt_application, :confirm => 'Are you sure?', :method => :delete %></td>
+		    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
+		  </tr>
+		<% end %>
+	</tbody>
 </table>
