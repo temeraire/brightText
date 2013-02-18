@@ -29,6 +29,7 @@ GEM
       activesupport (= 3.0.20)
     activesupport (3.0.20)
     arel (2.0.10)
+    bcrypt-ruby (3.0.1)
     builder (2.1.2)
     client_side_validations (3.0.4)
       activesupport (~> 3.0.0)
@@ -90,6 +91,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt-ruby
   client_side_validations (= 3.0.4)
   debugger
   jquery-rails

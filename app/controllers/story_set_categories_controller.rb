@@ -1,7 +1,7 @@
 require 'rexml/document'
 
 class StorySetCategoriesController < ApplicationController
-  before_filter :login_required
+  #before_filter :login_required
   # GET /story_categories
   # GET /story_categories.xml
   def index

@@ -1,5 +1,5 @@
 class StorySetsController < ApplicationController
-  before_filter :login_required
+  #before_filter :login_required
   
   # GET /story_sets
   # GET /story_sets.xml
