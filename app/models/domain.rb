@@ -1,6 +1,8 @@
 require 'digest/sha1'
 
 class Domain < ActiveRecord::Base
+  has_one :user
+  
   validates_uniqueness_of :nickname, :scope => :id
   validates_length_of :nickname, :within => 3..40
   validates_length_of :password, :within => 4..40 unless :password == nil

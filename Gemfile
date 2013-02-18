@@ -15,6 +15,8 @@ gem 'jquery-rails'
 gem 'scoped_search'
 gem 'client_side_validations', '3.0.4'
 
+gem 'bcrypt-ruby', :require => 'bcrypt'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
