@@ -1,4 +1,5 @@
 class BrightTextApplicationsController < ApplicationController
+  #before_filter :login_required
   # GET /applications
   # GET /applications.xml
   def index
@@ -41,7 +42,7 @@ class BrightTextApplicationsController < ApplicationController
         result = REXML::Document.new("<Application/>")
         result.root.attributes["id"] = @bt_application.id.to_s
         categoriesEl = result.root.add_element("StorySetCategories")
-        categoryObjects = StorySetCategory.find_by_sql ["select * from story_set_categories where application_id = ?", @bt_application.id ]
+        categoryObjects = StorySetCategory.find_by_sql ["select * from story_set_categories where application_id = ? order by rank asc", @bt_application.id ]
         categoryObjects.each do | category |
           categoryEl = categoriesEl.add_element("StoryCategory")
           categoryEl.attributes["id"]   = category.id
@@ -53,11 +54,11 @@ class BrightTextApplicationsController < ApplicationController
             storySetEl.attributes["id"]   = storySet.id
             storySetEl.attributes["name"] = storySet.name
             storiesEl = storySetEl.add_element("Stories")
-            storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ?", storySet.id ]
+            storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ? order by rank", storySet.id ]
             storyEntries.each do | storyEntry |
               storyEl = storiesEl.add_element("Story")      
               storyEl.attributes["id"]   = storyEntry.id
-              storyEl.attributes["name"] = storyEntry.name
+              storyEl.attributes["name"] = storyEntry.name              
               storyEntry.toXml( storyEl )
               # puke out the xml-ified story data
             end
@@ -145,6 +146,7 @@ class BrightTextApplicationsController < ApplicationController
     @bt_application.domain_id = session[:domain].id
     respond_to do |format|
       if @bt_application.save
+        clone_categories(params[:category_ids], @bt_application.id) unless params[:category_ids].blank?
         format.html { redirect_to(bright_text_applications_url) }
         format.xml  { render :xml => @bt_application, :status => :created, :location => @bt_application }
       else
@@ -181,5 +183,17 @@ class BrightTextApplicationsController < ApplicationController
       format.html { redirect_to(bright_text_applications_url) }
       format.xml  { head :ok }
     end
+  end
+  
+  def clone
+    @bt_application_original = BrightTextApplication.find(params[:id])
+    @bt_application = @bt_application_original.clone
+    number_of_similar_name_applications = BrightTextApplication.count(:conditions => ["name like ?", @bt_application_original.name + "%"])
+    @bt_application.name = @bt_application.name + "-" + (number_of_similar_name_applications + 1).to_s
+    @categories = @bt_application_original.story_set_categories(:include => :stories)
+    #debugger
+    respond_to do |format|
+      format.html { render :action => "new" }
+    end 
   end
 end

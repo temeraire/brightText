@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 920130109084741) do
 
   create_table "app_submissions", :force => true do |t|
     t.integer  "bright_text_application_id"
@@ -20,7 +21,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.text     "submission_metadata"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "descriptor"
+    t.text     "descriptor",                 :limit => 16777215
   end
 
   create_table "bright_text_applications", :force => true do |t|
@@ -68,7 +69,8 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
-    t.text     "descriptor"
+    t.text     "descriptor",   :limit => 16777215
+    t.integer  "rank"
   end
 
   create_table "story_set_categories", :force => true do |t|
@@ -79,6 +81,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "application_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "rank"
   end
 
   create_table "story_sets", :force => true do |t|
@@ -94,10 +97,12 @@ ActiveRecord::Schema.define(:version => 8) do
   create_table "users", :force => true do |t|
     t.string   "name"
     t.integer  "domain_id"
-    t.string   "password"
+    t.string   "password_salt"
     t.string   "nickname"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "email"
+    t.string   "password_hash"
   end
 
 end

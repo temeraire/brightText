@@ -1,22 +1,23 @@
 <script>
   $(function(){
+  	
    $("#save_survey_btn").button(); 
    $("#back_btn").button().click( function(e){
     e.preventDefault();
     document.location.href = '/story_set_categories?filter=<%= @story_set_category.application_id.to_s %>'
     return false;    
    }); 
+   //set client_side_validation for selection list
+   $("#story_set_category_application_id").change(function(){
+  		var settings = window[$('form[data-validate]').attr('id')];
+		$("#story_set_category_name").isValid(settings.validators);			
+   });
   });
   
-  function onApplicationSelect()
-  {
-    var selector =  $("#applicationSelector")[0];
-    var appId = selector.options[ selector.selectedIndex ].value;
-    $("#applicationId")[0].value = appId;
-  }  
+
 </script>
 
-<%= form_for(@story_set_category) do |f| %>
+<%= form_for(@story_set_category, :validate => true) do |f| %>
   <% if @story_set_category.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@story_set_category.errors.count, "error") %> prohibited this story_set_category from being saved:</h2>
@@ -37,29 +38,24 @@
     <div class="form-field-label"><%= f.label :description %>:</div>
     <div class="form-field-value"><%= f.text_field :description %></div>
   </div>
-  
-  <div class="field form-field" style="float:left; padding-right:20px;">
+  <div class="field form-field" >
     <div class="form-field-label"><%= session[:style].app_alias.titleize %>:</div>
-    <div class="form-field-value"><select onChange="onApplicationSelect()" id="applicationSelector">
-      <%
-          selected = "selected='true'" if @story_set_category.application_id == nil
-       %>    
-      <option <%= selected %>>-- unassigned --</option>
-      <% 
-        apps = BrightTextApplication.find_by_sql ["select * from bright_text_applications where domain_id = ?", session[:domain].id ]
-        apps.each do | app |
-          selected = ""
-          selected = "selected='true'" if app.id == @story_set_category.application_id 
-       %>
-           <option <%= selected %> value="<%= app.id %>"><%= app.name %></option>
-       <%
-         end
-      %>    
-      </select>
-      <%= f.hidden_field :application_id, :id=>:applicationId, :value =>  @story_set_category.application_id  %>
+    <div class="form-field-value">
+    	<%= f.select :application_id, options_from_collection_for_select(BrightTextApplication.where(:domain_id => session[:domain].id), :id, :name, @story_set_category.application_id) %>
     </div>
-    
   </div>  
+  <% unless @story_sets.blank? %>
+	<div class="field form-field" style="height: auto;">
+		<div class="form-field-label" style="width: auto; float: none;">Select Story Sets to clone:</div>
+		<br />
+	  	<% @story_sets.each do |story_set| %>
+		    <div class="form-field-label"><%= check_box_tag "story_sets[]", story_set.id, true %></div>
+		    <div class="form-field-value"><%= story_set.name %></div>
+		    <br style="clear: both;" />
+	    <% end %>
+	</div>
+  <% end %>  
+ 
   <div class="actions" style="padding-top:200px">
     <button style="height:28px; margin-right:420px" id="back_btn">Back</button><%= f.submit :value => 'Save ' + session[:style].group_alias.titleize, :id => "save_survey_btn" %>
   </div>

@@ -32,7 +32,6 @@ class StoriesController < ApplicationController
                         "story_set_categories.id" => @category}.merge(
                             @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
       end
-
       session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
       @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
     else
@@ -96,7 +95,6 @@ class StoriesController < ApplicationController
     @story = Story.new(params[:story])
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
-    @story.rank = 0
     
     respond_to do |format|
       if @story.save
@@ -143,12 +141,6 @@ class StoriesController < ApplicationController
       format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
     end
-  end
-
-  def rank
-    @story = Story.find(params[:story][:id])
-    @story.rank =  params[:story][:rank]
-    @story.save!
   end
   
   def legacyxml

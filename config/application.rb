@@ -46,3 +46,12 @@ module BrightText
 
   end
 end
+# ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
+  # #debugger
+  # if html_tag =~ /^<label/
+     # %(#{html_tag}).html_safe
+  # else
+    # errors = Array(instance.error_message).join(',')
+    # %(<div class="field_with_errors">#{html_tag}<br /><span class="validation-error">&nbsp;#{errors}</span></div>).html_safe
+  # end  
+# end

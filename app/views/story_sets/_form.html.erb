@@ -1,5 +1,11 @@
 <script>
   $(function(){
+  	//set client_side_validation for selection list
+   $("#story_set_category_id").change(function(){
+		var settings = window[$('form[data-validate]').attr('id')];
+		$("#story_set_name").isValid(settings.validators);		
+   });
+   
    $("#save_story_set_btn").button(); 
    $("#back_btn").button().click( function(e){
     e.preventDefault();
@@ -15,7 +21,7 @@
   }
 </script>
 
-<%= form_for(@story_set) do |f| %>
+<%= form_for(@story_set, :validate => true) do |f| %>
   <% if @story_set.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@story_set.errors.count, "error") %> prohibited this story_set from being saved:</h2>
@@ -33,35 +39,26 @@
     <div class="form-field-value"><%= f.text_field :name %></div>
   </div>
   
-  <div class="field form-field">
-    <div class="form-field-label"><%= f.label :rank %>:</div>
-    <div class="form-field-value"><%= f.text_field :rank, :style => "width:40px" %> (number - lower to move up)</div>
-  </div>
   
-  <div class="field form-field" style="float:left; padding-right:20px;">
+  <div class="field form-field" >
     <div class="form-field-label"><%= session[:style].group_alias.titleize %>:</div>
-    <div class="form-field-value"><select onChange="onCategorySelect()" id="categorySelector">
-      <%
-          selected = "selected='true'" if @story_set.category_id == nil
-       %>    
-      <option <%= selected %>>-- unassigned --</option>
-      <% 
-        cats = StorySetCategory.find_by_sql ["select * from story_set_categories where domain_id = ?", session[:domain].id ]
-        cats.each do | cat |
-          selected = ""
-          selected = "selected='true'" if cat.id == @story_set.category_id 
-       %>
-           <option <%= selected %> value="<%= cat.id %>"><%= cat.name %></option>
-       <%
-         end
-      %>    
-      </select>
-      <%= f.hidden_field :category_id, :id=>:storySetId, :value =>  @story_set.category_id  %>
+    <div class="form-field-value">
+    	<%= f.select :category_id, options_from_collection_for_select(StorySetCategory.where(:domain_id => session[:domain].id), :id, :name, @story_set.category_id) %>
     </div>
     
   </div>
-  
-  <div class="actions" style="padding-top:200px">
+  <% unless @stories.blank? %>  	  
+	  <div class="field form-field" style="height: auto;">
+	    <div class="form-field-label" style="width: auto; float: none;">Select Stories to clone:</div>
+		<br />
+	  	<% @stories.each do |story| %>
+		    <div class="form-field-label"><%= check_box_tag "stories[]", story.id, true %></div>
+		    <div class="form-field-value"><%= story.name %></div>
+		    <br style="clear: both;" />
+	    <% end %>
+	  </div>
+  <% end %>
+  <div class="actions">
     <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_story_set_btn", :value => "Save" %>
   </div>
 <% end %>

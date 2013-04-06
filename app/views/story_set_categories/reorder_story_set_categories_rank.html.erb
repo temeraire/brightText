@@ -1,0 +1,38 @@
+<%= render :partial => "shared/reorder_rank_commons"%>
+<div style="height=60px; width:100px">&nbsp;</div>
+
+<%= form_tag update_story_set_categories_rank_story_set_categories_path, :id=> "reorder_form" do %>
+	<%= hidden_field_tag :filter, params[:application_id]%>
+	<table id="stories_table" cellspacing="0">
+		<tbody id="sortable">
+		  <tr class="fixed_row" >
+		    <td width="200"><b>Name</b></td>
+		    <td width="100"><b><%= session[:style].app_alias.titleize %></b></td>
+		    <td width="200"><b>Description</b></td>
+		    <td width="200"><b> Rank </b></td>
+		  </tr>
+			
+			<% @story_set_categories.each do |story_set_category| %>
+			  <tr class="categories_info_row">
+			  	    <td class="sortable_row_cells" ><%= story_set_category.name %></td>
+				    <td class="sortable_row_cells" ><%= story_set_category.application %></td>
+				    <td class="sortable_row_cells" ><%= story_set_category.description %></td>
+				    <td class="sortable_row_cells" ><%= story_set_category.rank %> 
+				     	<%= fields_for "story_set_categories[]",  story_set_category do |f| %>
+				     		<% f.hidden_field :rank %>
+				     	<% end %>
+			    	</td> 
+			  </tr>
+			  
+			<% end %>
+			<tr class="fixed_row">
+			  	<td colspan="2">
+			  		<button onclick="window.location.assign('<%= story_set_categories_path(:filter => params[:application_id] )%>'); return false;">Cancel Reordering</button>
+			  	</td>
+			  	<td>
+			  		<button onclick="update_order(); return false;">Update order</button>
+			  	</td>
+			 </tr>
+		</tbody>
+	</table>
+<% end %>
