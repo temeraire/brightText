@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 920130109084741) do
+ActiveRecord::Schema.define(:version => 920130109084742) do
 
   create_table "app_submissions", :force => true do |t|
     t.integer  "bright_text_application_id"
