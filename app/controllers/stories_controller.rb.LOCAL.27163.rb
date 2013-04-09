@@ -2,45 +2,38 @@ class StoriesController < ApplicationController
   # GET /stories
   # GET /stories.xml
   def index
-    @highlighted_phreses = params[:q]
     @filter = request[:filter]
+    @filter = "" if @filter == nil  
+    
+    #queryAndParts = ["domain_id = ?"]
+    #queryParams   = [session[:domain].id ]
+    story_set_id = true
+    
+    if ( @filter.empty? != true  && @filter != "__none")
+      if @filter == "__unassigned"
+        #queryAndParts << "story_set_id IS NULL"
+        story_set_id = nil
+      else 
+        #queryAndParts << "story_set_id = ?"
+        story_set_id   = @filter
+      end
+    end
     
     if(params[:q].blank?)
-      @application = find_application
-
-      if @filter == "__unassigned"
-        @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
-      else
-        @story_set = StorySet.find_by_id @filter
-        if @story_set.blank?
-          @application = find_application
-          @category = find_category_for @application
-          unless @category.blank?
-            #debugger
-            @story_sets = @category.story_sets.order(:name)
-            @story_set = @story_sets.find_by_id session[:br_story_set_id]
-            @story_set = @story_sets.first if @story_set.blank?             
-          end
-        else
-          @category = @story_set.story_set_category
-          @application = @category.bright_text_application unless @category.blank?
-          @story_sets = @category.story_sets.order(:name) unless @category.blank?        
-        end
-        @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
-                        {"stories.domain_id" => session[:domain].id, 
-                        "bright_text_applications.id" => @application,
-                        "story_set_categories.id" => @category}.merge(
-                            @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
-      end
-
-      session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
-      @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
+      @stories = Story.where(
+        {:domain_id => session[:domain].id}.merge(
+          ( @filter.empty? != true  && @filter != "__none")? {:story_set_id => story_set_id} : {}
+        )
+      ).order :rank
+      @highlighted_phreses = ""
     else
-      @stories = Story.where(:domain_id => session[:domain].id).search_for(params[:q])
+      @stories = Story.search_for(params[:q])
       @highlighted_phreses = params[:q].split()
     end
     
-    
+    @story_sets = StorySet.where(:domain_id => session[:domain].id)
+    #@stories = Story.find_by_sql ["select * from stories where " + queryAndParts.join(" AND "), queryParams].flatten
+    #@story_sets = StorySet.find_by_sql ["select * from story_sets where domain_id = ?", session[:domain].id ]
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stories }
@@ -76,9 +69,7 @@ class StoriesController < ApplicationController
   # GET /stories/XX/clone
   def clone
     @sourceStory = Story.find(params[:id])    
-    @story = @sourceStory.clone
-    number_of_similar_named_stories = Story.count(:conditions => ["story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%"])
-    @story.name = @story.name + "-" + (number_of_similar_named_stories + 1).to_s
+    @story = Story.new( {:name => @sourceStory.name + " Clone", :descriptor => @sourceStory.descriptor, :story_set_id => @sourceStory.story_set_id, :domain_id => session[:domain].id } )
     respond_to do |format|
         format.html { render :action => "new" }
     end
@@ -94,18 +85,16 @@ class StoriesController < ApplicationController
   # POST /stories.xml
   def create
     @story = Story.new(params[:story])
-    #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
     @story.rank = 0
     
     respond_to do |format|
       if @story.save
-        format.json{ render :json=> {:success => "true", :story_id => @story.id } }
+        format.json{ render :json=> {:success => "true"} }
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
-        #debugger
-        format.json{ render :json=> @story.errors }
+        format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "new" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
       end
@@ -125,7 +114,6 @@ class StoriesController < ApplicationController
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
         format.xml  { head :ok }
       else
-        logger.debug "#{@story}"
         format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
@@ -179,30 +167,4 @@ class StoriesController < ApplicationController
     end
     render :xml => result 
   end
-  
-  def reorder_stories_rank
-    if( params[:story_set_id].blank? )
-      redirect_to stories_path     
-    elsif( params[:story_set_id] ==  "__unassigned")
-      @stories = Story.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
-    else
-      @stories = Story.where(:story_set_id => params[:story_set_id], :domain_id => session[:domain].id).order(:rank)
-    end
-  end
-  
-  def update_stories_rank
-    #p params.to_yaml
-    @stories = Story.update(params[:stories].keys, params[:stories].values)    
-    redirect_to stories_path(:filter => params[:filter])
-  end
-  
-  private
-  def find_category_for(application)
-    if application.instance_of? BrightTextApplication
-      category = application.story_set_categories.find_by_id session[:br_category_id] 
-      category = application.story_set_categories.first if category.blank?
-    end
-    category
-  end
-
 end

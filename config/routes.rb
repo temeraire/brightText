@@ -21,6 +21,7 @@ BrightText::Application.routes.draw do
   
   
   match "/session/:id" => "session#create"   
+
   match "/login" => "session#new", :via => :get
   match "/logout" => "session#destroy", :via => :get
 
