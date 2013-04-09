@@ -86,7 +86,7 @@
 		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>	     
 		    </td>
 		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
-		    <td class="story_management"><%= link_to 'Delete', story, :confirm => 'Are you sure?', :method => :delete %></td>
+		    <td class="story_management"><%= link_to 'Delete', 'stories/' + story.id.to_s + '/delete', :confirm => 'Are you sure?', :method => :delete %></td>
 		  	
 		  </tr>
 		  
