@@ -98,7 +98,7 @@ class StoriesController < ApplicationController
     
     respond_to do |format|
       if @story.save
-        format.json{ render :json=> {:success => "true"} }
+        format.json{ render :json=> {:success => "true", :story_id => @story.id } }
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
@@ -123,6 +123,7 @@ class StoriesController < ApplicationController
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
         format.xml  { head :ok }
       else
+        logger.debug "#{@story}"
         format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
