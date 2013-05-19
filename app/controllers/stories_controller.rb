@@ -5,41 +5,39 @@ class StoriesController < ApplicationController
     @highlighted_phreses = params[:q]
     @filter = request[:filter]
     
-    if(params[:q].blank?)
-      @application = find_application
+    @application = find_application
 
-      if @filter == "__unassigned"
-        @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
-      else
-        @story_set = StorySet.find_by_id @filter
-        if @story_set.blank?
-          @application = find_application
-          @category = find_category_for @application
-          unless @category.blank?
-            #debugger
-            @story_sets = @category.story_sets.order(:name)
-            @story_set = @story_sets.find_by_id session[:br_story_set_id]
-            @story_set = @story_sets.first if @story_set.blank?             
-          end
-        else
-          @category = @story_set.story_set_category
-          @application = @category.bright_text_application unless @category.blank?
-          @story_sets = @category.story_sets.order(:name) unless @category.blank?        
-        end
-        @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
-                        {"stories.domain_id" => session[:domain].id, 
-                        "bright_text_applications.id" => @application,
-                        "story_set_categories.id" => @category}.merge(
-                            @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
-      end
-
-      session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
-      @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
+    if @filter == "__unassigned"
+      @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
     else
-      @stories = Story.where(:domain_id => session[:domain].id).search_for(params[:q])
+      @story_set = StorySet.find_by_id @filter
+      if @story_set.blank?
+        @application = find_application
+        @category = find_category_for @application
+        unless @category.blank?
+          #debugger
+          @story_sets = @category.story_sets.order(:name)
+          @story_set = @story_sets.find_by_id session[:br_story_set_id]
+          @story_set = @story_sets.first if @story_set.blank?             
+        end
+      else
+        @category = @story_set.story_set_category
+        @application = @category.bright_text_application unless @category.blank?
+        @story_sets = @category.story_sets.order(:name) unless @category.blank?        
+      end
+      @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
+                      {"stories.domain_id" => session[:domain].id, 
+                      "bright_text_applications.id" => @application,
+                      "story_set_categories.id" => @category}.merge(
+                          @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
+    end
+
+    session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
+    @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
+    if not params[:q].blank?
+      @stories = @stories.search_for params[:q]
       @highlighted_phreses = params[:q].split()
     end
-    
     
     respond_to do |format|
       format.html # index.html.erb
