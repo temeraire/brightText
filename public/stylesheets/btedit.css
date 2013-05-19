@@ -23,7 +23,12 @@
          font-family:Arial;
          border:1px dotted black;
          
-      }      
+      }
+      /* Fix for pasted text */
+      DIV.btContent SPAN {
+        color: #333;
+      } 
+
       .plainText{
         color:#333333;
          font-family:Arial;
