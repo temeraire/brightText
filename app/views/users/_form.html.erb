@@ -16,8 +16,7 @@
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :domain_id %><br />
-    <%= f.text_field :domain_id %>
+    <%= f.hidden_field :domain_id, value: Domain.find_by_nickname("ContextIT").id %>
   </div>
   <div class="field">
   	<%= f.label :email %><br />
@@ -28,8 +27,8 @@
     <%= f.password_field :password %>
   </div>
   <div class="field">
-    <%= f.label :nickname %><br />
-    <%= f.text_field :nickname %>
+    <%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation %><br />
   </div>
   <div class="actions">
     <%= f.submit %>
