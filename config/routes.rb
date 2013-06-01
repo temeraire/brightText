@@ -6,6 +6,7 @@ BrightText::Application.routes.draw do
   resources :domain_styles
 
   resources :users
+  match '/users/login' => 'users#login'
 
   resources :stories
 

@@ -15,6 +15,10 @@ class ApplicationController < ActionController::Base
     session[:style]  = DomainStyle.find_by_domain_id user.domain.id
   end
 
+  def authenticate 
+    
+  end
+
   def current_user
     session[:domain]
   end

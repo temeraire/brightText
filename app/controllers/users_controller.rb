@@ -54,6 +54,16 @@ class UsersController < ApplicationController
     end
   end
 
+  def login
+    if (user = User.authenticate params[:user][:email], params[:user][:password])
+      log_in! user
+      redirect_to root_url, notice: "Logged in!"
+    else
+      flash[:error] = "Email or password is invalid."
+      render 'new'
+    end
+  end
+
   # PUT /users/1
   # PUT /users/1.xml
   def update
