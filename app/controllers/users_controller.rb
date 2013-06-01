@@ -48,19 +48,20 @@ class UsersController < ApplicationController
         format.html { redirect_to(@user, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
-        format.html { render :action => "new" }
+        format.html { render :action => "new" , :layout => false }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
   end
 
   def login
-    if (user = User.authenticate params[:user][:email], params[:user][:password])
-      log_in! user
+    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+      log_in! @user
       redirect_to root_url, notice: "Logged in!"
     else
       flash[:error] = "Email or password is invalid."
-      render 'new'
+      @user = User.new
+      render 'new', layout: false
     end
   end
 
