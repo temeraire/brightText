@@ -8,7 +8,7 @@ gem 'rake', '0.8.7'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 
-gem 'mysql2'
+gem 'mysql2', "~> 0.2.7"
 gem 'sqlite3-ruby', :require => 'sqlite3'
 #gem 'pg'
 gem 'jquery-rails'
