@@ -1,4 +1,7 @@
 class StoriesController < ApplicationController
+
+  before_filter :login_required
+
   # GET /stories
   # GET /stories.xml
   def index

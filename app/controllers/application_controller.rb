@@ -2,11 +2,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   def login_required
     if session[:domain]
-    return true
+      return true
     end
     flash[:warning]='Please login to continue'
     session[:return_to]=request.request_uri
-    redirect_to "/index.html"
+    redirect_to new_user_path
     return false
   end
 
