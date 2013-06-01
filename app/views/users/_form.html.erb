@@ -2,7 +2,7 @@
   <% user = User.new %>
 <% end %>
 
-<%= form_for(user, url: {action: action}) do |f| %>
+<%= form_for(user, url: {action: action}, validate: true) do |f| %>
 
   <% if action == :create %>
     <div class="field">

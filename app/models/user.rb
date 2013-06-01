@@ -4,13 +4,16 @@ class User < ActiveRecord::Base
   
   before_save :encrypt_password, :set_domain
 
-  validates :name, :presence => {:message => "Please insert a name."}
+  validates :name, :email, :presence => {:message => "Please insert a name."}
   validates :password, 
                 :presence => {:message => "Please insert password(minimum 4 charecters long)."},
                 #:confirmation => true, 
-                :length => {:minimum => 4, :message => "Minimum 4 charecters are required for password."}
-  validates :email, 
-                :format => { :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :message => "Please insert a valid email." }
+                :length => {:minimum => 4}
+  validates :email, :format => { :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :message => "Please insert a valid email." }
+  validates :email, uniqueness: true
+
+  validates :password, :confirmation => true, :on => :create
+  validates :password, :confirmation => true, :on => :update, :unless => lambda{ |user| user.password.blank? }
 
   def set_domain
     unless domain_id.present?
