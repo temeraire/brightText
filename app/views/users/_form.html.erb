@@ -11,10 +11,14 @@
     </div>
   <% end %>
 
-  <% if action == :signup %>
+  <% if action == :create %>
     <div class="field">
-      <%= f.label :name %><br />
+      <%= f.label :name, "First name" %><br />
       <%= f.text_field :name %>
+    </div>
+    <div class="field">
+      <%= f.label :lastname, "Last name" %><br />
+      <%= f.text_field :lastname %>
     </div>
   <% end %>
   <div class="field">
@@ -25,7 +29,7 @@
     <%= f.label :password %><br />
     <%= f.password_field :password %>
   </div>
-  <% if action == :signup %>
+  <% if action == :create %>
     <div class="field">
       <%= f.label :password_confirmation %><br />
       <%= f.password_field :password_confirmation %><br />
