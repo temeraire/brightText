@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>BrightText Admin Console</title>
+		
+    <script src="/javascripts/jquery.js?1337562671" type="text/javascript"></script>
+    <script src="/javascripts/jquery_ujs.js?1337562671" type="text/javascript"></script>
+    <script src="/javascripts/application.js?1286831383" type="text/javascript"></script>		
+		<link type="text/css" href="/stylesheets/jquery-eggplant/jquery-ui-1.8.22.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
+		<script type="text/javascript" src="js/jquery/jquery-ui-1.8.22  .custom.min.js"></script>
+		<script type="text/javascript">
+		
+		
+		
+      $(document).ready(function() {  
+      
+	      var f = document.location.href.split("#");
+	      
+	      if ( f.length > 1 ){
+	        switch( parseInt( f[1] ) ){
+	          case 1:
+	            showLoginError("bad login request");
+	            break;
+	          case 2:
+	            showLoginError("incorrect username or password");
+	            break;
+	          default:
+	            showLoginError("unable to login");
+	            break;
+	        }
+	      }
+      });	 		
+		
+		
+		  function logIn()
+		  {
+
+		    var user = document.getElementById("userInput").value;
+		    var pass = document.getElementById("passInput").value;
+		  		    
+		    if ( user.length == 0 || pass.length == 0 ) return;		    
+		  		    
+	      //$.cookie("user", user); 
+	      
+	      document.getElementById("username").value = user;
+	      document.getElementById("password").value = pass;
+	      
+	      document.getElementById("loginForm").submit();
+		  }
+		  
+
+		  function showLoginError( message )
+		  {
+		    var msgDiv = document.getElementById("errorMessage");
+		    while( msgDiv.firstChild ){
+		      msgDiv.removeChild( msgDiv.firstChild );
+		    }
+		    msgDiv.appendChild( document.createTextNode( message ) );
+		  }
+		
+      function testEnterKey( event )
+      {
+        if ( !event ) event = window.event;
+        if (event.keyCode == 13)
+        {
+          event.cancelBubble = true;
+          event.returnValue = false;
+          logIn();
+        }
+      }
+                
+		</script>
+		
+		
+		<style type="text/css">
+			/*demo page css*/
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.demoHeaders { margin-top: 2em; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			ul#icons {margin: 0; padding: 0;}
+			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#icons span.ui-icon {float: left; margin: 0 4px;}
+			
+      
+      .submit {
+        border: 1px solid black; 
+        padding: 3px 0px 3px 0px;
+        font-size: 13px;
+        cursor: pointer;
+        width: 130px;
+        text-align: center;
+        background-color:#777799;
+      }
+      
+      .login-box{
+        border: 1px solid #777799; 
+        width: 325px; 
+        height: 163px; 
+        margin-left:265px; 
+        margin-top:200px;
+        background-color: #2D2634;       
+        -webkit-box-shadow: 5px 7px 16px hsl(270, 24%, 11%);
+        -moz-box-shadow: 5px 7px 16px hsl(270, 24%, 11%);
+        box-shadow: 5px 7px 16px hsl(270, 24%, 11%);        
+      }			
+		</style>	
+	</head>
+	
+	<body>
+		<div id="main" style="width:850px;height:650px;" class="ui-widget-content ui-corner-all">
+      <div id="accountsBox" class="ui-corner-all login-box">
+        <div style="float:left; font-size:10pt; color:#777799; padding:4px; text-align: center; width: 317px;">BrightText Console (1.0) by ContextIT</div>
+        <div style="padding-left:39px; padding-top:09px">
+          <div style="margin-top:5px;padding-left:20px">
+           <div id="errorMessage" style="font-size:9pt; color:#ff0000; text-align: center; width:200px;">&nbsp</div>
+          </div>        
+          <div style="margin-top:5px;">
+
+           <div id="Prompt" style="float:left; font-size:9pt; padding:4px; width:72px;">Account:</div>
+           <div><p><input id="userInput" type="text" style="width:130px" onkeypress="testEnterKey( event )" ></input></p></div> 
+          </div>
+          <div  style="margin-top:5px;">
+            <div id="User" style="float:left; font-size:9pt;  padding:4px; width:72px">Password:</div>
+            <div><p><input id="passInput" type="password" style="width:130px" onkeypress="testEnterKey( event )" ></input></p></div>          
+          </div>
+          <div style="margin-top:30px; margin-left:130px"><div class="ui-corner-all submit" onclick="logIn()">Enter</div></div>
+          
+        </div>
+       </div>
+			
+		</div>
+			
+			
+		<!-- hidden login form -->
+		<form id="loginForm" action="/session/create" method="get">
+		  <input type="hidden" id="username" name="username"></input>
+		  <input type="hidden" id="password" name="password"></input>
+		</form>			
+			
+	</body>
+</html>
+
+

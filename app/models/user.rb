@@ -3,12 +3,8 @@ class User < ActiveRecord::Base
   attr_accessor :password
   
   before_save :encrypt_password, :set_domain
-  
+
   validates :name, :presence => {:message => "Please insert a name."}
-  validates :nickname, 
-                :presence => {:message => "Please insert a nickname(minimum 4 charecters long)."}, 
-                :uniqueness => {:message => "Nickname is already registered. Choose new one."}, 
-                :length => {:minimum => 3, :message => "Minimum 3 charecters are required for nickname."}
   validates :password, 
                 :presence => {:message => "Please insert password(minimum 4 charecters long)."},
                 #:confirmation => true, 

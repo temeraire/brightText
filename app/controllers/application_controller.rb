@@ -10,6 +10,11 @@ class ApplicationController < ActionController::Base
     return false
   end
 
+  def log_in! user
+    session[:domain] = user.domain
+    session[:style]  = DomainStyle.find_by_domain_id user.domain.id
+  end
+
   def current_user
     session[:domain]
   end
