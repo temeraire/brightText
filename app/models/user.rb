@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   
   before_save :encrypt_password, :set_domain
 
-  validates :name, :email, :presence => {:message => "Please insert a name."}
+  validates :name, :email, :presence => true
   validates :password, 
                 :presence => {:message => "Please insert password(minimum 4 charecters long)."},
                 #:confirmation => true, 
