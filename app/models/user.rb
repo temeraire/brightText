@@ -27,12 +27,24 @@ class User < ActiveRecord::Base
       self.password_hash = BCrypt::Engine.hash_secret(password, self.password_salt)
     end
   end
-  
-  
+
   def self.authenticate(name, password)
     user = where("email = :name", :name => name ).first
     if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
       user
     end
+  end
+
+  def send_password_reset
+    generate_token :reset_password_token
+    self.reset_password_sent_at = Time.zone.now
+    save! validate: false
+    UserMailer.password_reset(self).deliver
+  end
+
+  def generate_token(column)
+    begin
+      self[column] = SecureRandom.urlsafe_base64
+    end while User.exists?(column => self[column])
   end
 end
