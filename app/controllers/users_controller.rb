@@ -59,8 +59,8 @@ class UsersController < ApplicationController
       log_in! @user
       redirect_to root_url, notice: "Logged in!"
     else
-      flash[:error] = "Email or password is invalid."
       @user = User.new
+      flash.now[:error] = "Email or password is invalid"
       render 'new', layout: "users"
     end
   end
