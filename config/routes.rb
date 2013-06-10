@@ -7,12 +7,18 @@ BrightText::Application.routes.draw do
 
   resources :users
 
+  resources :stories
+
+  #match 'stories/:id' => 'stories#destroy', :via => :delete
+
+
   match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
   match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
   match 'story/save'        => 'bt_proxy#save'
   match 'stories/:id/clone'  => 'stories#clone'
-  
-  
+  match 'stories/:id/delete' => 'stories#destroy'
+  # match 'story/:id' => 'stories#destroy', :via => :delete, :as => :story_destroy
+
   match 'stories/:id/legacy'  => 'stories#legacyxml'
   match 'stories/:id/clones'  => 'stories#clonesxml'
   
@@ -21,6 +27,7 @@ BrightText::Application.routes.draw do
   
   
   match "/session/:id" => "session#create"   
+
   match "/login" => "session#new", :via => :get
   match "/logout" => "session#destroy", :via => :get
 

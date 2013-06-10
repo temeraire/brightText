@@ -72,7 +72,7 @@
     	type = "POST";
     }
     $.ajax({
-    	type: type,
+    	type: $(form).attr("method"),
     	url: $(form).attr("action"),
     	data: $(form).serialize(),
     	dataType: "json",
@@ -80,21 +80,31 @@
     				settings = window[$('form[data-validate]').attr('id')];
     				element = $("#story_name");
     				clientSideValidations.formBuilders[settings.type].remove(element, settings);
-    				if(data["success"] == "true")
-    					show_response_dialog("Story saved successfully");
+    				if(data["success"] == "true") {
+              console.log(data);
+    					show_response_dialog("Story saved successfully", "Success!");
+              if(data["story_id"] != null) { // If the story was just created
+                // Change form class to "edit_story"
+                $(form).removeClass('new_story');
+                $(form).addClass('edit_story');
+                $(form).attr('action', "/stories/" + data["story_id"]);
+                $(form).attr('method', 'PUT');
+              }
+            }
     				else if(data["name"]){    					
     					message = data["name"];
     					clientSideValidations.formBuilders[settings.type].add(element, settings, message);
     				}
     					
     				else
-    					show_response_dialog("Something went wrong! Please try again later.");
+    					show_response_dialog("Something went wrong! Please try again later.", "Failed!");
     			}
     });
   }  
   
-  function show_response_dialog(dialog_text){
+  function show_response_dialog(dialog_text, dialog_title){
   	$("#dialog p").html(dialog_text);
+    $("#dialog").attr("title", dialog_title);
   	$( "#dialog" ).dialog({
     	autoOpen: true,
     	resizable: false,

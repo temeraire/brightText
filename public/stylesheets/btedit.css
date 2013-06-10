@@ -1,6 +1,8 @@
 
-
-
+      /* Fix for pasted text */
+      .btContent SPAN {
+        color: #333;
+      }
 
       SPAN.changePoint{
          font-family:Arial;
@@ -23,7 +25,8 @@
          font-family:Arial;
          border:1px dotted black;
          
-      }      
+      } 
+
       .plainText{
         color:#333333;
          font-family:Arial;

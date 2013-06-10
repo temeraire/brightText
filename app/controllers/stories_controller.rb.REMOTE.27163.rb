@@ -5,39 +5,40 @@ class StoriesController < ApplicationController
     @highlighted_phreses = params[:q]
     @filter = request[:filter]
     
-    @application = find_application
+    if(params[:q].blank?)
+      @application = find_application
 
-    if @filter == "__unassigned"
-      @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
-    else
-      @story_set = StorySet.find_by_id @filter
-      if @story_set.blank?
-        @application = find_application
-        @category = find_category_for @application
-        unless @category.blank?
-          #debugger
-          @story_sets = @category.story_sets.order(:name)
-          @story_set = @story_sets.find_by_id session[:br_story_set_id]
-          @story_set = @story_sets.first if @story_set.blank?             
-        end
+      if @filter == "__unassigned"
+        @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
       else
-        @category = @story_set.story_set_category
-        @application = @category.bright_text_application unless @category.blank?
-        @story_sets = @category.story_sets.order(:name) unless @category.blank?        
+        @story_set = StorySet.find_by_id @filter
+        if @story_set.blank?
+          @application = find_application
+          @category = find_category_for @application
+          unless @category.blank?
+            #debugger
+            @story_sets = @category.story_sets.order(:name)
+            @story_set = @story_sets.find_by_id session[:br_story_set_id]
+            @story_set = @story_sets.first if @story_set.blank?             
+          end
+        else
+          @category = @story_set.story_set_category
+          @application = @category.bright_text_application unless @category.blank?
+          @story_sets = @category.story_sets.order(:name) unless @category.blank?        
+        end
+        @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
+                        {"stories.domain_id" => session[:domain].id, 
+                        "bright_text_applications.id" => @application,
+                        "story_set_categories.id" => @category}.merge(
+                            @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
       end
-      @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
-                      {"stories.domain_id" => session[:domain].id, 
-                      "bright_text_applications.id" => @application,
-                      "story_set_categories.id" => @category}.merge(
-                          @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
-    end
-
-    session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
-    @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
-    if not params[:q].blank?
-      @stories = @stories.search_for params[:q]
+      session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
+      @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
+    else
+      @stories = Story.where(:domain_id => session[:domain].id).search_for(params[:q])
       @highlighted_phreses = params[:q].split()
     end
+    
     
     respond_to do |format|
       format.html # index.html.erb
@@ -94,11 +95,10 @@ class StoriesController < ApplicationController
     @story = Story.new(params[:story])
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
-    @story.rank = 0
     
     respond_to do |format|
       if @story.save
-        format.json{ render :json=> {:success => "true", :story_id => @story.id } }
+        format.json{ render :json=> {:success => "true"} }
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
@@ -123,7 +123,6 @@ class StoriesController < ApplicationController
         format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
         format.xml  { head :ok }
       else
-        logger.debug "#{@story}"
         format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
@@ -142,12 +141,6 @@ class StoriesController < ApplicationController
       format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
     end
-  end
-
-  def rank
-    @story = Story.find(params[:story][:id])
-    @story.rank =  params[:story][:rank]
-    @story.save!
   end
   
   def legacyxml
