@@ -18,6 +18,8 @@ gem 'client_side_validations', '3.0.4'
 
 gem 'bcrypt-ruby', :require => 'bcrypt'
 
+gem 'better_errors'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

@@ -30,9 +30,13 @@ GEM
     activesupport (3.0.20)
     arel (2.0.10)
     bcrypt-ruby (3.0.1)
+    better_errors (0.9.0)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
     builder (2.1.2)
     client_side_validations (3.0.4)
       activesupport (~> 3.0.0)
+    coderay (1.0.9)
     columnize (0.3.6)
     debugger (1.6.0)
       columnize (>= 0.3.1)
@@ -93,6 +97,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby
+  better_errors
   client_side_validations (= 3.0.4)
   debugger
   jquery-rails
