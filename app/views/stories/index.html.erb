@@ -31,14 +31,16 @@
 %>
  <option <%= selected %> value="__unassigned">-- unassigned --</option>
 <%
+unless @story_sets.nil?
 
   @story_sets.each do | set |
     selected = ''
-    selected = 'selected' if storySetFilter == set.id.to_s  
+    selected = 'selected' if storySetFilter == set.id.to_s
 %>
     <option value="<%=set.id%>" <%= selected %>><%= set.name %></option>
 <%
   end
+end
 %>
 </select>
 
