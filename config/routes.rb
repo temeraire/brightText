@@ -10,6 +10,7 @@ BrightText::Application.routes.draw do
   resources :users
   post '/users/authenticate' => 'users#authenticate'
   get '/login' => 'users#new_session', as: :login
+  get '/register' => 'users#new', as: :register_path
 
   resources :stories
 

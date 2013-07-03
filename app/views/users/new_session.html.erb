@@ -1,22 +1,24 @@
-<h2>Login</h2>
+<div class="cnt1">
+  <h2>Login</h2>
 
 
-<%= form_for @user, url: {action: "authenticate"}, validate: true do |f| %>
+  <%= form_for @user, url: {action: "authenticate"}, validate: true do |f| %>
 
-  <ul class="login-form">
-    <li>
-      <%= f.label :email %>
-      <%= f.text_field :email, class: 'txt' %>
-    </li>
-    <li>
-      <%= f.label :password, style: 'margin:12px 0 2px;' %>
-      <%= f.password_field :password , class: 'txt' %>
-    </li>
+    <ul class="login-form">
+      <li>
+        <%= f.label :email %>
+        <%= f.text_field :email, class: 'txt' %>
+      </li>
+      <li>
+        <%= f.label :password, style: 'margin:12px 0 2px;' %>
+        <%= f.password_field :password , class: 'txt' %>
+      </li>
 
-    <li>
-      <span><%= link_to "Forgot password?", new_password_reset_path %></span>
-      <%= f.submit "Log in", class: 'btn' %>
-    </li>
-  </ul>
+      <li>
+        <span><%= link_to "Forgot password?", new_password_reset_path %></span>
+        <%= f.submit "Log in", class: 'btn' %>
+      </li>
+    </ul>
 
-<% end %>
+  <% end %>
+</div>

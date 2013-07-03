@@ -1,40 +1,29 @@
-<% unless action.to_s == params[:action] %>
-  <% user = User.new %>
-<% end %>
+<%= form_for(@user, validate: true) do |f| %>
 
-<%= form_for(user, url: {action: action}, validate: true) do |f| %>
-
-  <% if action == :create %>
-    <div class="field">
-      <%= f.label :name, "First name" %><br />
-      <%= f.text_field :name %>
-    </div>
-    <div class="field">
-      <%= f.label :lastname, "Last name" %><br />
-      <%= f.text_field :lastname %>
-    </div>
-  <% end %>
-  <div class="field">
-  	<%= f.label :email %><br />
-  	<%= f.text_field :email %>
-  </div>
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
-  </div>
-  <% if action == :create %>
-    <div class="field">
-      <%= f.label :password_confirmation %><br />
-      <%= f.password_field :password_confirmation %><br />
-    </div>
-  <% end %>
-  <% if action == :create %>
-    <p>
-      <%= link_to "Forgot password?", new_password_reset_path %>
-    </p>
-  <% end %>
-  <div class="actions">
-    <%= f.submit "#{action == :create ? 'Register' : 'Log in'}" %>
-  </div>
+  <ul class="login-form">
+    <li>
+      <%= f.label :name, "First name" %><strong>*</strong>
+      <%= f.text_field :name, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :lastname, "Last name", style: 'margin:12px 0 2px;' %><br />
+      <%= f.text_field :lastname, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :email, style: 'margin:12px 0 2px;' %>
+      <%= f.text_field :email, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :password, style: 'margin:12px 0 2px;' %><br />
+      <%= f.password_field :password, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :password_confirmation, style: 'margin:12px 0 2px;' %><br />
+      <%= f.password_field :password_confirmation, class: 'txt' %><br />
+    </li>
+    <li class="actions">
+      <%= f.submit 'Submit', class: 'btn' %>
+    </li>
+  </ul>
 
 <% end %>
