@@ -52,20 +52,20 @@ class UsersController < ApplicationController
         format.html { redirect_to(@user, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
-        format.html { render :action => "new" , :layout => "users" }
+        format.html { render :action => "new_session" , :layout => "users" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
   end
 
-  def login
+  def authenticate
     if (@user = User.authenticate params[:user][:email], params[:user][:password])
       log_in! @user
       redirect_to root_url, notice: "Logged in!"
     else
       @user = User.new
       flash.now[:error] = "Email or password is invalid"
-      render 'new', layout: "users"
+      render 'new_session', layout: "users"
     end
   end
 

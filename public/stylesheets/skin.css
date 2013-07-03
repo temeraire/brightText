@@ -121,7 +121,7 @@ ul li {list-style:none;}
 						#mCnt .step2 h3, #mCnt .step2 h2
 						{clear:both;color:#fff; font-family:'Cuprum'; font-size:20px;
 						margin:15px 0 5px 30px; font-weight:normal;}#mCnt .step2 h3{font-size:25px;}
-					#mCnt .step2 spanj{background:url('../../images/icons/pencil.png') no-repeat top right;
+					#mCnt .step2 spanj{background:url('../images/icons/pencil.png') no-repeat top right;
 						display:block; height:20px; width:20px; margin:17px 0 0 6px; }
 						#mCnt .step2 form{clear:both;}
 							#mCnt .step2 form ul.step2-form{clear:both;width: 100%; }
@@ -159,10 +159,10 @@ ul li {list-style:none;}
 										border: 1px solid #faed64;background-color: #fff47f;padding: 10px 10px 3px 30px;
 										display:none;}
 									#mCnt .step2 ul.random li span.pinto{float:left; position:absolute;
-									background:url('../../images/img/pinto.png') no-repeat; 
+									background:url('../images/img/pinto.png') no-repeat; 
 									height:35px; width:45px; top: 100%; right:17%;}
 										#mCnt .step2 ul.random li{list-style:none; clear:both;
-										background:url('../../images/img/li-bg.png')no-repeat left center;}
+										background:url('../images/img/li-bg.png')no-repeat left center;}
 											#mCnt .step2 ul.random li a{color:#888; font-family:'Cuprum';
 											 font-size:15px;margin:0 0 5px 12px; font-weight:normal;
 											 padding:0 0 0 10px;}

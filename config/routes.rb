@@ -8,8 +8,8 @@ BrightText::Application.routes.draw do
   resources :password_resets
 
   resources :users
+  post '/users/authenticate' => 'users#authenticate'
   get '/login' => 'users#new_session', as: :login
-  get '/users/login' => 'users#login'
 
   resources :stories
 

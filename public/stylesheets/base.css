@@ -1,5 +1,5 @@
 /* Authors: zainansari@live.com : Creation Date:01-Apr-2012 Updation Date:N-A*/
-body{background:url('../../images/bg/index.png') no-repeat; font-family:'Cuprum'; background:#2a333a;}
+body{background:url('../images/bg/index.png') no-repeat; font-family:'Cuprum'; background:#2a333a;}
 h1,h2,h3{margin:1em 0;}
 h1,h2,h3,h4,h5,h6 {font-weight:normal;}
 optgroup{font-weight:normal;}
@@ -15,7 +15,7 @@ sup{vertical-align:super;}
 sub{vertical-align:sub;}
 p,fieldset,table,pre{margin-bottom:1em;}
 button,input[type="checkbox"],input[type="radio"],input[type="reset"],input[type="submit"]{padding:1px;}
-		
+a{color:inherit;}
 /* widths Heights */
 body,#mHdr,#mCnt,#mFtr,.w100P,#w100P{width:100%;}
 .mWrp{width:970px;margin:0 auto;}
