@@ -22,7 +22,6 @@ class SessionController < ApplicationController
         redirect_to "/index.html#2"
       end
 
-      
 =begin
       render :js => @result  #always return the json respose
       headers['content-type']='text/javascript';  

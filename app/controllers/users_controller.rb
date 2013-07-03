@@ -32,6 +32,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def new_session
+    @user = User.new
+  end
+
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
