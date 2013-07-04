@@ -49,7 +49,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         log_in! @user
-        format.html { redirect_to(@user, :notice => 'User was successfully created.') }
+        format.html { redirect_to(new_story_path, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
         format.html { render :action => "new" , :layout => "users" }

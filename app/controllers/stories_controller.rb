@@ -69,7 +69,7 @@ class StoriesController < ApplicationController
       @story.story_set_id = filter.to_i
     end
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :layout => 'users' }
       format.xml  { render :xml => @story }
     end
   end

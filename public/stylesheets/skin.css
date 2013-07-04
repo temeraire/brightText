@@ -39,7 +39,7 @@ ul li {list-style:none;}
 			#mCnt .step2 form ul.step2-form li .btn,
 			#mCnt .step3 form ul.step3-data li .btn,
 			.save-changes .btn1, .save-changes .btn2, .text1 .btn1,
-			#mCnt .step2 .ftr1 a.btn
+			#mCnt .step2 .ftr1 .btn
 			{ color:#0d1721; font-family:'Cuprum'; font-size:24px;
 			background: #c0c0c0; /* Old browsers */
 			background: -moz-linear-gradient(top,  #c0c0c0 0%, #8d8d8d 80%); /* FF3.6+ */
@@ -60,7 +60,7 @@ ul li {list-style:none;}
 			 text-align: center; width: 113px;}
 			 /*cnt2 registration page*/
 			 #mCnt .cnt2 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
-			 #mCnt .cnt2 form ul.login-form a.btn{margin: 25px 0 0 185px;}
+			 #mCnt .cnt2 form ul.login-form .btn{margin: 25px 0 0 185px;}
 			 /*Tabs, steps page*/
 			 #mCnt{}
 			 #mCnt  #tabs{ float:left; width:100%;}
@@ -114,7 +114,7 @@ ul li {list-style:none;}
                                 #mCnt form ul.step1-form a{}
 								#mCnt form ul.step1-form li .txtarea{margin:10px 0 20px 30px; clear:both; 
 								display:block;}
-									#mCnt form ul.step1-form a.btn{ height: 36px; margin: 29px 0 0;
+									#mCnt form ul.step1-form .btn{ height: 36px; margin: 29px 0 0;
 									width: 110px;}
 				/*step2*/
 					#mCnt .step2{clear:both;float:left !important;position:relative;}
@@ -136,11 +136,11 @@ ul li {list-style:none;}
 									.etc{float:left; width:100%;}
 								    #mCnt .step2 form ul.step2-form li .txtarea{margin:0px 0 20px 30px; }
 									#mCnt .step2 form ul.step2-form li a{ float:right;}
-									#mCnt .step2 form ul.step2-form li a.btn{ margin: 18px 0; width: 110px;}
+									#mCnt .step2 form ul.step2-form li .btn{ margin: 18px 0; width: 110px;}
 									#mCnt .step2 .ftr1 a{}
 									#mCnt .step2 form ul.step2-form .ftr2{width:45% !important; 
 									float:right!important;margin: 13% 0 0 0;}
-									#mCnt .step2 .ftr1 a.btn{ width: 110px;
+									#mCnt .step2 .ftr1 .btn{ width: 110px;
 									margin:32px 0 0 3%; display:inline-block; text-decoration:none;}
 									#mCnt .step2 .ftr1{width:100%;}
 									#mCnt .step2  .ftr1 strong{color:#b7b7b7; font-family:'Arial'; 
@@ -179,7 +179,7 @@ ul li {list-style:none;}
 									 font-family:'Cuprum'; font-size:20px; margin:8px 0 0 20px;
 									 font-size:20px; font-weight:normal;}
 									#mCnt .step3 .ftr1 a{ }
-									#mCnt .step3 .ftr1 a.btn{float:left; 110px;
+									#mCnt .step3 .ftr1 .btn{float:left; 110px;
 									margin:32px 0 0 37%; display:inline-block; text-decoration:none;}
 							#mCnt .step3 .ftr1{width:100%;}
 								#mCnt .step3  .ftr1 strong{color:#b7b7b7; font-family:'Arial'; font-size:14px;
@@ -271,10 +271,10 @@ ul.step1-form a,
 .restart-app img,
 #mCnt form ul.step1-form .btn,
 #mCnt .cnt2 form ul.step1-form .btn,
-.step1 form ul.step1-form a.btn-step,
+.step1 form ul.step1-form .btn-step,
 #mCnt .step2 form ul.step2-form li,
 #mCnt .step2 form ul.step2-form li a,
-#mCnt .step2 form ul.step2-form li a.btn{float:left;}
+#mCnt .step2 form ul.step2-form li .btn{float:left;}
 #mCnt .step2 ul.random,
 #mCnt .step2 ul.random li,
 #mCnt .step2 ul.random li a,
