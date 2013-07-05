@@ -20,6 +20,7 @@ class Story < ActiveRecord::Base
   end
 
   def category=(c)
+    c = StorySetCategory.find_by_name(c) || StorySetCategory.new(name: c)
     story_set.story_set_category = c
   end
 

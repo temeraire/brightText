@@ -1,6 +1,7 @@
 <% content_for :javascripts do %>
   <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
   <script type="text/javascript" src="/javascripts/browserDetect.js"></script>
+  <script type="text/javascript" src="/javascripts/bt/bt.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
      $('span.clk').hover(function()
@@ -24,6 +25,33 @@
         return false;
       });
     });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("a[href='.step2']").click(function() {
+
+        $.ajax({
+          type: "post",
+          url: "/stories",
+          dataType: "json",
+          data: $("#new_story").serialize(),
+          success: function(data) {
+            if(data["success"] == "true") {
+              $("#category_name").text($("#story_category").val());
+              $("#name").text($("#story_name").val());
+              $(".edit_story #story_description").val($("#new_story #story_description").val());
+            }
+            else if(data["name"]){
+              message = data["name"];
+              $("#story_name").parent().addClass('field_with_errors');
+              $("#story_name + .message").remove();
+              $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
+            }
+          }
+        })
+      })
+    });
+
   </script>
 <% end %>
 
@@ -64,9 +92,9 @@
          created to see your changes. Be sure to Save!</a></li>
                 <li><span class="pinto"></span></li>
     </ul>
-    <%= form_for(@story, :validate => true) do |f| %>
-      <h3><%= @story.category %></h3>
-      <h2><%= @story.name %></h2>
+    <%= form_for(@story, :validate => true, :html => { :method => :put, class: 'edit_story' }, :remote => true) do |f| %>
+      <h3 id="category_name"><%= @story.category %></h3>
+      <h2 id="name"><%= @story.name %></h2>
       <ul class=" step2-form ">
         <ul class="etc">
           <li>

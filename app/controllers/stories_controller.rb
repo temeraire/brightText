@@ -94,15 +94,17 @@ class StoriesController < ApplicationController
   # POST /stories
   # POST /stories.xml
   def create
-    @story = Story.new(params[:story])
+    story_set = StorySet.new(name: "storyset#{StorySet.count + 1}")
+    @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: params[:story][:description])
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
+    @story.story_set.story_set_category.domain_id = session[:domain].id
     @story.rank = 0
-    
+
     respond_to do |format|
       if @story.save
         format.json{ render :json=> {:success => "true", :story_id => @story.id } }
-        format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully created.') }
+        format.html { redirect_to(root_path, :notice => 'Story was successfully created.') }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
       else
         #debugger
@@ -111,8 +113,6 @@ class StoriesController < ApplicationController
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
       end
     end
-    
-    
   end
 
   # PUT /stories/1
