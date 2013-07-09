@@ -1,26 +1,71 @@
+<% content_for :stylesheets do %>
+  <style>
+    textarea.dataport{
+      width:764px;
+      height:392px;
+      resize:none;
+    }
+
+    div.harnesscontainer{
+      width:834px;
+      height:34px;
+      margin:5px;
+      padding:5px;
+      float:left;
+      border: 1px dotted black
+    }
+
+    div.viewportcontainer{
+      width:440px;
+      height:110px;
+      margin:5px;
+      padding:5px;
+      float:left;
+    }
+
+    div.btEditor{
+      width:440px;
+      height:120px;
+      padding:10px;
+    }
+
+    DIV.btContent {
+      margin-left: 20px;
+      box-shadow: 0 0 3px #000 inset;
+    }
+    .no-close .ui-dialog-titlebar-close {display: none }
+  </style>
+  <link rel="stylesheet" href="stylesheets/btedit.css">
+<% end %>
+
 <% content_for :javascripts do %>
   <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
   <script type="text/javascript" src="/javascripts/browserDetect.js"></script>
   <script type="text/javascript" src="/javascripts/bt/bt.js"></script>
+  <script src="/js/jquery/jquery.json-2.2.min.js"></script>
+  <script src="/js/jquery/jquery-ui-1.8.22.custom.min.js"></script>
+  <script src="/js/jquery/jquery.conmenu.js"></script>
+  <script src="/js/jquery/jquery.cookie.js"></script>
+  <script type="text/javascript" src="/js/btedit.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
      $('span.clk').hover(function()
-        { $("ul.random").show(); }, 
+        { $("ul.random").show(); },
       function()
-        { $("ul.random").hide(); 
+        { $("ul.random").hide();
       })
     });
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
-        $('#tabs div').hide();
+        $('#tabs').children('div').hide();
         $('#tabs div:first').show();
         $('#tabs ul li:first').addClass('active');
-        $('#tabs ul li a').click(function(){ 
+        $('#tabs ul li a').click(function(){
         $('#tabs ul li').removeClass('active');
-        $(this).parent().addClass('active'); 
-        var currentTab = $(this).attr('href'); 
-        $('#tabs div').hide();
+        $(this).parent().addClass('active');
+        var currentTab = $(this).attr('href');
+        $('#tabs').children('div').hide();
         $(currentTab).show();
         return false;
       });
@@ -39,7 +84,8 @@
             if(data["success"] == "true") {
               $("#category_name").text($("#story_category").val());
               $("#name").text($("#story_name").val());
-              $(".edit_story #story_description").val($("#new_story #story_description").val());
+              description = $("#new_story #story_description").val();
+              $(".edit_story #story_description").val(description);
             }
             else if(data["name"]){
               message = data["name"];
@@ -53,6 +99,84 @@
     });
 
   </script>
+  <!-- BrightText WAND script -->
+  <script>
+    var _bt1 = null;
+
+    function updateToneSlider1( gradients, value )
+    {
+      var toneIndex = 0;
+      for ( var i = 0; i < gradients.length; i++ ){
+        if ( gradients[i].id == value ){
+          toneIndex = i;
+          break;
+        }
+      }
+      $("#tone-control1").hide( );
+      $( "#slider1" ).slider({
+        value: toneIndex,
+        min: 0,
+        max: gradients.length - 1,
+        range: false,
+        step: 0.001,
+        slide: function( event, ui ) {
+          var toneGradients = gradients;
+          var s1 = Math.round(ui.value);
+          if ( _s1 != s1 ){ // allow smooth moving of the tone selector
+            _s1 = s1;
+            $( "#gradient1" ).html( gradients[ s1 ].name );
+            _bt1.handleToneSelection( gradients[ s1 ].id );
+          }
+        }
+      });
+      if ( gradients.length > 1) {
+        $( "#gradient1" ).html( gradients[ toneIndex ].name );
+        $("#tone-control1").show();
+      }
+    }
+
+    var _s1;
+
+
+    $(document).ready(function(){
+
+      _bt1 = new BrightTextEditor( "bt_one", true );
+
+      var rawData  = $("#fieldDescriptor");
+      var textData = $("#fieldSummary");
+
+      _bt1.onChange( function() {
+        rawData[0].value  = $.toJSON( _bt1.toData() );
+        textData[0].value = _bt1.toString();
+        updateToneSlider1( _bt1.toneGradients(), _bt1.selectedTone() );
+      } );
+
+      $("#instant_rewrite1").button();
+      $("#instant_rewrite1").bind("click", function(){
+        _bt1.rewrite();
+      });
+
+
+      $("#tone-control1").hide( );
+
+      $("#fetchStory").button();
+      $("#saveStory").button();
+
+      $("#edit_choicesets").button().click( _bt1.editChoicesets );
+
+    //set client_side_validation for selection list
+     $("#story_story_set_id").change(function(){
+      var settings = window[$('form[data-validate]').attr('id')];
+      $("#story_name").isValid(settings.validators);
+     });
+
+  <%  if    @story.descriptor != nil &&  !@story.descriptor.empty?  %>
+      _bt1.renderData( <%=raw @story.descriptor %> );
+  <%   end   %>
+    });
+
+
+  </script>
 <% end %>
 
 
@@ -60,8 +184,8 @@
   <ul class="nav">
     <li ><a href=".step1" title="">Step 1</a></li>
     <li ><a href=".step2" title="" >Step 2</a></li>
-    <li><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>    
-  </ul> 
+    <li><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>
+  </ul>
   <div class="step1">
     <h3>Enter a title</h3>
     <%= form_for(@story, :validate => true) do |f| %>
@@ -92,6 +216,11 @@
          created to see your changes. Be sure to Save!</a></li>
                 <li><span class="pinto"></span></li>
     </ul>
+
+
+
+    <!--   END WAND END WAND END WAND  -->
+
     <%= form_for(@story, :validate => true, :html => { :method => :put, class: 'edit_story' }, :remote => true) do |f| %>
       <h3 id="category_name"><%= @story.category %></h3>
       <h2 id="name"><%= @story.name %></h2>
@@ -99,13 +228,21 @@
         <ul class="etc">
           <li>
             <label for="description" class="lblTxt">Please enter some text</label>
-            <%= f.text_area :description, class: 'txtarea'%>
+          </li>
+          <div style="width:440px; height:120px">
+          <!--   WAND WAND WAND WAND WAND  -->
+            <div id="main_container" class="viewportcontainer">
+              <div id="bt_one" class="btEditor">BT Wand</div>
+            </div>
+          </div>
+          <%= f.hidden_field :description, class: 'txtarea', id: 'fieldSummary' %>
           <li class="ftr1 ftr2" style="float:left;">
             <span class="clk">Advanced Features</span>
             <a href="#" title="View a video" class="link">View a video on more advanced features</a>
           </li>
         </ul>
       </ul>
+      <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
       <p class="ftr1">
         <!-- <a href="#"  class="btn-step btn">Save</a> -->
         <%= f.submit "Save", class: 'btn-step btn' %>
@@ -113,59 +250,3 @@
       </p>
     <% end %>
  </div>
-
-<div style="width:700px; height:50px">
-<%= form_for(@story, :validate => true) do |f| %>
-  <div class="field form-field" style="float:left; padding-right:60px; width:700px">
-    <div class="form-field-label">Name:</div>
-    <div class="form-field-value"><%= f.text_field :name, :onfocus=>"this.value = this.value;" %></div>
-  </div>
-  <div class="field form-field" style="float:left; padding-right:60px; width:700px">
-    <div class="form-field-label"><%= session[:style].set_alias.titleize %>:</div>
-    <div class="form-field-value">
-      <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id), :id, :name, @story.story_set_id)%>
-    </div>
-    
-  </div> 
-  <%= f.hidden_field :description, :id => "fieldSummary" %>
-  <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
-</div>
-<% end %>
-
-
-<div style="width:700px; height:450px">
-<!--   WAND WAND WAND WAND WAND  -->
-  <div id="main_container" class="viewportcontainer">
-    <div id="controls1" style="width:748px; height:43px;padding:2px;margin:5px" class="ui-widget-header ui-corner-all">
-    
-      
-      <div style="border: 0px dashed grey; width:180px; padding:5px 5px 2px 10px;float:left">
-        <button id="edit_choicesets">Choicesets</button>
-      </div>
-      <div style="float:right; padding: 5px 0px;">
-        <button id="instant_rewrite1">Instant Rewrite</button>
-      </div>  
-      <div style="border: 0px dashed grey; width:200px; padding:2px 25px 5px 10px;float:right" id="tone-control1">
-        <div id="gradient1" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;"></div>
-        <div style="padding:0px 0px 5px 0px;">Tone: </div>
-        <div id="slider1" style="width:100%;"></div>
-      </div>          
-                
-    </div>   
-  
-    <div id="bt_one" class="btEditor">BT Wand</div>
-
-
-  </div>
-</div>
-
-
-<!--   END WAND END WAND END WAND  -->
-
-<div class="actions">
-  <button style="height:28px; margin-right:420px" id="back_btn">Back</button><button onclick='saveStory()'id="save_story_btn"> Save </button>
-</div>
-
-<div id="dialog" title="Basic dialog" display="none" >
-  <p></p>
-</div>
