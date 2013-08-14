@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(:version => 920130109084745) do
     t.datetime "updated_at"
     t.string   "email"
     t.string   "password_hash"
+    t.string   "lastname"
     t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
@@ -111,7 +112,6 @@ ActiveRecord::Schema.define(:version => 920130109084745) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.string   "lastname"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
