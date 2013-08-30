@@ -1,14 +1,10 @@
-<h1>Reset Password</h1>
+<div class="cnt1 cnt2">
+<h2>Reset Password</h2>
 
-<% if flash[:alert] %>
-  <p class="flash-error"><%= flash[:alert] %></p>
-<% end %>
-<% if flash[:notice] %>
-  <p class="flash-notice"><%= flash[:notice] %></p>
-<% end %>
+<p id="notice"><%= notice %></p>
 
 
-<%= form_for @user, :url => password_reset_path(params[:id]) do |f| %>
+<%= form_for @user, validate:true, :url => password_reset_path(params[:id]) do |f| %>
   <% if @user.errors.any? %>
     <div class="error_messages">
       <h2>Form is invalid</h2>
@@ -19,15 +15,18 @@
       </ul>
     </div>
   <% end %>
-  <div class="field">
+  <ul class="login-form">
+  <li>
     <%= f.label :password %>
-    <%= f.password_field :password %>
-  </div>
-  <div class="field">
+    <%= f.password_field :password, class: 'txt'  %>
+  </li>
+  <li>
     <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation %>
-  </div>
-  <div class="actions">
-    <%= f.submit "Update Password" %>
-  </div>
+    <%= f.password_field :password_confirmation, class: 'txt'  %>
+  </li>
+  <li>
+    <%= f.submit "Update Password", class: 'btn'%>
+  </li>
+  </ul>
 <% end %>
+</div>

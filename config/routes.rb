@@ -14,7 +14,7 @@ BrightText::Application.routes.draw do
 
   resources :stories
 
-  #match 'stories/:id' => 'stories#destroy', :via => :delete
+  match 'stories/:id' => 'stories#update', :as => :story
 
   root to: "stories#new"
 

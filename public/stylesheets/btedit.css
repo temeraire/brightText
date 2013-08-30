@@ -1,350 +1,349 @@
 
-      /* Fix for pasted text */
-      .btContent SPAN {
-        color: #333;
-      }
+/* Fix for pasted text */
+.btContent SPAN {
+    color: #333;
+}
 
-      SPAN.changePoint{
-         font-family:Arial;
-         cursor:pointer;
-      }
-      
-      SPAN.changePointResting{
-         color:#006600;
-         border:1px dotted #006600;
-      }
-      
-      SPAN.changePointHover{
-         color:#00cc00;
-         border:1px dotted #00cc00;  
-         background-color:#eeffee;
-      }
-      
-      SPAN.changePoint_dimmed{
-         color:#8888ff;
-         font-family:Arial;
-         border:1px dotted black;
-         
-      } 
+SPAN.changePoint{
+    font-family:Arial;
+    cursor:pointer;
+}
 
-      .plainText{
-        color:#333333;
-         font-family:Arial;
-        
+SPAN.changePointResting{
+    color:#006600;
+    border:1px dotted #006600;
+}
 
-      }
-      .plainText_dimmed{
-        color:#888888;
-        font-family:Arial;
-      }     
-      
-      DIV.page{
-        overflow:hidden;
-      }
-      
-      DIV.btContent{
-        overflow-x:hidden;
-        overflow-y:scroll;
-        background-color:white;
-        border:1px solid black;
-        padding: 10px;
-      }
-      
-      DIV.simpleButton{
-        width:100px;
-        height:30px;
-        background-color:red;
-        position:absolute;
-        opacity:.3;
-      }
-      
-      DIV.devControls{
-        width:300px;
-        height:120px;
-        background-color:#ffffff;
-        border:1px solid blue;
-        margin: 10px;
-        padding:10px;
-        z-order:300;
-      }
-      
-      DIV.textControlsOverlay{
-        position:absolute;
-        width:300px;
-        height:200px;
-        top:0px;
-        left:0px;
-        background-color:#9999ff;
-        opacity:.8;
-        border: 1px solid black;
-      }
-      
-      DIV.highlightDisplay{
-        width:260px;
-        height:40px;
-        margin:20px 20px 0px 20px;
-        background-color:#000000;
-        //opacity:1;
-        border: 1px solid white;
-        cursor:pointer;
-      }
-      
-      DIV.selectionBoxTopLeft{
-        width:110px;
-        height:40px;
-        margin:10px 10px 0px 20px;
-        float:left;
-        background-color:#000000;
-        //opacity:1;
-        border: 1px solid white;
-        cursor:pointer;
-      }
-      
-      DIV.selectionBoxBottomLeft{
-        width:110px;
-        height:40px;
-        margin:10px 10px 0px 20px;
-        float:left;      
-        background-color:#000000;
-        //opacity:1;
-        border: 1px solid white;
-        cursor:pointer;
-      }
-      
-      DIV.selectionBoxTopRight{
-        width:110px;
-        height:40px;
-        margin:10px 10px 0px 20px;
-        float:left;      
-        background-color:#000000;
-        //opacity:1;
-        border: 1px solid white;
-        cursor:pointer;
-      }
-      
-      DIV.selectionboxBottomRight{
-        width:110px;
-        height:40px;
-        margin:10px 10px 0px 20px;
-        float:left;      
-        background-color:#000000;
-        //opacity:1;
-        border: 1px solid white;
-        cursor:pointer;
-      }
-      
-      DIV.veil{
-        position:absolute;
-        display:none;
-        top:0px;
-        left:0px;
-        width:2000px;
-        height:2000px;
-        z-order:450;
-        background-color:#000000;
-        opacity:.3;
-      }
-      
-      P.selectedElementDisplay{
-        width:240px;
-        margin:0px;
-        padding:5px;
-        color:white;
-        font-weight:bold;
-        font-size:10pt;
-        text-align:center;
-      }
-      
-      P.choiceElementDisplay{
-        width:110px;
-        margin:0px;
-        padding:5px;
-        color:white;
-        font-weight:bold;
-        font-size:9pt;
-        text-align:center;
-      }
-      
-      .contextContainer{
-			  background-color:white;	      
-			  border:1px solid black;
-			  padding:2px 0px 5px 0px;
-			  font-size:11pt;
-			  font-face:Arial;
-			  cursor:pointer;
-			}
-			
-      .pileElementOptContainer{
-			  background-color:white;	      
-			  border:1px solid black;
-			  padding:2px 0px 5px 0px;
-			  font-size:8pt;
-			  font-face:Arial;
-			}			
-			
-			.highlightedMenuItem{
-			  background-color:gray;
-			  color:white;
-        padding:0px 15px 2px 15px;	
-			}
-			
-			.menuItem{
-			  background-color:white;	
-			  color:black;
-        padding:0px 15px 2px 15px;	
-			}
-			
-			.menuItem.untoned{
-			  background-color:#ffffbb;
-			  color: #222222;
-			}
-			
-			.highlightedMenuItem.untoned{
-			  background-color:gray;
-			  color:ffffbb;
-			}			
-			
-			.largeChoiceMenu{
-			  height: 400px;
-			  overflow-y: scroll;
-			  width: 350px;
-			  cursor:default;
-			}
-			
-			.choiceSetIndicator{
-			  height:12px;
-			  width:12px;
-			  margin: 3px 5px 0px 2px;
-			  float:left;		  
-			  #border:1px solid #bbbbbb;
-			}			
-			
-			.choiceSetTextContainer{
-			  height:18px;
-			  float:left;	
-			  width:200px; 
-			  overflow:hidden;
-			  font-size:9pt;
-			  padding-left:5px;
-			  padding-top:2px;
-			}
-			
-			.choiceEditor{
-			  border:1px solid black;
-			  font-size:11pt;
-			  font-face:Arial;			
-			  background-color:white;	
-			  color:black;
-        padding:10px 5px 10px 5px;
-			}		
-			
-			.choiceEditor-huge{
-			  height:400px;
-			  width:255px;
-			  overflow-y:scroll;
-			}
-			
-			.choiceEditContainer{
-			  background-color:white;	
-			  color:black;
-        padding:2px 2px 2px 2px;
-        margin:2px 5px 2px 5px;
-        width:220px;
-        border:1px dashed #cccccc;
-			}			
-			
-			.choiceEditContainerHighlight{
-			  border:1px solid #000000;
-			  background-color:gray;
-			}
-			
-			.choiceEditField{
-			  background-color:white;	
-			  color:black;
-        width:160px;
-			}
-			
-			.choiceEditTextArea{
-			  background-color:white;	
-			  color:black;
-        width:160px;
-        height:60px;
-			}			
-			
-			.choiceEditTextAreaHuge{
-			  background-color:white;	
-			  color:black;
-        width:160px;
-        height:100px;
-			}				
-			
-			.choiceDeleteButton{
-        padding:3px 5px 0px 5px;	
-        float:left;
-			}
-			
-			.elementPlusIcon{
-			 padding:3px 5px 0px 5px;
-			 float:left;
-			
-			}
-			
-			.expandPileElement{
-			  padding: 3px 0px; 5px;
-			  float:right;
-			  width:18px;
-			  height:18px;
-			}
-			
-			.choiceSetEditor{
-			  border:1px solid black;
-			  font-size:11pt;
-			  font-face:Arial;			
-			  background-color:white;	
-			  color:black;
-        padding:10px 5px 10px 5px;
-			}					
-			
-			.choiceSetEditContainer{
-			  background-color:#FEEEBD;	
-			  color:black;
-        padding:2px 2px 2px 2px;
-        margin:2px 5px 2px 5px;
-        width:185px;
-        border:1px dashed #cccccc;
-			}			
-			
-			.choiceSetEditContainerHighlight{
-			  border:1px solid #000000;
-			  background-color:gray;
-			}
-			
-			.choiceSetEditField{
-			  background-color:white;	
-			  color:black;
-        width:141px;
-			}
-			
-			.choiceSetDeleteButton{
-        padding:3px 5px 0px 5px;	
-        float:left;
-			}
-			
-			.choiceSetPlusIcon{
-			 padding:3px 5px 0px 5px;
-			 float:left;
-			
-			}
-			
-			.choiceSetAssignContainer{
-			  background-color:#FEEEBD;	
-        border:1px dashed #cccccc;
-        cursor: pointer;
-			}			
-			
-			.choiceSetAssignContainerHighlight{
-			  border:1px solid #white;
-			  background-color:#cccccc;
-			  cursor: arrow;
-			}			
-			
+SPAN.changePointHover{
+    color:#00cc00;
+    border:1px dotted #00cc00;
+    background-color:#eeffee;
+}
+
+SPAN.changePoint_dimmed{
+    color:#8888ff;
+    font-family:Arial;
+    border:1px dotted black;
+
+}
+
+.plainText{
+    color:#333333;
+    font-family:Arial;
+
+
+}
+.plainText_dimmed{
+    color:#888888;
+    font-family:Arial;
+}
+
+DIV.page{
+    overflow:hidden;
+}
+
+DIV.btContent{
+    overflow-x:hidden;
+    overflow-y:scroll;
+    background-color:white;
+    border:1px solid black;
+    padding: 10px;
+}
+
+DIV.simpleButton{
+    width:100px;
+    height:30px;
+    background-color:red;
+    position:absolute;
+    opacity:.3;
+}
+
+DIV.devControls{
+    width:300px;
+    height:120px;
+    background-color:#ffffff;
+    border:1px solid blue;
+    margin: 10px;
+    padding:10px;
+    z-order:300;
+}
+
+DIV.textControlsOverlay{
+    position:absolute;
+    width:300px;
+    height:200px;
+    top:0px;
+    left:0px;
+    background-color:#9999ff;
+    opacity:.8;
+    border: 1px solid black;
+}
+
+DIV.highlightDisplay{
+    width:260px;
+    height:40px;
+    margin:20px 20px 0px 20px;
+    background-color:#000000;
+    /*opacity:1;*/
+    border: 1px solid white;
+    cursor:pointer;
+}
+
+DIV.selectionBoxTopLeft{
+    width:110px;
+    height:40px;
+    margin:10px 10px 0px 20px;
+    float:left;
+    background-color:#000000;
+    /*opacity:1;*/
+    border: 1px solid white;
+    cursor:pointer;
+}
+
+DIV.selectionBoxBottomLeft{
+    width:110px;
+    height:40px;
+    margin:10px 10px 0px 20px;
+    float:left;
+    background-color:#000000;
+    /*opacity:1;*/
+    border: 1px solid white;
+    cursor:pointer;
+}
+
+DIV.selectionBoxTopRight{
+    width:110px;
+    height:40px;
+    margin:10px 10px 0px 20px;
+    float:left;
+    background-color:#000000;
+    /*opacity:1;*/
+    border: 1px solid white;
+    cursor:pointer;
+}
+
+DIV.selectionboxBottomRight{
+    width:110px;
+    height:40px;
+    margin:10px 10px 0px 20px;
+    float:left;
+    background-color:#000000;
+    /*opacity:1;*/
+    border: 1px solid white;
+    cursor:pointer;
+}
+
+DIV.veil{
+    position:absolute;
+    display:none;
+    top:0px;
+    left:0px;
+    width:2000px;
+    height:2000px;
+    z-order:450;
+    background-color:#000000;
+    opacity:.3;
+}
+
+P.selectedElementDisplay{
+    width:240px;
+    margin:0px;
+    padding:5px;
+    color:white;
+    font-weight:bold;
+    font-size:10pt;
+    text-align:center;
+}
+
+P.choiceElementDisplay{
+    width:110px;
+    margin:0px;
+    padding:5px;
+    color:white;
+    font-weight:bold;
+    font-size:9pt;
+    text-align:center;
+}
+
+.contextContainer{
+    background-color:white;
+    border:1px solid black;
+    padding:2px 0px 5px 0px;
+    font-size:11pt;
+    font-face:Arial;
+    cursor:pointer;
+}
+
+.pileElementOptContainer{
+    background-color:white;
+    border:1px solid black;
+    padding:2px 0px 5px 0px;
+    font-size:8pt;
+    font-face:Arial;
+}
+
+.highlightedMenuItem{
+    background-color:gray;
+    color:white;
+    padding:0px 15px 2px 15px;
+}
+
+.menuItem{
+    background-color:white;
+    color:black;
+    padding:0px 15px 2px 15px;
+}
+
+.menuItem.untoned{
+    background-color:#ffffbb;
+    color: #222222;
+}
+
+.highlightedMenuItem.untoned{
+    background-color:gray;
+    color:ffffbb;
+}
+
+.largeChoiceMenu{
+    height: 400px;
+    overflow-y: scroll;
+    width: 350px;
+    cursor:default;
+}
+
+.choiceSetIndicator{
+    height:12px;
+    width:12px;
+    margin: 3px 5px 0px 2px;
+    float:left;
+    /*border:1px solid #bbbbbb;*/
+}
+
+.choiceSetTextContainer{
+    height:18px;
+    float:left;
+    width:200px;
+    overflow:hidden;
+    font-size:9pt;
+    padding-left:5px;
+    padding-top:2px;
+}
+
+.choiceEditor{
+    border:1px solid black;
+    font-size:11pt;
+    font-face:Arial;
+    background-color:white;
+    color:black;
+    padding:10px 5px 10px 5px;
+}
+
+.choiceEditor-huge{
+    height:400px;
+    width:255px;
+    overflow-y:scroll;
+}
+
+.choiceEditContainer{
+    background-color:white;
+    color:black;
+    padding:2px 2px 2px 2px;
+    margin:2px 5px 2px 5px;
+    width:220px;
+    border:1px dashed #cccccc;
+}
+
+.choiceEditContainerHighlight{
+    border:1px solid #000000;
+    background-color:gray;
+}
+
+.choiceEditField{
+    background-color:white;
+    color:black;
+    width:160px;
+}
+
+.choiceEditTextArea{
+    background-color:white;
+    color:black;
+    width:160px;
+    height:60px;
+}
+
+.choiceEditTextAreaHuge{
+    background-color:white;
+    color:black;
+    width:160px;
+    height:100px;
+}
+
+.choiceDeleteButton{
+    padding:3px 5px 0px 5px;
+    float:left;
+}
+
+.elementPlusIcon{
+    padding:3px 5px 0px 5px;
+    float:left;
+
+}
+
+.expandPileElement{
+    padding: 3px 5px 0px 5px;
+    float:right;
+    width:18px;
+    height:18px;
+}
+
+.choiceSetEditor{
+    border:1px solid black;
+    font-size:11pt;
+    font-face:Arial;
+    background-color:white;
+    color:black;
+    padding:10px 5px 10px 5px;
+}
+
+.choiceSetEditContainer{
+    background-color:#FEEEBD;
+    color:black;
+    padding:2px 2px 2px 2px;
+    margin:2px 5px 2px 5px;
+    width:185px;
+    border:1px dashed #cccccc;
+}
+
+.choiceSetEditContainerHighlight{
+    border:1px solid #000000;
+    background-color:gray;
+}
+
+.choiceSetEditField{
+    background-color:white;
+    color:black;
+    width:141px;
+}
+
+.choiceSetDeleteButton{
+    padding:3px 5px 0px 5px;
+    float:left;
+}
+
+.choiceSetPlusIcon{
+    padding:3px 5px 0px 5px;
+    float:left;
+
+}
+
+.choiceSetAssignContainer{
+    background-color:#FEEEBD;
+    border:1px dashed #cccccc;
+    cursor: pointer;
+}
+
+.choiceSetAssignContainerHighlight{
+    border:1px solid white;
+    background-color:#cccccc;
+    cursor: arrow;
+}
