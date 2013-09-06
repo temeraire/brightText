@@ -89,15 +89,10 @@ DIV.btContent {
             $("#story_id").val(data["story_id"]);
             $("#category_name").text($("#story_category").val());
             $("#name").text($("#story_name").val());
-
-            var story = "<p><span class='plainText'>" + $("#story_description").val() + "</span></p>";
             $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
 
-            <%#*self._meta            = data["meta"];%>
-            <%#*self._story           = data["story"];%>
-          <%#*self._piles           = data["piles"];%>
-            <%#*self._storyDimensions = data["storyDimensions"];%>
-
+            var story = "<p><span class='plainText'>" + $("#story_description").val() + "</span></p>";
+            console.log(story);
             $("#bt_one").innerHTML = story;
           }
           else if(data["name"]){

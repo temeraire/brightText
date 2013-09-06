@@ -62,24 +62,34 @@ ul li {list-style:none;}
     font-size:24px;
     background: #c0c0c0; /* Old browsers */
     background: -moz-linear-gradient(top,  #c0c0c0 0%, #8d8d8d 80%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c0c0c0),
-        color-stop(80%,#8d8d8d)); /* Chrome,Safari4+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c0c0c0), color-stop(80%,#8d8d8d)); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  #c0c0c0 0%,#8d8d8d 80%); /* Chrome10+,Safari5.1+ */
     background: -o-linear-gradient(top,  #c0c0c0 0%,#8d8d8d 80%); /* Opera 11.10+ */
     background: -ms-linear-gradient(top,  #c0c0c0 0%,#8d8d8d 80%); /* IE10+ */
     background: linear-gradient(to bottom,  #c0c0c0 0%,#8d8d8d 80%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c0c0c0',
-        endColorstr='#8d8d8d',GradientType=0 ); /* IE6-9 */
-    border: 1px solid #59616b; -moz-box-shadow:inset 0px 3px 1px 2px #d1d1d1;
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c0c0c0', endColorstr='#8d8d8d',GradientType=0 ); /* IE6-9 */
+    border: 1px solid #59616b;
+    -moz-box-shadow:inset 0px 3px 1px 2px #d1d1d1;
     -webkit-box-shadow:inset 0px 3px 1px 2px #d1d1d1;
-    box-shadow:inset 0px 3px 1px 2px #d1d1d1; -moz-box-shadow:0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    box-shadow:inset 0px 3px 1px 2px #d1d1d1;
+    -moz-box-shadow:0px 0px 10px 0px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow:0px 0px 10px 0px rgba(0, 0, 0, 0.5);
     box-shadow:0px 0px 10px 0px rgba(0, 0, 0, 0.5);
-    height: 35px; letter-spacing: 0;margin: 25px 0 0 70px;padding: 3px 0 0 3px;
-    text-align: center; width: 113px;}
+    width: 113px;
+    height: 35px;
+    letter-spacing: 0;
+    margin: 25px 0 0 72px;
+    padding: 3px 0 0 3px;
+    text-align: center;
+}
 /*cnt2 registration page*/
 #mCnt .cnt2 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
-#mCnt .cnt2 form ul.login-form .btn{margin: 25px 0 0 185px;}
+#mCnt .cnt2 form ul.login-form .btn{margin: 25px 0 0 60px;}
+
+/*cnt3 reset password page*/
+#mCnt .cnt3 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
+#mCnt .cnt3 form ul.login-form .btn{width:160px; margin: 25px 0 0 110px;}
+
 /*Tabs, steps page*/
 #mCnt{}
 #mCnt  #tabs{ float:left; width:100%;}

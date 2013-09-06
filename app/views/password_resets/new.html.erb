@@ -1,9 +1,9 @@
-<div class="cnt1">
+<div class="cnt1 cnt3">
   <h2>Reset password</h2>
 
   <%= form_tag password_resets_path, method: :post do %>
     <ul class="login-form">
-      <li>	  
+      <li>
         <%= label_tag :email %>
         <%= text_field_tag :email, params[:email], class: 'txt' %>
       </li>
