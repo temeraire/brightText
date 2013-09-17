@@ -90,6 +90,9 @@ ul li {list-style:none;}
 #mCnt .cnt3 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
 #mCnt .cnt3 form ul.login-form .btn{width:160px; margin: 25px 0 0 110px;}
 
+/*cnt4 update password page*/
+#mCnt .cnt4 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
+#mCnt .cnt4 form ul.login-form .btn{width:195px; margin: 25px 0 0 110px;}
 /*Tabs, steps page*/
 #mCnt{}
 #mCnt  #tabs{ float:left; width:100%;}

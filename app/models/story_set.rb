@@ -3,11 +3,11 @@ class StorySet < ActiveRecord::Base
   belongs_to :story_set_category, :foreign_key => :category_id
 
   before_save :set_rank
-  
-  validates :name, 
-              :uniqueness => { :scope => :category_id, :message => "This name is already taken. Please select another name" }, 
-              :presence => {:message => "Please insert a name."}
-  
+
+  validates :name,
+              :uniqueness => { :scope => :category_id, :message => "This subtitle is already taken. Please select another subtitle" },
+              :presence => {:message => "Please create a subtitle."}
+
   def category
     return "-- unassigned --" if ( category_id == nil )
 

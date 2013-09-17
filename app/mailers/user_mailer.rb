@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default :from => "admin@brighttext.com"
+  default :from => "no_reply@brighttext.com"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
