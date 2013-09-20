@@ -55,6 +55,17 @@ DIV.btContent {
 <script type="text/javascript" src="/js/btedit.js"></script>
 
 <script type="text/javascript">
+  $.ajaxSetup({
+    beforeSend:function(){
+        // show gif here, eg:
+        $("#loading").show();
+    },
+    complete:function(){
+        // hide gif here, eg:
+        $("#loading").hide();
+    }
+  });
+
   $(document).ready(function(){
    $('span.clk').hover(function()
       { $("ul.random").show(); },
@@ -304,5 +315,9 @@ DIV.btContent {
     <h1>Story is saved successfully</h1>
     <button id="saveSuccessOk" class="btn1">Ok</button>
   </div>
+</div>
+
+<div id="loading" class="wait-popup-bg" style="display:none;">
+  <img src="images/ajax-loader.gif"
 </div>
 

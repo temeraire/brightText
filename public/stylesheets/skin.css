@@ -244,7 +244,8 @@ ul.step2-form li .txt-step
 /*PopUp-One*/
 .popup-bg{
     position:absolute;
-    border: 1px solid #31353A; padding:5px;height:140px;
+    border: 1px solid #31353A; padding:5px;
+    height:140px;
     width:365px;
     top: 50%;
     left: 50%;
@@ -252,6 +253,22 @@ ul.step2-form li .txt-step
     margin-left: -183px;
     background:#4e5357; border-radius: 10px; -moz-border-radius: 10px;
     -webkit-border-radius: 10px;}
+.wait-popup-bg{
+    position:absolute;
+    border: 1px solid #31353A;
+    padding:2px;
+    height:36px;
+    width:36px;
+    top: 50%;
+    left: 50%;
+    margin-top: -18px;
+    margin-left: -18px;
+    background:#FFFFFF;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
 .save-changes, .text1, .restart-app{border-radius: 10px; -moz-border-radius: 10px;
                                     -webkit-border-radius: 10px; background:#fff; padding:10px;height:120px;
                                     width:345px; }
