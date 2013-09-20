@@ -90,10 +90,12 @@ DIV.btContent {
             $("#category_name").text($("#story_category").val());
             $("#name").text($("#story_name").val());
             $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
-
-            var story = "<p><span class='plainText'>" + $("#story_description").val() + "</span></p>";
-            console.log(story);
-            $("#bt_one").innerHTML = story;
+            var story_text = JSON.stringify($("#story_description").val());
+            var data = "{\"story\": [{\"container\": ["+ story_text + "]}], \"piles\": {}, \"storyDimensions\": [], \"meta\": {}}";
+            console.log(data);
+            var json_data = JSON.parse(data);
+            console.log(json_data["story"]);
+            _bt1.renderData(json_data);
           }
           else if(data["name"]){
             message = data["name"];
@@ -124,10 +126,23 @@ DIV.btContent {
 
     $("#saveDialogSave").click(function(){
       $("#saveDialog").hide();
-      $("#edit_story").submit();
+      $.ajax({
+        type: "post",
+        url: $("form.edit_story").get(0).getAttribute("action"),
+        dataType: "json",
+        data: $("form.edit_story").serialize(),
+        success: function(data) {
+          if(data["success"] === "true") {
+            $("#saveSuccess").show();
+          }
+        }
+      });
+    });
+
+    $("#saveSuccessOk").click(function(){
+      $("#saveSuccess").hide();
     });
 });
-
 </script>
 
 <!-- BrightText WAND script -->
@@ -188,17 +203,13 @@ DIV.btContent {
     $("#fetchStory").button();
     $("#saveStory").button();
 
-    $("#edit_choicesets").button().click( _bt1.editChoicesets );
+    //$("#edit_choicesets").button().click( _bt1.editChoicesets );
 
     //set client_side_validation for selection list
     $("#story_story_set_id").change(function(){
       var settings = window[$('form[data-validate]').attr('id')];
       $("#story_name").isValid(settings.validators);
     });
-
-    <% if @story.descriptor != nil &&  !@story.descriptor.empty?  %>
-      _bt1.renderData( <%=raw @story.descriptor %> );
-    <% end   %>
   });
 </script>
 <% end %>
@@ -285,6 +296,13 @@ DIV.btContent {
     <h1>Save Changes?</h1>
       <button id="saveDialogSave" class="btn1">Save</button>
       <button id="saveDialogCancel" class="btn2">Cancel</button>
+  </div>
+</div>
+
+<div id="saveSuccess" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Story is saved successfully</h1>
+    <button id="saveSuccessOk" class="btn1">Ok</button>
   </div>
 </div>
 

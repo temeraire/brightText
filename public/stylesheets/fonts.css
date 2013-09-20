@@ -7,7 +7,7 @@ h3{font-size:108%;}
 h1,h2,h3,h4,h5,h6,strong,dt{font-weight:bold;}
 em{font-style:italic;}
 select,input,button,textarea,button {font:99% arial,helvetica,clean,sans-serif;}
-table {font-size:inherit;font:100%;}
+table {font-size:inherit;font:100% arial,helvetica,clean,sans-serif;}
 pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
 @font-face {
     font-family: 'Cuprum';
