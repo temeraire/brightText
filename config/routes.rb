@@ -5,12 +5,16 @@ BrightText::Application.routes.draw do
 
   resources :domain_styles
 
+  resources :password_resets
+
   resources :users
+  match '/users/login' => 'users#login'
 
   resources :stories
 
   #match 'stories/:id' => 'stories#destroy', :via => :delete
 
+  root to: "stories#index"
 
   match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
   match 'proxy/:id/related' => 'bt_proxy#related', :as => :story

@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => "users" }# show.html.erb
       format.xml  { render :xml => @user }
     end
   end
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     @user = User.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html  { render :layout => 'users' }# new.html.erb
       format.xml  { render :xml => @user }
     end
   end
@@ -44,12 +44,24 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
+        log_in! @user
         format.html { redirect_to(@user, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
-        format.html { render :action => "new" }
+        format.html { render :action => "new" , :layout => "users" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
+    end
+  end
+
+  def login
+    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+      log_in! @user
+      redirect_to root_url, notice: "Logged in!"
+    else
+      @user = User.new
+      flash.now[:error] = "Email or password is invalid"
+      render 'new', layout: "users"
     end
   end
 

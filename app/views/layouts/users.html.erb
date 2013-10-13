@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BrightText</title>
+  <style>
+    .flash {
+      padding: 10px;
+    }
+    .notice {
+      background: green;
+    }
+    .error {
+      background: #FF5E5E;
+    }
+    .field_with_errors input {
+      border: 1px solid #FF5E5E;
+    }
+    .field_with_errors label.message {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <% flash.each do |name, msg| %>
+    <% if msg.is_a?(String) %>
+      <div class="<%= name %> flash">
+        <%= content_tag :div, msg %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= yield %>
+</body>
