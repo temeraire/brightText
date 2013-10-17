@@ -55,7 +55,9 @@ ul li {list-style:none;}
 #mCnt form ul.step1-form .btn,
 #mCnt .step2 form ul.step2-form li .btn,
 #mCnt .step3 form ul.step3-data li .btn,
-.save-changes .btn1, .save-changes .btn2, .text1 .btn1,
+.save-changes .btn1,
+.save-changes .btn2,
+.text1 .btn1,
 #mCnt .step2 .ftr1 .btn{
     color:#0d1721;
     font-family:'Cuprum';
@@ -192,7 +194,9 @@ ul.step2-form li .txt-step
 #mCnt .step2 .ftr1 .btn{ width: 110px;
                          margin:32px 0 0 3%; display:inline-block; text-decoration:none;}
 #mCnt .step2 .ftr1{width:100%;}
-#mCnt .step2  .ftr1 strong{color:#b7b7b7; font-family:'Arial';
+#mCnt .step2 .ftr1 strong{color:#b7b7b7; font-family:'Arial';
+                           font-size:14px;margin: 20px 0 0 3%; font-weight:normal; clear:both;}
+#mCnt .step1 .ftr1 strong{color:#b7b7b7; font-family:'Arial';
                            font-size:14px;margin: 20px 0 0 3%; font-weight:normal; clear:both;}
 #mCnt .step2 form ul.step2-form li span
 {color:#fff; font-family:'Arial'; display:inline-block;

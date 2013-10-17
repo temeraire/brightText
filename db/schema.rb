@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 920130109084745) do
+ActiveRecord::Schema.define(:version => 920130109084746) do
 
   create_table "app_submissions", :force => true do |t|
     t.integer  "bright_text_application_id"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(:version => 920130109084745) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.string   "description"
+    t.string   "description",  :limit => 1024
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
