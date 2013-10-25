@@ -58,6 +58,7 @@ DIV.btContent {
 <link rel="stylesheet" href="/stylesheets/btedit.css">
 <% end %>
 
+
 <% content_for :javascripts do %>
 <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
 <script type="text/javascript" src="/javascripts/browserDetect.js"></script>
@@ -69,8 +70,157 @@ DIV.btContent {
 <script type="text/javascript" src="/js/jquery/jquery.cookie.js"></script>
 <script type="text/javascript" src="/js/btedit.js"></script>
 
+<script type="text/javascript">
 
+  var stories;
+  var formSubmitted = false;
 
+  $.ajaxSetup({
+    beforeSend:function(){
+        // show gif here, eg:
+        $("#loading").show();
+    },
+    complete:function(){
+        // hide gif here, eg:
+        $("#loading").hide();
+    }
+  });
+
+  $(document).ready(function(){
+    $(function() {
+      $("a.clickme").live('click', function(event){
+          event.preventDefault();
+          var index = $(this).attr("id");
+          var story = stories[index]["story"];
+          $("#story_id").val(story["id"]);
+          $("#category_name").html("");
+          $("#name").html(story["name"]);
+          _bt1.renderData(JSON.parse(story["descriptor"]));
+          $('form.edit_story').get(0).setAttribute('action', '/stories/'+ story["id"]);
+          $(".step3").hide();
+          $(".step2").show();
+      });
+    });
+
+   $('span.clk').hover(function()
+      { $("ul.random").show(); },
+    function()
+      { $("ul.random").hide();
+    });
+  });
+
+  $(document).ready(function(){
+    $('#tabs').children('div').hide();
+    $('#tabs div:first').show();
+    $('#tabs ul li:first').addClass('active');
+    $('#tabs ul li a').click(function(){
+      $('#tabs ul li').removeClass('active');
+      $(this).parent().addClass('active');
+      var currentTab = $(this).attr('href');
+      $('#tabs').children('div').hide();
+      $(currentTab).show();
+      return false;
+    });
+  });
+
+  $(document).ready(function() {
+    $("a[href='.step1']").click(function(){
+      formSubmitted = false;
+    });
+
+    $("a[href='.step2']").click(function() {
+      if(formSubmitted===false){
+          $.ajax({
+            type: "post",
+            url: "/stories",
+            dataType: "json",
+            data: $("#new_story").serialize(),
+            success: function(data) {
+              formSubmitted = true;
+              if(data["success"] === "true") {
+                $("#story_id").val(data["story_id"]);
+                $("#category_name").text($("#story_category").val());
+                $("#name").text($("#story_name").val());
+                $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
+              }
+              else if(data["name"]){
+                message = data["name"];
+                $("#story_name").parent().addClass('field_with_errors');
+                $("#story_name + .message").remove();
+                $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
+              }
+            }
+          });
+      }
+    });
+
+    $("a[href='.step3']").click(function() {
+         $.ajax({
+           type: "get",
+           url: "/stories",
+           dataType: "json",
+           data: "",
+           success: function(data) {
+             if(data["success"] === "true") {
+                stories = data["stories"];
+                var rows = "";
+                $.each(stories, function (i, apology) {
+                  console.log(apology);
+                  rows += "<tr>" +
+                          "<td class='cell' style='width:50px'><a id='" +
+                          i +"' class='clickme' href='#'>" +
+                          apology["story"]["id"] + "</a></td>" +
+                          "<td class='cell' style='width:500px'><a id='" +
+                          i +"' class='clickme' href='#'>" +
+                          apology["story"]["name"] + "</a></td>"+
+                          "<td class='cell' style='width:50px'>" +
+                          apology["story"]["rank"] +"</td></tr>";
+                });
+                $("#user_stories_list tbody").html("");
+                $("#user_stories_list tbody").append(rows);
+             }
+           }
+         });
+    });
+
+    $("#story_submit").click(function(){
+      var summary = $("#fieldSummary").val();
+      if(summary===''){
+        $("#textValidation").show();
+      }else{
+        $("#saveDialog").show();
+      }
+    });
+
+    $("#textValidationOk").click(function(){
+      $("#textValidation").hide();
+    });
+
+    $("#saveDialogCancel").click(function(){
+      $("#saveDialog").hide();
+    });
+
+    $("#saveDialogSave").click(function(){
+      $("#saveDialog").hide();
+      $.ajax({
+        type: "post",
+        url: $("form.edit_story").get(0).getAttribute("action"),
+        dataType: "json",
+        data: $("form.edit_story").serialize(),
+        success: function(data) {
+          if(data["success"] === "true") {
+            $("#saveSuccess").show();
+          }
+        }
+      });
+    });
+
+    $("#saveSuccessOk").click(function(){
+      $("#saveSuccess").hide();
+      //$("a[href='.step3']").click();
+    });
+});
+</script>
 <!-- BrightText WAND script -->
 <script>
   var _bt1 = null;
@@ -139,153 +289,6 @@ DIV.btContent {
   });
 </script>
 
-<script type="text/javascript">
-
-  var stories;
-
-  $.ajaxSetup({
-    beforeSend:function(){
-        // show gif here, eg:
-        $("#loading").show();
-    },
-    complete:function(){
-        // hide gif here, eg:
-        $("#loading").hide();
-    }
-  });
-
-  $(document).ready(function(){
-    $(function() {
-      $("a.clickme").live('click', function(event){
-          event.preventDefault();
-          var index = $(this).attr("id");
-          var story = stories[index]["story"];
-          $("#story_id").val(story["id"]);
-          $("#category_name").html("");
-          $("#name").html(story["name"]);
-          _bt1.renderData(JSON.parse(story["descriptor"]));
-          $('form.edit_story').get(0).setAttribute('action', '/stories/'+ story["id"]);
-          $(".step3").hide();
-          $(".step2").show();
-
-          //alert("story " +story["descriptor"]);
-          //alert("Link " + stories[index-1]["story"]["name"] + " clicked");
-      });
-    });
-
-   $('span.clk').hover(function()
-      { $("ul.random").show(); },
-    function()
-      { $("ul.random").hide();
-    });
-  });
-
-  $(document).ready(function(){
-    $('#tabs').children('div').hide();
-    $('#tabs div:first').show();
-    $('#tabs ul li:first').addClass('active');
-    $('#tabs ul li a').click(function(){
-      $('#tabs ul li').removeClass('active');
-      $(this).parent().addClass('active');
-      var currentTab = $(this).attr('href');
-      $('#tabs').children('div').hide();
-      $(currentTab).show();
-      return false;
-    });
-  });
-
-  $(document).ready(function() {
-    $("a[href='.step2']").click(function() {
-      $.ajax({
-        type: "post",
-        url: "/stories",
-        dataType: "json",
-        data: $("#new_story").serialize(),
-        success: function(data) {
-          if(data["success"] === "true") {
-            $("#story_id").val(data["story_id"]);
-            $("#category_name").text($("#story_category").val());
-            $("#name").text($("#story_name").val());
-            $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
-          }
-          else if(data["name"]){
-            message = data["name"];
-            $("#story_name").parent().addClass('field_with_errors');
-            $("#story_name + .message").remove();
-            $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
-          }
-        }
-      });
-    });
-
-    $("a[href='.step3']").click(function() {
-         $.ajax({
-           type: "get",
-           url: "/stories",
-           dataType: "json",
-           data: "",
-           success: function(data) {
-             if(data["success"] === "true") {
-                stories = data["stories"];
-                var rows = "";
-                $.each(stories, function (i, apology) {
-                  console.log(apology);
-                  rows += "<tr>" +
-                          "<td class='cell' style='width:50px'><a id='" +
-                          i +"' class='clickme' href='#'>" +
-                          apology["story"]["id"] + "</a></td>" +
-                          "<td class='cell' style='width:500px'><a id='" +
-                          i +"' class='clickme' href='#'>" +
-                          apology["story"]["name"] + "</a></td>"+
-                          "<td class='cell' style='width:50px'>" +
-                          apology["story"]["rank"] +"</td></tr>";
-                });
-                $("#user_stories_list tbody").html("");
-                $("#user_stories_list tbody").append(rows);
-             }
-           }
-         });
-    });
-
-    $("#story_submit").click(function(){
-      var summary = $("#fieldSummary").val();
-      if(summary===''){
-        $("#textValidation").show();
-      }else{
-        $("#saveDialog").show();
-      }
-    });
-
-    $("#textValidationOk").click(function(){
-      $("#textValidation").hide();
-    });
-
-    $("#saveDialogCancel").click(function(){
-      $("#saveDialog").hide();
-    });
-
-    $("#saveDialogSave").click(function(){
-      $("#saveDialog").hide();
-      $.ajax({
-        type: "post",
-        url: $("form.edit_story").get(0).getAttribute("action"),
-        dataType: "json",
-        data: $("form.edit_story").serialize(),
-        success: function(data) {
-          if(data["success"] === "true") {
-            $("#saveSuccess").show();
-          }
-        }
-      });
-    });
-
-    $("#saveSuccessOk").click(function(){
-      $("#saveSuccess").hide();
-      $("a[href='.step3']").click();
-
-    });
-});
-</script>
 <% end %>
 
 

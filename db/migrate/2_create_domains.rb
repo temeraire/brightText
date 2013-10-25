@@ -18,7 +18,7 @@ class CreateDomains < ActiveRecord::Migration
 
 
     admin    = Domain.create( :name_first => 'David', :name_last => 'Wolpe', :nickname=> 'Admin', :email => "wolped@gmail.com", :password => "test", :password_confirmation => "test", :owner_domain_id => nil, :enabled => true, :priveleged => true, :self_created => false )
-    context  = Domain.create( :name_first => 'David', :name_last => 'Wolpe', :nickname=> 'ContextIT', :email => "wolped@gmail.com", :password => "test", :password_confirmation => "test", :owner_domain_id => 1, :enabled => true, :priveleged => true, :self_created => false )
+    context  = Domain.create( :name_first => 'Asif', :name_last => 'Tasleem', :nickname=> 'ContextIT', :email => "asiftasleem@gmail.com", :password => "test", :password_confirmation => "test", :owner_domain_id => 1, :enabled => true, :priveleged => true, :self_created => false )
 
     admin.save
     context.save
