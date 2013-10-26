@@ -188,7 +188,18 @@ DIV.btContent {
       if(summary===''){
         $("#textValidation").show();
       }else{
-        $("#saveDialog").show();
+        //$("#saveDialog").show();      
+        $.ajax({
+          type: "post",
+          url: $("form.edit_story").get(0).getAttribute("action"),
+          dataType: "json",
+          data: $("form.edit_story").serialize(),
+          success: function(data) {
+              if(data["success"] === "true") {
+              $("#saveSuccess").show();
+            }
+          }
+        });
       }
     });
 
