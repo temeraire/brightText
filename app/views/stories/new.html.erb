@@ -98,7 +98,11 @@ DIV.btContent {
           _bt1.renderData(JSON.parse(story["descriptor"]));
           $('form.edit_story').get(0).setAttribute('action', '/stories/'+ story["id"]);
           $(".step3").hide();
+          $('#tabs ul li').removeClass('active');
+          $('#tabs ul li:#step_2').addClass('active');
           $(".step2").show();
+          //formSubmitted = false;
+          //$("a[href='.step2']").click();
       });
     });
 
@@ -130,27 +134,38 @@ DIV.btContent {
 
     $("a[href='.step2']").click(function() {
       if(formSubmitted===false){
-          $.ajax({
-            type: "post",
-            url: "/stories",
-            dataType: "json",
-            data: $("#new_story").serialize(),
-            success: function(data) {
-              formSubmitted = true;
-              if(data["success"] === "true") {
-                $("#story_id").val(data["story_id"]);
-                $("#category_name").text($("#story_category").val());
-                $("#name").text($("#story_name").val());
-                $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
+        var title = $("#story_category").val();
+        if(title===''){
+          $("#titleValidation").show();
+        }else{
+          var subtitle = $("#story_name").val();
+          if(subtitle===''){
+            $("#subTitleValidation").show();
+          }else{          
+            $.ajax({
+              type: "post",
+              url: "/stories",
+              dataType: "json",
+              data: $("#new_story").serialize(),
+              success: function(data) {
+                formSubmitted = true;
+                if(data["success"] === "true") {
+                  $("#story_id").val(data["story_id"]);
+                  $("#category_name").text($("#story_category").val());
+                  $("#name").text($("#story_name").val());
+                  $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
+                }
+                else if(data["name"]){
+                  message = data["name"];
+                  $("#story_name").parent().addClass('field_with_errors');
+                  $("#story_name + .message").remove();
+                  $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
+                }
               }
-              else if(data["name"]){
-                message = data["name"];
-                $("#story_name").parent().addClass('field_with_errors');
-                $("#story_name + .message").remove();
-                $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
-              }
-            }
-          });
+            });
+
+          }
+        }
       }
     });
 
@@ -201,6 +216,17 @@ DIV.btContent {
           }
         });
       }
+    });
+    
+    $("#titleValidationOk").click(function(){
+      $("#titleValidation").hide();
+      $("a[href='.step1']").click();
+      
+    });
+    
+    $("#subTitleValidationOk").click(function(){
+      $("#subTitleValidation").hide();
+      $("a[href='.step1']").click();
     });
 
     $("#textValidationOk").click(function(){
@@ -305,9 +331,9 @@ DIV.btContent {
 
 <div id="tabs">
 <ul class="nav">
-<li ><a href=".step1" title="">Step 1</a></li>
-<li ><a href=".step2" title="" >Step 2</a></li>
-<li><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>
+<li id="step_1" ><a href=".step1" title="">Step 1</a></li>
+<li id="step_2" ><a href=".step2" title="" >Step 2</a></li>
+<li id="step_3" ><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>
 </ul>
 <div class="step1">
 <h3>Enter a title</h3>
@@ -391,10 +417,24 @@ DIV.btContent {
   </table>
 </div>
 </div>
+  
+<div id="titleValidation" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Title can't be blank</h1>
+    <button id="titleValidationOk" class="btn1">Ok</button>
+  </div>
+</div> 
+  
+<div id="subTitleValidation" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Subtitle can't be blank</h1>
+    <button id="subTitleValidationOk" class="btn1">Ok</button>
+  </div>
+</div>  
 
 <div id="textValidation" class="popup-bg" style="display:none;">
   <div class="text1">
-    <h1>Text cannot be blank</h1>
+    <h1>Text can't be blank</h1>
     <button id="textValidationOk" class="btn1">Ok</button>
   </div>
 </div>
@@ -408,7 +448,7 @@ DIV.btContent {
 
 <div id="saveSuccess" class="popup-bg" style="display:none;">
   <div class="text1">
-    <h1>Story is saved successfully</h1>
+    <h1>Saved successfully</h1>
     <button id="saveSuccessOk" class="btn1">Ok</button>
   </div>
 </div>
