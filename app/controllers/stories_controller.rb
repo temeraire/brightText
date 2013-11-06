@@ -33,10 +33,12 @@ class StoriesController < ApplicationController
                       "bright_text_applications.id" => @application,
                       "story_set_categories.id" => @category}.merge(
                           @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
+                      
+      session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
+      @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and bread crumbs similar values
+
     end
 
-    session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
-    @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
     if not params[:q].blank?
       @stories = @stories.search_for params[:q]
       @highlighted_phreses = params[:q].split()

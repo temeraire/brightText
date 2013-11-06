@@ -16,6 +16,7 @@
 
 <div style="height=60px; width:100px">&nbsp;</div>
 <button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
+<%= form_tag(stories_path, :method => :get) do %>
 <div class="toolbar" style="float:left; padding:5px 0px 0px 50px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
 <select id="setSelector" onChange="onFilterSetSelect()" >
 <%
@@ -59,11 +60,13 @@ end
 <!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
 </div>
 <div style="margin-right: 100px; float: right; padding: 5px 0 0 5px;">
-	<%= form_tag(stories_path, :method => :get) do %>
-		<%= text_field_tag :q, params[:q] %>
-		<%= submit_tag 'Search' %>
-	<% end %>
+
+  <input type="hidden" id="filter" name="filter" value="<%=@filter%>"/>
+    <%= text_field_tag :q, params[:q] %>
+    <%= submit_tag 'Search' %>
+
 </div>
+<% end %>
 <div style="height:110px; width:100px">&nbsp;</div>
 
 <table id="stories_table" class="sortable_header" cellspacing="0">
