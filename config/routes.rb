@@ -16,9 +16,9 @@ BrightText::Application.routes.draw do
 
   root to: "stories#index"
 
-  match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
-  match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
-  match 'story/save'        => 'bt_proxy#save'
+  #match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
+  #match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
+  #match 'story/save'        => 'bt_proxy#save'
   match 'stories/:id/clone'  => 'stories#clone'
   match 'stories/:id/delete' => 'stories#destroy'
   # match 'story/:id' => 'stories#destroy', :via => :delete, :as => :story_destroy
