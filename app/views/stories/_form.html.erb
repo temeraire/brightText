@@ -122,7 +122,8 @@
    $("#save_story_btn").button(); 
    $("#back_btn").button().click( function(e){
     e.preventDefault();
-    document.location.href='/stories?filter=<%=@story.story_set_id.to_s%>'; 
+    //document.location.href='/stories?filter=<%=@story.story_set_id.to_s%>'; 
+    document.location.href='/stories?filter=<%=session[:filter]%>'; 
     return false;    
    }); 
   });

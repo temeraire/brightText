@@ -7,6 +7,7 @@ class StoriesController < ApplicationController
   def index
     @highlighted_phreses = params[:q]
     @filter = request[:filter]
+    session[:filter] = @filter
     
     @application = find_application
 
