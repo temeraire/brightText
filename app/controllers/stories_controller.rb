@@ -31,10 +31,8 @@ class StoriesController < ApplicationController
         @application = @category.bright_text_application unless @category.blank?
         @story_sets = @category.story_sets.order(:name) unless @category.blank?        
       end
-      @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
-                      {"stories.domain_id" => session[:domain].id, 
-                      "bright_text_applications.id" => @application,
-                      "story_set_categories.id" => @category}.merge(
+      @stories = Story.where(
+                      {"stories.domain_id" => session[:domain].id}.merge(
                           @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
                       
       session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
