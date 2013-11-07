@@ -11,7 +11,9 @@ class StoriesController < ApplicationController
     
     @application = find_application
 
-    if @filter == "__unassigned"
+    if @filter == "__none"
+      @stories = Story.where("domain_id = ?",session[:domain].id).order(:name)
+    elsif @filter == "__unassigned"
       @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
     else
       @story_set = StorySet.find_by_id @filter
