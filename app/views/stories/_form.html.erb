@@ -219,7 +219,7 @@
   <div class="field form-field" style="float:left; padding-right:60px; width:700px">
     <div class="form-field-label"><%= session[:style].set_alias.titleize %>:</div>
     <div class="form-field-value">
-    	<%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id), :id, :name, @story.story_set_id)%>
+    	<%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id ), :id, :name, @story.story_set_id), {},{:style => "max-width: 595px;"}%>
     </div>
     
   </div> 
@@ -259,7 +259,8 @@
 <!--   END WAND END WAND END WAND  -->
 
   <div class="actions">
-    <button style="height:28px; margin-right:420px" id="back_btn">Back</button><button onclick='saveStory()'id="save_story_btn"> Save </button>
+    <button style="height:38px; margin-right:420px" id="back_btn">Back</button>
+    <button onclick='saveStory()'id="save_story_btn"> Save </button>
   </div>
   
   <div id="dialog" title="Basic dialog" display="none" >

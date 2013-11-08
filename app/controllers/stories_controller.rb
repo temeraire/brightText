@@ -11,9 +11,11 @@ class StoriesController < ApplicationController
     
     @application = find_application
 
-    if @filter == "__none"
-      @stories = Story.where("domain_id = ?",session[:domain].id).order(:name)
-    elsif @filter == "__unassigned"
+#    if @filter == "__none"
+#      @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
+#    els
+    
+    if @filter == "__unassigned"
       @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
     else
       @story_set = StorySet.find_by_id @filter
@@ -31,10 +33,12 @@ class StoriesController < ApplicationController
         @application = @category.bright_text_application unless @category.blank?
         @story_sets = @category.story_sets.order(:name) unless @category.blank?        
       end
-      @stories = Story.where(
-                      {"stories.domain_id" => session[:domain].id}.merge(
+      @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
+                      {"stories.domain_id" => session[:domain].id, 
+                      "bright_text_applications.id" => @application,
+                      "story_set_categories.id" => @category}.merge(
                           @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
-                      
+                            
       session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
       @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and bread crumbs similar values
 

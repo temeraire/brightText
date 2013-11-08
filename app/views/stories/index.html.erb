@@ -14,7 +14,7 @@
   
 </script>
 
-<div style="height=60px; width:100px">&nbsp;</div>
+<div style="height:60px; width:100px">&nbsp;</div>
 <button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
 <%= form_tag(stories_path, :method => :get) do %>
 <div class="toolbar" style="float:left; padding:5px 0px 0px 50px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:

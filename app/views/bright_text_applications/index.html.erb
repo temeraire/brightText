@@ -16,8 +16,9 @@
 	  <tr>
 	    <th width="70" data-sort="int" ><b>ID</b></th>
 	    <th width="300" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
-	    <th></th>
-	    <th width="150"></th>
+	    <th width="55"></th>
+	    <th width="55"></th>
+            <th width="150"></th>
 	    <th data-sort="int" ><b><%= session[:style].group_alias.pluralize.titleize %></b></th>
 	  </tr>
 	</thead>
@@ -31,9 +32,10 @@
 		%>
 		  <tr class="info_row">
 		    <td><%= bt_application.id %></td>
-		    <td><%= link_to bt_application.name, '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
-		    <td><%= link_to "Clone", clone_bright_text_application_path(bt_application)%></td>
+                    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%=bt_application.name%></a></td>
+		    <td style="text-align: left;"><%= link_to "Clone", clone_bright_text_application_path(bt_application)%></td>
 		    <td style="text-align: left;"><%= link_to 'Delete', bt_application, :confirm => 'Are you sure?', :method => :delete %></td>
+                    <td style="text-align: left;"><%= link_to 'Properties', '/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
 		    <td><a href="/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
 		  </tr>
 		<% end %>
