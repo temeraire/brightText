@@ -34,24 +34,28 @@ class StoriesController < ApplicationController
         @story_sets = @category.story_sets.order(:name) unless @category.blank?        
       end
 
-     if @story_set.category_id.nil?
-        @stories = Story.joins(:story_set).where(
+      if @story_set.nil?
+        @stories = Story.where("stories.domain_id" => session[:domain].id);        
+      else
+          if @story_set.category_id.nil?
+            @stories = Story.joins(:story_set).where(
                       {"stories.domain_id" => session[:domain].id}.merge(
                           @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
-      else
-          @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
+          else
+            @stories = Story.joins(:story_set => {:story_set_category => :bright_text_application}).where(
                       {"stories.domain_id" => session[:domain].id, 
                       "bright_text_applications.id" => @application,
                       "story_set_categories.id" => @category}.merge(
                           @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
-      end
-                            
+          end
+      end                      
       session[:br_story_set_id] = @story_set.id unless @story_set.blank? 
       @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and bread crumbs similar values
 
     end
 
     if not params[:q].blank?
+      @stories = Story.where("stories.domain_id" => session[:domain].id);
       @stories = @stories.search_for params[:q]
       @highlighted_phreses = params[:q].split()
     end
