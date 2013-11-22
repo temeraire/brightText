@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
     end
     flash[:warning]='Please login to continue'
     session[:return_to]=request.request_uri
-    redirect_to new_user_path
+    redirect_to "/admin/index.html"
     return false
   end
 

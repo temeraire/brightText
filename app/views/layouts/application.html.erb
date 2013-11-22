@@ -69,7 +69,7 @@ end
   
   <style>
     .page_content{
-      height:650px;
+      height:500px;
       overflow-y:auto;
     }
   
@@ -145,24 +145,16 @@ end
   
   <script>
 <% if session[:domain].nickname == "Admin" %>
-    var landing = [ "/domains" ];
+    var landing = [ "/admin/domains" ];
 <% else %>    
-    var landing = [ "/bright_text_applications", "/story_set_categories", "/story_sets",  "/stories", "/stories/" ];
+    var landing = [ "/admin/bright_text_applications", "/admin/story_set_categories", "/admin/story_sets",  "/admin/stories", "/admin/stories/" ];
 <% end %>
   
-    if ( document.location.href.indexOf("http://localhost:3000") == 0 ){
-<% if session[:domain].nickname == "Admin" %>
-      landing = [ "/domains"];
-<% else %> 
-      landing = [ "/bright_text_applications", "/story_set_categories", "/story_sets", "/stories","/stories/" ];
-<% end %>      
-    }
-  
-  
+ 
     $(function() {
       var selectedTabIndex = 0;
       for ( var i = 0; i < landing.length; i++ ){
-        if ( document.location.href.indexOf( landing[i] ) != -1 ){
+        if ( document.location.href.indexOf( landing[i] ) !== -1 ){
            selectedTabIndex = i;
         }
       }    
@@ -201,14 +193,14 @@ end
   <ul >
 <% if session[:domain].nickname == "Admin" %>
     <li><a href="#tab-content">Admin</a></li>
-    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/logout'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>    
+    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/admin/logout'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>    
 <% else %>  
     <li><a href="#tab-content"><%= session[:style].app_alias.pluralize.titleize %></a></li>
     <li><a href="#tab-content"><%= session[:style].group_alias.pluralize.titleize %></a></li>
     <li><a href="#tab-content"><%= session[:style].set_alias.pluralize.titleize %></a></li>
     <li><a href="#tab-content"><%= session[:style].story_alias.pluralize.titleize %></a></li>
     <li class="ui-state-disabled"><a href="#tab-content"><%= session[:style].story_alias.titleize %></a></li>
-    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/logout'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>
+    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/admin/logout'" style="cursor:pointer; padding-left:5px; font-size:8pt; font-color:blue; font-weight:regular; color:blue;"><u>log out</u></span></li>
     
 <% end %>      
 
@@ -216,13 +208,13 @@ end
   <% if controller_name != "bright_text_applications" && !@application.blank? %>
 	  <div id="breadcrumbs">
 	    <ul>
-	  		<li><%= link_to @application.name, story_set_categories_path(:filter => @application.id) %></li>
+	  		<li><%= link_to @application.name, admin_story_set_categories_path(:filter => @application.id) %></li>
 	  		<li>-></li>
 	  		<% if !@category.blank? %>
-		  		<li><%= link_to @category.name, story_sets_path(:filter => @category.id) %> </li>
+		  		<li><%= link_to @category.name, admin_story_sets_path(:filter => @category.id) %> </li>
 		  		<li>-></li>
 		  		<% if !@story_set.blank? %>
-		  			<li><%= link_to @story_set.name, stories_path(:filter => @story_set.id) %></li>
+		  			<li><%= link_to @story_set.name, admin_stories_path(:filter => @story_set.id) %></li>
 		  		<% end %>
 		  	<% end %>
 	  	</ul>

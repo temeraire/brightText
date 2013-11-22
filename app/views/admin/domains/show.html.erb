@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @domain.nickname %>
+</p>
+
+<p>
+  <b>name_first:</b>
+  <%= @domain.name_first %>
+</p>
+
+<p>
+  <b>name_last:</b>
+  <%= @domain.name_last %>
+</p>
+
+
+<p>
+  <b>email:</b>
+  <%= @domain.email %>
+</p>
+
+<p>
+  <b>enabled:</b>
+  <%= @domain.enabled %>
+</p>
+
+<p>
+  <b>priveleged:</b>
+  <%= @domain.priveleged %>
+</p>
+
+<p>
+  <b>self_created:</b>
+  <%= @domain.self_created %>
+</p>
+
+
+
+<%= link_to 'Edit', edit_admin_domain_path(@domain) %> |
+<%= link_to 'Back', admin_domains_path %>
