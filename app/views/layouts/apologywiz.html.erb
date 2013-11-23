@@ -1,33 +1,54 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>BrightText</title>
-  <style>
-    .flash {
-      padding: 10px;
-    }
-    .notice {
-      background: green;
-    }
-    .error {
-      background: #FF5E5E;
-    }
-    .field_with_errors input {
-      border: 1px solid #FF5E5E;
-    }
-    .field_with_errors label.message {
-      color: red;
-    }
-  </style>
-</head>
-<body>
-  <% flash.each do |name, msg| %>
-    <% if msg.is_a?(String) %>
-      <div class="<%= name %> flash">
-        <%= content_tag :div, msg %>
-      </div>
-    <% end %>
-  <% end %>
+  <head>
+    <title>BrightText</title>
+    <style>
+      .flash {
+        padding: 10px;
+      }
+      .notice {
+        background: green;
+      }
+      .error {
+        background: #FF5E5E;
+      }
+      .field_with_errors input {
+        border: 1px solid #FF5E5E !important;
+      }
+      .field_with_errors label.message {
+        color: red !important;
+      }
+    </style>
 
-  <%= yield %>
-</body>
+    <link rel="stylesheet" href="/stylesheets/apologywiz/reset.css">
+    <link rel="stylesheet" href="/stylesheets/apologywiz/base.css">
+    <link rel="stylesheet" href="/stylesheets/apologywiz/grids.css">
+    <link rel="stylesheet" href="/stylesheets/apologywiz/fonts.css">
+    <link rel="stylesheet" href="/stylesheets/apologywiz/skin.css">
+    <%= yield :stylesheets  %>
+    <%= javascript_include_tag :defaults %>
+    <%= yield :javascripts %>
+    <%= csrf_meta_tag %>
+  </head>
+  <body>
+    <% flash.each do |name, msg| %>
+      <% if msg.is_a?(String) %>
+        <div class="<%= name %> flash">
+          <%= content_tag :div, msg %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="bg">
+      <div class="mWrp">
+        <div id="mHdr">
+          <div class="logo">
+            <img src="/images/apologywiz/logos/logo.png" alt="logo" />
+          </div>
+        </div>
+        <div id="mCnt">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>

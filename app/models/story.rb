@@ -8,8 +8,21 @@ class Story < ActiveRecord::Base
   before_save :set_rank
   
   validates :name, 
-              :uniqueness => { :scope => :story_set_id, :message => "This name is already taken. Please select another name" }, 
+              :uniqueness => { :scope => :story_set_id, :message => "This name is already taken. Please select another name" },
               :presence => {:message => "Please insert a name."}
+
+
+  def category
+    unless story_set.nil?
+      story_set.story_set_category.name
+    end
+    ''
+  end
+
+  def category=(c)
+    c = StorySetCategory.find_by_name(c) || StorySetCategory.new(name: c)
+    story_set.story_set_category = c
+  end
   
   def set_rank
     if self.rank.blank? || self.rank == 0 || self.story_set_id_changed?

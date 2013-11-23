@@ -1,0 +1,33 @@
+<%= form_for([:apologywiz, @user], validate: true) do |f| %>
+
+  <ul class="login-form">
+    <li>
+      <%= f.label :name, "First name" %><strong>*</strong>
+      <%= f.text_field :name, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :lastname, "Last name", style: 'margin:12px 0 2px;' %><br />
+      <%= f.text_field :lastname, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :email, style: 'margin:12px 0 2px;' %>
+      <%= f.text_field :email, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :password, style: 'margin:12px 0 2px;' %><br />
+      <%= f.password_field :password, class: 'txt' %>
+    </li>
+    <li>
+      <%= f.label :password_confirmation, style: 'margin:12px 0 2px;' %><br />
+      <%= f.password_field :password_confirmation, class: 'txt' %><br />
+    </li>
+    <li class="actions">
+      <span><%= link_to "Already Registered?", apologywiz_login_path %></span>
+      <%= f.submit 'Submit', class: 'btn' %>
+    </li>
+    <li>
+
+    </li>
+  </ul>
+
+<% end %>

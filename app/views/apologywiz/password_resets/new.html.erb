@@ -1,0 +1,17 @@
+<div class="cnt1 cnt3">
+  <h2>Reset password</h2>
+
+  <%= form_tag apologywiz_password_resets_path, method: :post do %>
+    <ul class="login-form">
+      <li>
+        <%= label_tag :email %>
+        <%= text_field_tag :email, params[:email], class: 'txt' %>
+      </li>
+      <li>
+        <span><%= link_to "Back", new_apologywiz_user_path %></span>
+        <%= submit_tag "Reset Password", class: 'btn' %>
+      </li>
+    </ul>
+  <% end %>
+
+</div>

@@ -1,0 +1,99 @@
+<script>
+  $( function() {
+    $("#new_button").button().click( function(){
+       document.location.href='/stories/new?filter=<%= @filter %>';
+    });
+
+  });
+  
+  function onFilterSetSelect()
+  {
+    var selector =  $("#setSelector")[0];
+    document.location.href = "/stories?filter=" + selector.options[ selector.selectedIndex ].value;
+  } 
+  
+</script>
+
+<div style="height=60px; width:100px">&nbsp;</div>
+<button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
+<div class="toolbar" style="float:left; padding:5px 0px 0px 50px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
+<select id="setSelector" onChange="onFilterSetSelect()" >
+<%
+  storySetFilter = @filter
+  selected = 'selected' if storySetFilter.blank?
+%>
+
+ <option <%= selected %> value="__none" >All<%= @category.blank? ? "" : " in "+ @category.name %></option>
+ 
+<%
+  selected = ''
+  selected = 'selected' if storySetFilter == "__unassigned"
+%>
+ <option <%= selected %> value="__unassigned">-- unassigned --</option>
+<%
+unless @story_sets.nil?
+
+  @story_sets.each do | set |
+    selected = ''
+    selected = 'selected' if storySetFilter == set.id.to_s
+%>
+    <option value="<%=set.id%>" <%= selected %>><%= set.name %></option>
+<%
+  end
+end
+%>
+</select>
+
+
+
+<%
+  parentObj = StorySet.find_by_id( @filter )
+  parentId = "__undefined"
+  parentId = parentObj.category_id.to_s unless parentObj == nil
+%>
+<% if(@filter != "__none" && !@story_set.blank?) %>
+	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@story_set) %>')">Reorder Stories</button>	
+<% else %>
+	<button disabled="disabled" >Reorder Stories</button>	
+<% end %>
+<!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
+</div>
+<div style="margin-right: 100px; float: right; padding: 5px 0 0 5px;">
+	<%= form_tag(stories_path, :method => :get) do %>
+		<%= text_field_tag :q, params[:q] %>
+		<%= submit_tag 'Search' %>
+	<% end %>
+</div>
+<div style="height:110px; width:100px">&nbsp;</div>
+
+<table id="stories_table" class="sortable_header" cellspacing="0">
+	<thead>	  
+	  <tr>
+	  	<th width="55" data-sort="int" ><b> Order </b></th>
+	    <th width="200" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
+	    <th width="400" data-sort="string"><b>Sample</b></th>
+	    <th></th>
+	    <th></th>
+	  </tr>
+	</thead>
+	<tbody id="sortable">
+		<% @stories.each do |story| %>
+		  <tr class="stories_info_row info_row">
+		  	<td><%= story.rank %></td>
+		    <td style="width:100px">
+		    	<%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_story_path(story) %>
+		    	
+		    </td>
+		    <td style="width:400px">
+		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>	     
+		    </td>
+		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
+		    <td class="story_management"><%= link_to 'Delete', 'stories/' + story.id.to_s + '/delete', :confirm => 'Are you sure?', :method => :delete %></td>
+		  	
+		  </tr>
+		  
+		<% end %>
+
+	</tbody>
+</table>
+

@@ -1,0 +1,459 @@
+<% content_for :stylesheets do %>
+<style>
+
+th,td{
+  border:1px solid #2a333a;
+}
+
+table.stories_list td{
+  vertical-align:middle;
+  text-align:center
+}
+
+
+table.stories_list td.cell a:hover, td.cell a:active{
+  background-color: #FCCC25;
+  color: #000000
+}
+
+
+textarea.dataport{
+  width:764px;
+  height:392px;
+  resize:none;
+}
+
+DIV.harnesscontainer{
+  width:834px;
+  height:34px;
+  margin:5px;
+  padding:5px;
+  float:left;
+  border: 1px dotted black
+}
+
+DIV.viewportcontainer{
+  width:480px;
+  height:140px;
+  margin:5px;
+  padding:5px;
+  float:left;
+}
+
+DIV.btEditor{
+  width:440px;
+  height:120px;
+  padding:10px;
+}
+
+DIV.btContent {
+  margin-left: 20px;
+  box-shadow: 0 0 3px #000 inset;
+}
+.no-close .ui-dialog-titlebar-close{
+  display: none
+}
+
+</style>
+<link rel="stylesheet" href="/stylesheets/btedit.css">
+<% end %>
+
+
+<% content_for :javascripts do %>
+<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+<script type="text/javascript" src="/javascripts/browserDetect.js"></script>
+<script type="text/javascript" src="/javascripts/bt/bt.js"></script>
+<script type="text/javascript" src="/javascripts/stupidtable.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery.json-2.2.min.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery-ui-1.8.22.custom.min.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery.conmenu.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="/js/btedit.js"></script>
+
+<script type="text/javascript">
+
+  var stories;
+  var formSubmitted = false;
+
+  $.ajaxSetup({
+    beforeSend:function(){
+        // show gif here, eg:
+        $("#loading").show();
+    },
+    complete:function(){
+        // hide gif here, eg:
+        $("#loading").hide();
+    }
+  });
+
+  $(document).ready(function(){
+    $(function() {
+      $("a.clickme").live('click', function(event){
+          event.preventDefault();
+          var index = $(this).attr("id");
+          var story = stories[index]["story"];
+          $("#story_id").val(story["id"]);
+          $("#category_name").html("");
+          $("#name").html(story["name"]);
+          _bt1.renderData(JSON.parse(story["descriptor"]));
+          $('form.edit_story').get(0).setAttribute('action', '/stories/'+ story["id"]);
+          $(".step3").hide();
+          $('#tabs ul li').removeClass('active');
+          $('#tabs ul li:#step_2').addClass('active');
+          $(".step2").show();
+          //formSubmitted = false;
+          //$("a[href='.step2']").click();
+      });
+    });
+
+   $('span.clk').hover(function()
+      { $("ul.random").show(); },
+    function()
+      { $("ul.random").hide();
+    });
+  });
+
+  $(document).ready(function(){
+    $('#tabs').children('div').hide();
+    $('#tabs div:first').show();
+    $('#tabs ul li:first').addClass('active');
+    $('#tabs ul li a').click(function(){
+      $('#tabs ul li').removeClass('active');
+      $(this).parent().addClass('active');
+      var currentTab = $(this).attr('href');
+      $('#tabs').children('div').hide();
+      $(currentTab).show();
+      return false;
+    });
+  });
+
+  $(document).ready(function() {
+    $("a[href='.step1']").click(function(){
+      formSubmitted = false;
+    });
+
+    $("a[href='.step2']").click(function() {
+      if(formSubmitted===false){
+        var title = $("#story_category").val();
+        if(title===''){
+          $("#titleValidation").show();
+        }else{
+          var subtitle = $("#story_name").val();
+          if(subtitle===''){
+            $("#subTitleValidation").show();
+          }else{          
+            $.ajax({
+              type: "post",
+              url: "/apologywiz/stories",
+              dataType: "json",
+              data: $("#new_story").serialize(),
+              success: function(data) {
+                formSubmitted = true;
+                if(data["success"] === "true") {
+                  $("#story_id").val(data["story_id"]);
+                  $("#category_name").text($("#story_category").val());
+                  $("#name").text($("#story_name").val());
+                  $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
+                }
+                else if(data["name"]){
+                  message = data["name"];
+                  $("#story_name").parent().addClass('field_with_errors');
+                  $("#story_name + .message").remove();
+                  $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
+                }
+              }
+            });
+
+          }
+        }
+      }
+    });
+
+    $("a[href='.step3']").click(function() {
+         $.ajax({
+           type: "get",
+           url: "/apologywiz/stories",
+           dataType: "json",
+           data: "",
+           success: function(data) {
+             if(data["success"] === "true") {
+                stories = data["stories"];
+                var rows = "";
+                $.each(stories, function (i, apology) {
+                  console.log(apology);
+                  rows += "<tr>" +
+                          "<td class='cell' style='width:50px'><a id='" +
+                          i +"' class='clickme' href='#'>" +
+                          apology["story"]["id"] + "</a></td>" +
+                          "<td class='cell' style='width:500px'><a id='" +
+                          i +"' class='clickme' href='#'>" +
+                          apology["story"]["name"] + "</a></td>"+
+                          "<td class='cell' style='width:50px'>" +
+                          apology["story"]["rank"] +"</td></tr>";
+                });
+                $("#user_stories_list tbody").html("");
+                $("#user_stories_list tbody").append(rows);
+             }
+           }
+         });
+    });
+
+    $("#story_submit").click(function(){
+      var summary = $("#fieldSummary").val();
+      if(summary===''){
+        $("#textValidation").show();
+      }else{
+        //$("#saveDialog").show();      
+        $.ajax({
+          type: "post",
+          url: $("form.edit_story").get(0).getAttribute("action"),
+          dataType: "json",
+          data: $("form.edit_story").serialize(),
+          success: function(data) {
+              if(data["success"] === "true") {
+              $("#saveSuccess").show();
+            }
+          }
+        });
+      }
+    });
+    
+    $("#titleValidationOk").click(function(){
+      $("#titleValidation").hide();
+      $("a[href='.step1']").click();
+      
+    });
+    
+    $("#subTitleValidationOk").click(function(){
+      $("#subTitleValidation").hide();
+      $("a[href='.step1']").click();
+    });
+
+    $("#textValidationOk").click(function(){
+      $("#textValidation").hide();
+    });
+
+    $("#saveDialogCancel").click(function(){
+      $("#saveDialog").hide();
+    });
+
+    $("#saveDialogSave").click(function(){
+      $("#saveDialog").hide();
+      $.ajax({
+        type: "post",
+        url: $("form.edit_story").get(0).getAttribute("action"),
+        dataType: "json",
+        data: $("form.edit_story").serialize(),
+        success: function(data) {
+          if(data["success"] === "true") {
+            $("#saveSuccess").show();
+          }
+        }
+      });
+    });
+
+    $("#saveSuccessOk").click(function(){
+      $("#saveSuccess").hide();
+      //$("a[href='.step3']").click();
+    });
+});
+</script>
+<!-- BrightText WAND script -->
+<script>
+  var _bt1 = null;
+
+  function updateToneSlider1( gradients, value ){
+    var toneIndex = 0;
+    for ( var i = 0; i < gradients.length; i++ ){
+      if ( gradients[i].id === value ){
+        toneIndex = i;
+        break;
+      }
+    }
+    $("#tone-control1").hide( );
+    $( "#slider1" ).slider({
+      value: toneIndex,
+      min: 0,
+      max: gradients.length - 1,
+      range: false,
+      step: 0.001,
+      slide: function( event, ui ) {
+        var toneGradients = gradients;
+        var s1 = Math.round(ui.value);
+        if ( _s1 !== s1 ){ // allow smooth moving of the tone selector
+          _s1 = s1;
+          $( "#gradient1" ).html( gradients[ s1 ].name );
+          _bt1.handleToneSelection( gradients[ s1 ].id );
+        }
+      }
+    });
+    if ( gradients.length > 1) {
+      $( "#gradient1" ).html( gradients[ toneIndex ].name );
+      $("#tone-control1").show();
+    }
+  }
+
+  var _s1;
+
+  $(document).ready(function(){
+    _bt1 = new BrightTextEditor( "bt_one", true );
+
+    var rawData  = $("#fieldDescriptor");
+    var textData = $("#fieldSummary");
+
+    _bt1.onChange( function(){
+      rawData[0].value  = $.toJSON( _bt1.toData() );
+      textData[0].value = _bt1.toString();
+      updateToneSlider1( _bt1.toneGradients(), _bt1.selectedTone() );
+    });
+
+    $("#instant_rewrite1").button();
+    $("#instant_rewrite1").bind("click", function(){
+      _bt1.rewrite();
+    });
+
+    $("#tone-control1").hide( );
+    $("#fetchStory").button();
+    $("#saveStory").button();
+
+    //$("#edit_choicesets").button().click( _bt1.editChoicesets );
+
+    //set client_side_validation for selection list
+    $("#story_story_set_id").change(function(){
+      var settings = window[$('form[data-validate]').attr('id')];
+      $("#story_name").isValid(settings.validators);
+    });
+  });
+</script>
+
+<% end %>
+
+
+<div id="tabs">
+<ul class="nav">
+<li id="step_1" ><a href=".step1" title="">Step 1</a></li>
+<li id="step_2" ><a href=".step2" title="" >Step 2</a></li>
+<li id="step_3" ><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>
+</ul>
+<div class="step1">
+<h3>Enter a title</h3>
+<%= form_for([:apologywiz, @story], :validate => true) do |f| %>
+  <ul class=" step1-form ">
+    <li>
+      <%= f.text_field :category, class: 'txt-step txt', placeholder: "example: John's Apologies" %>
+    <li>
+      <label class="lblTxt">Subtitle</label>
+      <%= f.text_field :name, class: 'txt-step txt', placeholder: "example: Sorry I've been a creep" %>
+    </li>
+
+    <li>
+    <!--
+      <label for="description" class="lblTxt">Text</label>
+      <%= f.text_area :description, class: 'txtarea', placeholder: 'Type your apology here...' %>
+    -->
+    </li>
+
+    </ul>
+<% end %>
+</div>
+<div class="step2">
+<ul class="random">
+    <li> <a href="#" title="Highlight text">Highlight some text and right-click</a></li>
+    <li> <a href="#" title="Select">Select 'Create Changepoint'</a></li>
+    <li> <a href="#" title="alternative text">Enter some alternative text</a></li>
+    <li> <a href="#" title="Hit 'enter'">Hit 'enter'</a></li>
+    <li> <a href="#" title="disappear">Click away from the Changepoint menu to make it disappear.</a></li>
+    <li> <a href="#" title="Be sure to Save">Click on the Changepoint you've created to see your changes. Be sure to Save!</a></li>
+    <li><span class="pinto"></span></li>
+</ul>
+<!--   END WAND END WAND END WAND  -->
+
+<%= form_for([:apologywiz,@story], :validate => true, :html => { :method => :put, class: 'edit_story'}, :remote => true) do |f| %>
+  <%= f.hidden_field :id, id: 'story_id' %>
+  <h3 id="category_name"><%= @story.category %></h3>
+  <h2 id="name"><%= @story.name %></h2>
+  <ul class=" step2-form ">
+    <ul class="etc">
+      <li>
+        <label for="description" class="lblTxt">Please enter some text</label>
+
+      </li>
+        <div style="clear:both; width:500px; height:160px">
+        <!--   WAND WAND WAND WAND WAND  -->
+          <DIV id="main_container" class="viewportcontainer">
+            <DIV id="bt_one" class="btEditor">BT Wand</DIV>
+          </DIV>
+        </div>
+      <%= f.hidden_field :description, class: 'txtarea', id: 'fieldSummary' %>
+
+      <li class="ftr1 ftr2" style="float:left;">
+        <span class="clk">Advanced Features</span>
+        <a href="#" title="View a video" class="link">View a video on more advanced features</a>
+      </li>
+    </ul>
+  </ul>
+  <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
+  <p class="ftr1">
+    <!-- <a href="#"  class="btn-step btn">Save</a> -->
+    <%= f.submit "Save", class: 'btn-step btn' %>
+    <strong>Click Save at any time. Then restart the app on your mobile device to see what you created!</strong>
+  </p>
+<% end %>
+</div>
+<div class="step3">
+<div style="height:50px; width:100px">&nbsp;</div>
+<div style="color: white">
+  <table id="user_stories_list" class="stories_list">
+	<thead>
+		<tr>
+		    <th data-sort="int" style="width:50px;"><b>ID</b></th>
+		    <th data-sort="string" style="width:500px;"><b>Name</b></th>
+		    <th data-sort="int" style="width:50px;"><b>Rank</b></th>
+		 </tr>
+	</thead>
+        <tbody>
+
+       </tbody>
+  </table>
+</div>
+</div>
+  
+<div id="titleValidation" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Title can't be blank</h1>
+    <button id="titleValidationOk" class="btn1">Ok</button>
+  </div>
+</div> 
+  
+<div id="subTitleValidation" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Subtitle can't be blank</h1>
+    <button id="subTitleValidationOk" class="btn1">Ok</button>
+  </div>
+</div>  
+
+<div id="textValidation" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Text can't be blank</h1>
+    <button id="textValidationOk" class="btn1">Ok</button>
+  </div>
+</div>
+<div id="saveDialog" class="popup-bg" style="display:none;">
+  <div class="save-changes">
+    <h1>Save Changes?</h1>
+      <button id="saveDialogSave" class="btn1">Save</button>
+      <button id="saveDialogCancel" class="btn2">Cancel</button>
+  </div>
+</div>
+
+<div id="saveSuccess" class="popup-bg" style="display:none;">
+  <div class="text1">
+    <h1>Saved successfully</h1>
+    <button id="saveSuccessOk" class="btn1">Ok</button>
+  </div>
+</div>
+
+<div id="loading" class="wait-popup-bg" style="display:none;">
+  <img src="/images/apologywiz/ajax-loader.gif"
+</div>
+

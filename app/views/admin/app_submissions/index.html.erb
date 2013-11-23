@@ -1,0 +1,29 @@
+<h1>Listing app_submissions</h1>
+
+<table>
+  <tr>
+    <th>Bright text application</th>
+    <th>Domain</th>
+    <th>Story set values</th>
+    <th>Story set digests</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @app_submissions.each do |app_submission| %>
+  <tr>
+    <td><%= app_submission.bright_text_application_id %></td>
+    <td><%= app_submission.domain_id %></td>
+    <td><%= app_submission.story_set_values %></td>
+    <td><%= app_submission.story_set_digests %></td>
+    <td><%= link_to 'Show', admin_app_submission %></td>
+    <td><%= link_to 'Edit', edit_admin_app_submission_path(app_submission) %></td>
+    <td><%= link_to 'Destroy', admin_app_submission_path(app_submission), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New App submission', new_admin_app_submission_path %>
