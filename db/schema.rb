@@ -11,14 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 920130109084744) do
+ActiveRecord::Schema.define(:version => 920130109084746) do
 
   create_table "app_submissions", :force => true do |t|
     t.integer  "bright_text_application_id"
     t.integer  "domain_id"
     t.text     "story_set_values"
     t.text     "story_set_digests"
-    t.text     "submission_metadata"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "descriptor",                 :limit => 16777215
@@ -65,7 +64,7 @@ ActiveRecord::Schema.define(:version => 920130109084744) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.string   "description"
+    t.string   "description",  :limit => 1024
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
@@ -103,6 +102,18 @@ ActiveRecord::Schema.define(:version => 920130109084744) do
     t.string   "email"
     t.string   "password_hash"
     t.string   "lastname"
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                         :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
   end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
 end

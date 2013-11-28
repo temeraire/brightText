@@ -18,7 +18,7 @@
 <button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
 <%= form_tag(admin_stories_path, :method => :get) do %>
 <div class="toolbar" style="float:left; padding:5px 0px 0px 50px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
-<select id="setSelector" onChange="onFilterSetSelect()" >
+  <select id="setSelector" onChange="onFilterSetSelect()" style="max-width: 400px; min-width: 400px" >
 <%
   storySetFilter = @filter
   selected = 'selected' if storySetFilter.blank?

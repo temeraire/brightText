@@ -49,10 +49,10 @@ class Apologywiz::UsersController < ApologywizController
     respond_to do |format|
       if @user.save
         log_in! @user
-        format.html { redirect_to(new_apologywiz_story_path, :notice => 'User was successfully created.') }
+        format.html { redirect_to(apologywiz_root_url, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
-        format.html { render :action => "new" , :layout => "users" }
+        format.html { render :action => "new" , :layout => "apologywiz" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
@@ -61,11 +61,11 @@ class Apologywiz::UsersController < ApologywizController
   def authenticate
     if (@user = User.authenticate params[:user][:email], params[:user][:password])
       log_in! @user
-      redirect_to apologywiz_root_url, notice: "Logged in!"
+      redirect_to new_apologywiz_story_path, notice: "Logged in!"
     else
       @user = User.new
       flash.now[:error] = "Email or password is invalid"
-      render 'new_session', layout: "users"
+      render 'new_session', layout: "apologywiz"
     end
   end
 
