@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   def login_required
-    if session[:domain]
+    if session[:domain] && (session[:domain].nickname=="Admin" || session[:domain].nickname=="ContextIT")
       return true
     end
     flash[:warning]='Please login to continue'

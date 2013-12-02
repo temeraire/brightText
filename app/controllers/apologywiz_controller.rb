@@ -1,26 +1,23 @@
 class ApologywizController < ActionController::Base
   protect_from_forgery
   def login_required
-    if session[:domain]
+    if session[:domain].present? && session[:user_id].present?
       return true
     end
     flash[:warning]='Please login to continue'
     session[:return_to]=request.request_uri
-    redirect_to "/apologywiz/index.html"
+    redirect_to apologywiz_login_path
     return false
   end
 
   def log_in! user
     session[:domain] = user.domain
+    session[:user_id] = user.id
     session[:style]  = DomainStyle.find_by_domain_id user.domain.id
   end
 
-  def authenticate 
-    
-  end
-
   def current_user
-    session[:domain]
+    User.find session[:user_id]
   end
 
   def get_first_application_id

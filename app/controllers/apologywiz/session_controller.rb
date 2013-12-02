@@ -36,7 +36,7 @@ class Apologywiz::SessionController < ApologywizController
     #session[:domain] = nil
     #session[:style] = nil
     reset_session
-    redirect_to "/"
+    redirect_to "/apologywiz/login"
   end
 
 end

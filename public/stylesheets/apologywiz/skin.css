@@ -9,6 +9,16 @@ ul li {list-style:none;}
 #mHdr{}
 .logo{padding:3% 0 0 26%;}
 .logo img{}
+#mHdr ul.login-form span{
+    color:#8bcaff;
+    font-family:'Cuprum';
+    font-size:18px;
+    margin: 37px 0 0 2px;
+}
+#mHdr ul.login-form a{
+    cursor:pointer; 
+    padding-left:330px;
+}
 /* Content */
 #mCnt{}
 .step4{float:left;}

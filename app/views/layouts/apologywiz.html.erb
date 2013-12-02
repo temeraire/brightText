@@ -42,8 +42,20 @@
     <div class="bg">
       <div class="mWrp">
         <div id="mHdr">
+
           <div class="logo">
             <img src="/images/apologywiz/logos/logo.png" alt="logo" />
+          </div>
+          <div>
+            <ul class="login-form">
+              <li>
+                <% if session[:user_id].present? %>
+                <span>
+                  <a href="/apologywiz/logout">Log out</a>
+                </span>                  
+                <% end %>
+              </li>
+            </ul>
           </div>
         </div>
         <div id="mCnt">
