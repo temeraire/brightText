@@ -21,9 +21,9 @@ ul li {list-style:none;}
 }
 /* Content */
 #mCnt{}
-.step4{float:left;}
-.cnt1{ clear:both;width: 100%;}.cnt2{width: 100%;}
-#mCnt .cnt1 h2, #mCnt .cnt2 h2{
+.step1{float:left;}
+.cnt2{ clear:both;width: 100%;}.cnt3{width: 100%;}
+#mCnt .cnt2 h2, #mCnt .cnt3 h2{
     font-size:38px;
     color:#fee846;
     font-family:'Cuprum';
@@ -31,17 +31,17 @@ ul li {list-style:none;}
     letter-spacing: 1px;
     margin: 41px 0 0 290px;
     font-weight:normal;}
-#mCnt .cnt2 h2{margin: 41px 0 0 290px;}
+#mCnt .cnt3 h2{margin: 41px 0 0 290px;}
 #mCnt form{clear:both; width:100%;}
-#mCnt form ul.login-form, #mCnt .cnt2 form ul.login-form {margin: 20px 0 0 30%;}
+#mCnt form ul.login-form, #mCnt .cnt3 form ul.login-form {margin: 20px 0 0 30%;}
 #mCnt form ul.login-form li{clear:both;}
 #mCnt form ul.login-form label{font-size:25px; color:#fff; font-family:'Cuprum';margin: 4px 0 0;}
 #mCnt form ul.login-form .txt,
-#mCnt form ul.step1-form .txt-step,
-#mCnt form ul.step1-form li .txtarea,
-#mCnt .step2 form ul.step2-form li .txtarea,
-#mCnt .step3 form ul.step3-data li .txtarea,
-#mCnt .step2 form ul.step2-form li .txt-step{
+#mCnt form ul.step2-form .txt-step,
+#mCnt form ul.step2-form li .txtarea,
+#mCnt .step3 form ul.step3-form li .txtarea,
+#mCnt .step1 form ul.step1-data li .txtarea,
+#mCnt .step3 form ul.step3-form li .txt-step{
     clear:both;
     height:35px;
     width:305px;
@@ -61,14 +61,14 @@ ul li {list-style:none;}
 }
 #mCnt form ul.login-form  a{}
 #mCnt form ul.login-form .btn,
-#mCnt .step3 .ftr1 .btn,
-#mCnt form ul.step1-form .btn,
-#mCnt .step2 form ul.step2-form li .btn,
-#mCnt .step3 form ul.step3-data li .btn,
+#mCnt .step1 .ftr1 .btn,
+#mCnt form ul.step2-form .btn,
+#mCnt .step3 form ul.step3-form li .btn,
+#mCnt .step1 form ul.step1-data li .btn,
 .save-changes .btn1,
 .save-changes .btn2,
 .text1 .btn1,
-#mCnt .step2 .ftr1 .btn{
+#mCnt .step3 .ftr1 .btn{
     color:#0d1721;
     font-family:'Cuprum';
     font-size:24px;
@@ -95,12 +95,12 @@ ul li {list-style:none;}
     text-align: center;
 }
 /*cnt2 registration page*/
-#mCnt .cnt2 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
-#mCnt .cnt2 form ul.login-form .btn{margin: 25px 0 0 60px;}
+#mCnt .cnt3 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
+#mCnt .cnt3 form ul.login-form .btn{margin: 25px 0 0 60px;}
 
 /*cnt3 reset password page*/
-#mCnt .cnt3 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
-#mCnt .cnt3 form ul.login-form .btn{width:160px; margin: 25px 0 0 110px;}
+#mCnt .cnt1 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
+#mCnt .cnt1 form ul.login-form .btn{width:160px; margin: 25px 0 0 110px;}
 
 /*cnt4 update password page*/
 #mCnt .cnt4 form ul.login-form li strong{color:#c81a1a;  font-family:'Cuprum'; font-size:24px;}
@@ -112,14 +112,12 @@ ul li {list-style:none;}
     clear:both; position:relative;   margin: 47px 0 0 2px;
     background: #393e42;
     background: -moz-linear-gradient(top,  #393e42 0%, #4e5459 100%);
-    background: -webkit-gradient(linear, left top, left bottom,
-        color-stop(0%,#393e42), color-stop(100%,#4e5459));
+    background: -webkit-gradient(linear, left top, left bottom,color-stop(0%,#393e42), color-stop(100%,#4e5459));
     background: -webkit-linear-gradient(top,  #393e42 0%,#4e5459 100%);
     background: -o-linear-gradient(top,  #393e42 0%,#4e5459 100%);
     background: -ms-linear-gradient(top,  #393e42 0%,#4e5459 100%);
     background: linear-gradient(to bottom,  #393e42 0%,#4e5459 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#393e42',
-        endColorstr='#4e5459',GradientType=0 );
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#393e42',endColorstr='#4e5459',GradientType=0 );
     border-radius: 10px 0px 0px 10px;
     -moz-border-radius: 10px 0px 0px 10px;
     -webkit-border-radius: 10px 0px 0px 10px;
@@ -154,105 +152,105 @@ span.last-img{
 ul.nav li a{
     color:#fff; font-family:'Cuprum'; font-size:27px; padding: 10px 100px 0;
     height: 50px; width: 65px;}
-#mCnt .step1{float:left !important;}
-#mCnt .step1 h3{
+#mCnt .step2{float:left !important;}
+#mCnt .step2 h3{
     margin: 25px 0 5px 30px;
     color:#fff;
     font-family:'Cuprum';
     font-size:25px;
     font-weight:normal;}
-#mCnt form ul.step1-form li .lblTxt{
+#mCnt form ul.step2-form li .lblTxt{
     margin: 25px 0 5px 30px; color:#fff;
-    font-family:'Cuprum';font-size:25px; font-weight:normal; float:left; display:block;}                    	#mCnt.step1 form{}
-#mCnt.step1 form ul.step1-form{ margin:4px 0 0 0 !important;}
-#mCnt form ul.step1-form li{clear:both;float: left;}
-#mCnt form ul.step1-form .txt-step, #mCnt .step2 form
-ul.step2-form li .txt-step
+    font-family:'Cuprum';font-size:25px; font-weight:normal; float:left; display:block;}                    	#mCnt.step2 form{}
+#mCnt.step2 form ul.step2-form{ margin:4px 0 0 0 !important;}
+#mCnt form ul.step2-form li{clear:both;float: left;}
+#mCnt form ul.step2-form .txt-step, #mCnt .step3 form
+ul.step3-form li .txt-step
 {width:425px; margin: 1px 0 0px 30px;}
-#mCnt form ul.step1-form a{}
-#mCnt form ul.step1-form li .txtarea{
+#mCnt form ul.step2-form a{}
+#mCnt form ul.step2-form li .txtarea{
     margin:10px 0 20px 30px; clear:both;
     display:block;}
-#mCnt form ul.step1-form .btn{
+#mCnt form ul.step2-form .btn{
     height: 36px; margin: 29px 0 0;
     width: 110px;}
 /*step2*/
-#mCnt .step2{clear:both;float:left !important;position:relative;}
-#mCnt .step2 h3, #mCnt .step2 h2
+#mCnt .step3{clear:both;float:left !important;position:relative;}
+#mCnt .step3 h3, #mCnt .step3 h2
 {clear:both;color:#fff; font-family:'Cuprum'; font-size:20px;
- margin:15px 0 5px 30px; font-weight:normal;}#mCnt .step2 h3{font-size:25px;}
-#mCnt .step2 spanj{
+ margin:15px 0 5px 30px; font-weight:normal;}#mCnt .step3 h3{font-size:25px;}
+#mCnt .step3 spanj{
     background:url('../../images/apologywiz/icons/pencil.png') no-repeat top right;
     display:block; height:20px; width:20px; margin:17px 0 0 6px; }
-#mCnt .step2 form{clear:both;}
-#mCnt .step2 form ul.step2-form{clear:both;width: 100%; }
-#mCnt .step2 form ul.step2-form li{}
-#mCnt .step2 form ul.step2-form li label
+#mCnt .step3 form{clear:both;}
+#mCnt .step3 form ul.step3-form{clear:both;width: 100%; }
+#mCnt .step3 form ul.step3-form li{}
+#mCnt .step3 form ul.step3-form li label
 {clear:both;color:#fff; font-family:'Cuprum'; font-size:20px;
  margin:15px 0 5px 30px; font-weight:normal;}
-#mCnt .step2 form ul.step2-form li .txt-step{float:left;}
-#mCnt .step2 form ul.step2-form li .txtarea,
-#mCnt form ul.step1-form li .txtarea{height: 100px;
+#mCnt .step3 form ul.step3-form li .txt-step{float:left;}
+#mCnt .step3 form ul.step3-form li .txtarea,
+#mCnt form ul.step2-form li .txtarea{height: 100px;
                                      padding: 10px 0 0 13px;width: 425px;}
 .etc{float:left; width:100%; height: 100%;}
-#mCnt .step2 form ul.step2-form li .txtarea{margin:0px 0 20px 30px; }
-#mCnt .step2 form ul.step2-form li a{ float:right;}
-#mCnt .step2 form ul.step2-form li .btn{ margin: 18px 0; width: 110px;}
-#mCnt .step2 .ftr1 a{}
-#mCnt .step2 form ul.step2-form .ftr2{width:45% !important;
+#mCnt .step3 form ul.step3-form li .txtarea{margin:0px 0 20px 30px; }
+#mCnt .step3 form ul.step3-form li a{ float:right;}
+#mCnt .step3 form ul.step3-form li .btn{ margin: 18px 0; width: 110px;}
+#mCnt .step3 .ftr1 a{}
+#mCnt .step3 form ul.step3-form .ftr2{width:45% !important;
                                       float:right!important;margin: 35px 0 0 0;}
-#mCnt .step2 .ftr1 .btn{ width: 110px;
+#mCnt .step3 .ftr1 .btn{ width: 110px;
                          margin:32px 0 0 3%; display:inline-block; text-decoration:none;}
-#mCnt .step2 .ftr1{width:100%;}
+#mCnt .step3 .ftr1{width:100%;}
+#mCnt .step3 .ftr1 strong{color:#b7b7b7; font-family:'Arial';
+                           font-size:14px;margin: 20px 0 0 3%; font-weight:normal; clear:both;}
 #mCnt .step2 .ftr1 strong{color:#b7b7b7; font-family:'Arial';
                            font-size:14px;margin: 20px 0 0 3%; font-weight:normal; clear:both;}
-#mCnt .step1 .ftr1 strong{color:#b7b7b7; font-family:'Arial';
-                           font-size:14px;margin: 20px 0 0 3%; font-weight:normal; clear:both;}
-#mCnt .step2 form ul.step2-form li span
+#mCnt .step3 form ul.step3-form li span
 {color:#fff; font-family:'Arial'; display:inline-block;
  background-image:none;font-size:20px; margin: 0;
  font-weight:bold;margin: 0 0 0 20%;}
-#mCnt .step2 form ul.step2-form li span.clk{float:left;}
-#mCnt .step2 form ul.step2-form li a.link{
+#mCnt .step3 form ul.step3-form li span.clk{float:left;}
+#mCnt .step3 form ul.step3-form li a.link{
     color:#fcb51e; font-family:'Arial';
     font-weight:normal; font-size:14px; text-decoration:underline;
     clear:both;margin: 0 0 0 2% ; display:inline-block;}
-#mCnt .step2 ul.random{
+#mCnt .step3 ul.random{
     position: absolute;right: 13%;top: 3%;border-radius: 5px;
     -moz-border-radius: 5px;-webkit-border-radius: 5px;height: 170px;width: 305px;
     border: 1px solid #faed64;background-color: #fff47f;padding: 10px 10px 3px 30px;
     display:none;}
-#mCnt .step2 ul.random li span.pinto{
+#mCnt .step3 ul.random li span.pinto{
     float:left; position:absolute;
     background:url('../../images/apologywiz/img/pinto.png') no-repeat;
     height:35px; width:45px; top: 100%; right:17%;}
-#mCnt .step2 ul.random li{
+#mCnt .step3 ul.random li{
     list-style:none; clear:both;
     background:url('../../images/apologywiz/img/li-bg.png')no-repeat left center;}
-#mCnt .step2 ul.random li a{
+#mCnt .step3 ul.random li a{
     color:#888; font-family:'Cuprum';
     font-size:15px;margin:0 0 5px 12px; font-weight:normal;
     padding:0 0 0 10px;}
 /*step3*/
-#mCnt .step3{clear:both;float:left !important;}
-#mCnt .step3 h3{clear:both;color:#fff; font-family:'Cuprum'; font-size:25px;
+#mCnt .step1{clear:both;float:left !important;}
+#mCnt .step1 h3{clear:both;color:#fff; font-family:'Cuprum'; font-size:25px;
                 margin:26px 0 0 12px; font-weight:normal;}
-#mCnt .step3 ul.step3-data{ margin: 15px 0 0 30px;float: left;clear: both;}
-#mCnt .step3 ul.step3-data li{clear:both;}
-#mCnt .step3 ul.step3-data li{
+#mCnt .step1 ul.step1-data{ margin: 15px 0 0 30px;float: left;clear: both;}
+#mCnt .step1 ul.step1-data li{clear:both;}
+#mCnt .step1 ul.step1-data li{
     background:url()
         no-repeat left center}
-#mCnt .step3 ul.step3-data li a{
+#mCnt .step1 ul.step1-data li a{
     clear:both;color:#fff;
     font-family:'Cuprum'; font-size:20px; margin:8px 0 0 20px;
     font-size:20px; font-weight:normal;}
-#mCnt .step3 .ftr1 a{ }
-#mCnt .step3 .ftr1 .btn{float:left; width: 110px;
+#mCnt .step1 .ftr1 a{ }
+#mCnt .step1 .ftr1 .btn{float:left; width: 110px;
                         margin:32px 0 0 37%; display:inline-block; text-decoration:none;}
-#mCnt .step3 .ftr1{width:100%;}
-#mCnt .step3  .ftr1 strong{color:#b7b7b7; font-family:'Arial'; font-size:14px;
+#mCnt .step1 .ftr1{width:100%;}
+#mCnt .step1  .ftr1 strong{color:#b7b7b7; font-family:'Arial'; font-size:14px;
                            margin: 20px 0 0 15%; font-weight:normal;}
-#mCnt .step3 .ftr1 a{clear:both; color:#fcb51e; font-family:'Arial';
+#mCnt .step1 .ftr1 a{clear:both; color:#fcb51e; font-family:'Arial';
                      font-weight:normal; font-size:14px; text-decoration:underline;
                      clear:both; margin: 15px 0 15px 30%;}
 /*PopUp-One*/
@@ -295,7 +293,7 @@ ul.step2-form li .txt-step
 .restart-app{}
 .restart-app p{ margin:15px 0 0 5px;}
 .restart-app img{margin:15px 0 15px 47%;}
-#mCnt .step2 form ul.step2-form{
+#mCnt .step3 form ul.step3-form{
     height: 250px;
     float:left;
 }
@@ -303,10 +301,10 @@ ul.step2-form li .txt-step
 /*Floating*/
 .logo,
 .logo img,
-.cnt1,
 .cnt2,
+.cnt3,
 #tabs,
-#mCnt .cnt1 h2,
+#mCnt .cnt2 h2,
 #mCnt form,
 #mCnt form ul.login-form,
 #mCnt form ul.login-form li,
@@ -314,47 +312,47 @@ ul.step2-form li .txt-step
 #mCnt form ul.login-form .txt,
 #mCnt form ul.login-form span,
 #mCnt form ul.login-form a,
-#mCnt .cnt2 form ul.login-form li strong,
+#mCnt .cnt3 form ul.login-form li strong,
 ul.nav,
 ul.nav li,
-ul.nav li.step1,
 ul.nav li.step2,
 ul.nav li.step3,
-ul.nav li.step4,
+ul.nav li.step1,
+ul.nav li.step1,
 ul.nav li a,
-.step1,
-.step1 h3,
-.step1 form,
-ul.step1-form,
-ul.step1-form li,
-ul.step1-form .txt-step,
-ul.step1-form a,
-#mCnt .step2,
-#mCnt .step2 h3,
-#mCnt .step2 h2,
-#mCnt .step2 span,
-#mCnt .step2 form,
-#mCnt .step2 form ul.step2-form,
-#mCnt .step2 form ul.step2-form li label,
-#mCnt .step2 form ul.step2-form li .txtarea,
-#mCnt .step3 .ftr1 a,
-#mCnt .step2 .ftr1 .btn,
-#mCnt .step2 .ftr1,
-#mCnt .step2  .ftr1 strong,
-#mCnt .step2 form ul.step2-form li span,
-#mCnt .step3  a.link,
+.step2,
+.step2 h3,
+.step2 form,
+ul.step2-form,
+ul.step2-form li,
+ul.step2-form .txt-step,
+ul.step2-form a,
 #mCnt .step3,
 #mCnt .step3 h3,
-#mCnt .step3 h4,
+#mCnt .step3 h2,
 #mCnt .step3 span,
-#mCnt .step3 ul.step3-form,
-#mCnt .step3 ul.step3-data li,
-#mCnt .step3 ul.step3-data li a,
-#mCnt .step3 a,
-#mCnt .step3 .btn,
+#mCnt .step3 form,
+#mCnt .step3 form ul.step3-form,
+#mCnt .step3 form ul.step3-form li label,
+#mCnt .step3 form ul.step3-form li .txtarea,
+#mCnt .step1 .ftr1 a,
+#mCnt .step3 .ftr1 .btn,
 #mCnt .step3 .ftr1,
-#mCnt .step3 .ftr1 strong,
-#mCnt .step3 .ftr1 a,
+#mCnt .step3  .ftr1 strong,
+#mCnt .step3 form ul.step3-form li span,
+#mCnt .step1  a.link,
+#mCnt .step1,
+#mCnt .step1 h3,
+#mCnt .step1 h4,
+#mCnt .step1 span,
+#mCnt .step1 ul.step1-form,
+#mCnt .step1 ul.step1-data li,
+#mCnt .step1 ul.step1-data li a,
+#mCnt .step1 a,
+#mCnt .step1 .btn,
+#mCnt .step1 .ftr1,
+#mCnt .step1 .ftr1 strong,
+#mCnt .step1 .ftr1 a,
 .save-changes,
 .save-changes h1,
 .save-changes .btn1,
@@ -365,14 +363,14 @@ ul.step1-form a,
 .restart-app,
 .restart-app p,
 .restart-app img,
-#mCnt form ul.step1-form .btn,
-#mCnt .cnt2 form ul.step1-form .btn,
-.step1 form ul.step1-form .btn-step,
-#mCnt .step2 form ul.step2-form li,
-#mCnt .step2 form ul.step2-form li a,
-#mCnt .step2 form ul.step2-form li .btn{float:left;}
+#mCnt form ul.step2-form .btn,
+#mCnt .cnt3 form ul.step2-form .btn,
+.step2 form ul.step2-form .btn-step,
+#mCnt .step3 form ul.step3-form li,
+#mCnt .step3 form ul.step3-form li a,
+#mCnt .step3 form ul.step3-form li .btn{float:left;}
 
-#mCnt .step2 ul.random,
-#mCnt .step2 ul.random li,
-#mCnt .step2 ul.random li a,
-#mCnt .step2 ul.random li span.pinto{float:left;}
+#mCnt .step3 ul.random,
+#mCnt .step3 ul.random li,
+#mCnt .step3 ul.random li a,
+#mCnt .step3 ul.random li span.pinto{float:left;}

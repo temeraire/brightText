@@ -120,7 +120,7 @@ class Apologywiz::StoriesController < ApologywizController
     respond_to do |format|
       if @story.update_attributes(params[:story])
         format.json{ render :json=> {:success => "true"} }
-        format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
+        format.html { redirect_to("/apologywiz/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
         format.xml  { head :ok }
       else
         logger.debug "#{@story}"

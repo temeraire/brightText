@@ -2,6 +2,8 @@
 <style>
 
 th,td{
+  padding-left: 30px;
+  text-align: center;
   border:1px solid #2a333a;
 }
 
@@ -96,11 +98,11 @@ DIV.btContent {
           $("#category_name").html("");
           $("#name").html(story["name"]);
           _bt1.renderData(JSON.parse(story["descriptor"]));
-          $('form.edit_story').get(0).setAttribute('action', '/stories/'+ story["id"]);
-          $(".step3").hide();
+          $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
+          $(".step1").hide();
           $('#tabs ul li').removeClass('active');
-          $('#tabs ul li:#step_2').addClass('active');
-          $(".step2").show();
+          $('#tabs ul li:#step_3').addClass('active');
+          $(".step3").show();
           //formSubmitted = false;
           //$("a[href='.step2']").click();
       });
@@ -128,11 +130,11 @@ DIV.btContent {
   });
 
   $(document).ready(function() {
-    $("a[href='.step1']").click(function(){
+    $("a[href='.step2']").click(function(){
       formSubmitted = false;
     });
 
-    $("a[href='.step2']").click(function() {
+    $("a[href='.step3']").click(function() {
       if(formSubmitted===false){
         var title = $("#story_category").val();
         if(title===''){
@@ -153,7 +155,7 @@ DIV.btContent {
                   $("#story_id").val(data["story_id"]);
                   $("#category_name").text($("#story_category").val());
                   $("#name").text($("#story_name").val());
-                  $('form.edit_story').get(0).setAttribute('action', '/stories/'+data["story_id"]);
+                  $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+data["story_id"]);
                 }
                 else if(data["name"]){
                   message = data["name"];
@@ -169,7 +171,15 @@ DIV.btContent {
       }
     });
 
-    $("a[href='.step3']").click(function() {
+    $("a[href='.step1']").click(function() {
+      showStories();    
+    });
+    
+    $(document).ready(function(){
+      showStories();
+    });
+    
+    function showStories(){
          $.ajax({
            type: "get",
            url: "/apologywiz/stories",
@@ -178,6 +188,7 @@ DIV.btContent {
            success: function(data) {
              if(data["success"] === "true") {
                 stories = data["stories"];
+                console.log(stories);
                 var rows = "";
                 $.each(stories, function (i, apology) {
                   console.log(apology);
@@ -196,7 +207,7 @@ DIV.btContent {
              }
            }
          });
-    });
+    };
 
     $("#story_submit").click(function(){
       var summary = $("#fieldSummary").val();
@@ -335,10 +346,29 @@ DIV.btContent {
 <li id="step_2" ><a href=".step2" title="" >Step 2</a></li>
 <li id="step_3" ><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>
 </ul>
+  
+
 <div class="step1">
+<div style="height:50px; width:100px">&nbsp;</div>
+<div style="color: white">
+  <table id="user_stories_list" class="stories_list">
+	<thead>
+		<tr>
+		    <th data-sort="int" style="width:50px;"><b>ID</b></th>
+		    <th data-sort="string" style="width:500px;"><b>Name</b></th>
+		    <th data-sort="int" style="width:50px;"><b>Rank</b></th>
+		 </tr>
+	</thead>
+        <tbody>
+
+       </tbody>
+  </table>
+</div>
+</div>  
+<div class="step2">
 <h3>Enter a title</h3>
 <%= form_for([:apologywiz, @story], :validate => true) do |f| %>
-  <ul class=" step1-form ">
+  <ul class=" step2-form ">
     <li>
       <%= f.text_field :category, class: 'txt-step txt', placeholder: "example: John's Apologies" %>
     <li>
@@ -356,7 +386,7 @@ DIV.btContent {
     </ul>
 <% end %>
 </div>
-<div class="step2">
+<div class="step3">
 <ul class="random">
     <li> <a href="#" title="Highlight text">Highlight some text and right-click</a></li>
     <li> <a href="#" title="Select">Select 'Create Changepoint'</a></li>
@@ -372,7 +402,7 @@ DIV.btContent {
   <%= f.hidden_field :id, id: 'story_id' %>
   <h3 id="category_name"><%= @story.category %></h3>
   <h2 id="name"><%= @story.name %></h2>
-  <ul class=" step2-form ">
+  <ul class=" step3-form ">
     <ul class="etc">
       <li>
         <label for="description" class="lblTxt">Please enter some text</label>
@@ -399,23 +429,6 @@ DIV.btContent {
     <strong>Click Save at any time. Then restart the app on your mobile device to see what you created!</strong>
   </p>
 <% end %>
-</div>
-<div class="step3">
-<div style="height:50px; width:100px">&nbsp;</div>
-<div style="color: white">
-  <table id="user_stories_list" class="stories_list">
-	<thead>
-		<tr>
-		    <th data-sort="int" style="width:50px;"><b>ID</b></th>
-		    <th data-sort="string" style="width:500px;"><b>Name</b></th>
-		    <th data-sort="int" style="width:50px;"><b>Rank</b></th>
-		 </tr>
-	</thead>
-        <tbody>
-
-       </tbody>
-  </table>
-</div>
 </div>
   
 <div id="titleValidation" class="popup-bg" style="display:none;">
