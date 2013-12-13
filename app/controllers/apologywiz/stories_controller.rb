@@ -92,6 +92,7 @@ class Apologywiz::StoriesController < ApologywizController
   # POST /stories.xml
   def create
     story_set = StorySet.new(name: "storyset#{StorySet.count + 1}")
+    story_set.domain_id = session[:domain].id
     @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: params[:story][:description])
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
