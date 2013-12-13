@@ -24,10 +24,16 @@ class Admin::StorySetsController < ApplicationController
     if @filter == "__unassigned"
       @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
     else
-      @story_sets = StorySet.joins(:story_set_category => :bright_text_application).where(
+      if @category.application_id.nil?
+        @story_sets = StorySet.joins(:story_set_category).where(
+                      {"story_sets.domain_id" => session[:domain].id}.merge(
+                           @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)        
+      elsif
+        @story_sets = StorySet.joins(:story_set_category => :bright_text_application).where(
                       {"story_sets.domain_id" => session[:domain].id, 
                        "bright_text_applications.id" => @application}.merge(
                            @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
+      end
     end
 
     @filter = @category.id.to_s if @filter.blank? && !@category.blank? #update @filter for selection list and breadcrumbs similar values
