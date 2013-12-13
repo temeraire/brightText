@@ -19,7 +19,7 @@ class Admin::SessionController < ApplicationController
         end
       
       else
-        redirect_to "/index.html#2"
+        redirect_to "/admin/login"
       end
 
       
