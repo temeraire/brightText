@@ -1,15 +1,9 @@
 <% content_for :stylesheets do %>
 <style>
-
-th,td{
-  padding-left: 30px;
-  text-align: center;
-  border:1px solid #2a333a;
-}
-
-table.stories_list td{
+table.stories_list th,td{
   vertical-align:middle;
-  text-align:center
+  text-align:center;
+  border:1px solid #2a333a;
 }
 
 
@@ -65,7 +59,6 @@ DIV.btContent {
 <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
 <script type="text/javascript" src="/javascripts/browserDetect.js"></script>
 <script type="text/javascript" src="/javascripts/bt/bt.js"></script>
-<script type="text/javascript" src="/javascripts/stupidtable.js"></script>
 <script type="text/javascript" src="/js/jquery/jquery.json-2.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery/jquery-ui-1.8.22.custom.min.js"></script>
 <script type="text/javascript" src="/js/jquery/jquery.conmenu.js"></script>
@@ -130,7 +123,7 @@ DIV.btContent {
   });
 
   $(document).ready(function() {
-    $("a[href='.step2']").click(function(){
+    $("a[href='.step1']").click(function(){
       formSubmitted = false;
     });
 
@@ -193,10 +186,10 @@ DIV.btContent {
                 $.each(stories, function (i, apology) {
                   console.log(apology);
                   rows += "<tr>" +
-                          "<td class='cell' style='width:50px'><a id='" +
+                          "<td class='cell' style='width:50px; padding-left: 45px;'><a id='" +
                           i +"' class='clickme' href='#'>" +
                           apology["story"]["id"] + "</a></td>" +
-                          "<td class='cell' style='width:500px'><a id='" +
+                          "<td class='cell' style='width:500px; padding-left: 60px;'><a id='" +
                           i +"' class='clickme' href='#'>" +
                           apology["story"]["name"] + "</a></td>"+
                           "<td class='cell' style='width:50px'>" +
@@ -343,29 +336,14 @@ DIV.btContent {
 <div id="tabs">
 <ul class="nav">
 <li id="step_1" ><a href=".step1" title="">Step 1</a></li>
-<li id="step_2" ><a href=".step2" title="" >Step 2</a></li>
-<li id="step_3" ><a href=".step3" title="" >Step 3</a><span class="last-img"></span></li>
+<!--<li id="step_2" ><a href=".step2" title="" >Step 2</a></li>-->
+<li id="step_3" ><a href=".step3" title="" >Step 2</a><span class="last-img"></span></li>
 </ul>
   
 
 <div class="step1">
-<div style="height:50px; width:100px">&nbsp;</div>
-<div style="color: white">
-  <table id="user_stories_list" class="stories_list">
-	<thead>
-		<tr>
-		    <th data-sort="int" style="width:50px;"><b>ID</b></th>
-		    <th data-sort="string" style="width:500px;"><b>Name</b></th>
-		    <th data-sort="int" style="width:50px;"><b>Rank</b></th>
-		 </tr>
-	</thead>
-        <tbody>
 
-       </tbody>
-  </table>
-</div>
-</div>  
-<div class="step2">
+<div>
 <h3>Enter a title</h3>
 <%= form_for([:apologywiz, @story], :validate => true) do |f| %>
   <ul class=" step2-form ">
@@ -386,6 +364,26 @@ DIV.btContent {
     </ul>
 <% end %>
 </div>
+<div style="height:80px; width:200px; clear: both">
+  <h3>
+  Apologies List
+  </h3>
+</div>
+<div style="color: white; clear: both">
+  <table id="user_stories_list" class="stories_list">
+	<thead>
+		<tr>
+		    <th data-sort="int" style="width:50px;"><b>ID</b></th>
+		    <th data-sort="string" style="width:500px;"><b>Name</b></th>
+		    <th data-sort="int" style="width:50px;"><b>Rank</b></th>
+		 </tr>
+	</thead>
+        <tbody style="align:center">
+
+       </tbody>
+  </table>
+</div>
+</div>  
 <div class="step3">
 <ul class="random">
     <li> <a href="#" title="Highlight text">Highlight some text and right-click</a></li>

@@ -14,6 +14,7 @@ class ApologywizController < ActionController::Base
     session[:domain] = user.domain
     session[:user_id] = user.id
     session[:style]  = DomainStyle.find_by_domain_id user.domain.id
+    session[:br_application_id] = BrightTextApplication.find_by_name("ApologyWiz").id
   end
 
   def current_user

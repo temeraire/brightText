@@ -97,6 +97,7 @@ class Apologywiz::StoriesController < ApologywizController
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
     @story.story_set.story_set_category.domain_id = session[:domain].id
+    @story.story_set.story_set_category.application_id = session[:br_application_id]
     @story.rank = 0
 
     respond_to do |format|
