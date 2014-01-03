@@ -1,76 +1,47 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="stylesheets/bootstrap.css" media="all" />        
         <title>BrightText Applications</title>
-
-        <script src="/javascripts/jquery.js?1337562671" type="text/javascript"></script>
-        <script src="/javascripts/jquery_ujs.js?1337562671" type="text/javascript"></script>
-        <script src="/javascripts/application.js?1286831383" type="text/javascript"></script>                
-        <link type="text/css" href="/stylesheets/jquery-eggplant/jquery-ui-1.8.22.custom.css" rel="stylesheet" />        
-        <script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
-        <script type="text/javascript" src="js/jquery/jquery-ui-1.8.22.custom.min.js"></script>
-        
-        <style type="text/css">
-            /*demo page css*/
-            body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
-            .demoHeaders { margin-top: 2em; }
-            #dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
-            #dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
-            ul#icons {margin: 0; padding: 0;}
-            ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
-            ul#icons span.ui-icon {float: left; margin: 0 4px;}
-
-
-            .submit {
-                border: 1px solid black; 
-                padding: 3px 0px 3px 0px;
-                font-size: 13px;
-                cursor: pointer;
-                width: 130px;
-                text-align: center;
-                background-color:#777799;
-            }
-
-            .login-box{
-                border: 1px solid #777799; 
-                width: 325px; 
-                height: 163px; 
-                top:50%;
-                left: 50%;
-                position: absolute;                    
-                margin-left:-162px; 
-                margin-top:-81px;
-                background-color: #2D2634;       
-                -webkit-box-shadow: 5px 7px 16px hsl(270, 24%, 11%);
-                -moz-box-shadow: 5px 7px 16px hsl(270, 24%, 11%);
-                box-shadow: 5px 7px 16px hsl(270, 24%, 11%);        
-            }                        
-        </style>        
     </head>
-
     <body>
-        <div id="main" style="width:100%;height:550px;" class="ui-widget-content ui-corner-all">
-            <div id="accountsBox" class="ui-corner-all login-box">
-                <div style="float:left; font-size:10pt; color:#777799; padding:4px; text-align: center; width: 317px;">
-                    Welcome to BrightText Applications
-                </div>
-                <div style="padding-left:39px; padding-top:09px">
-                    <div style="margin-top:5px;padding-left:20px">
-                        <div id="errorMessage" style="font-size:9pt; color:#ff0000; text-align: center; width:200px;">&nbsp</div>
-                    </div>        
-                    <div style="margin-top:5px;">
-
-                        <div id="Prompt" style="float:left; font-size:9pt; color:#777799; padding:4px; width:72px;">
-                            <a href="/apologywiz">ApologyWiz</a>
-                        </div>
-                        
-                    </div>                  
-
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Bright Text</a>
                 </div>
             </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <div class="container">
+                            <h2>Welcome to BrightText Applications</h2>
+                        </div>
+                    </div>
+                </div>
 
-        </div>                  
 
+            </div>    
+
+            <div class="jumbotron">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10"><h2>List of Applications</h2></div>
+                    </div>
+                    <div class="row">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="list-group">
+                                <a href="/apologywiz" class="list-group-item active">ApologyWiz  </a>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
