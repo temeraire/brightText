@@ -6,7 +6,7 @@ class Admin::BrightTextApplicationsController < ApplicationController
     @bt_applications = BrightTextApplication.find_by_sql [ "select * from bright_text_applications where domain_id = ?", session[:domain].id ]
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { render :index}
       format.xml  { render :xml => @bt_applications }
     end
   end
@@ -17,11 +17,11 @@ class Admin::BrightTextApplicationsController < ApplicationController
     @bt_application = BrightTextApplication.find(params[:id])
     respond_to do |format|
       format.html {
-        raise ' not owner ' unless @bt_applications.domain_id == session[:domain].id
-      
+        raise ' not owner ' unless @bt_application.domain_id == session[:domain].id
+
       }
-      format.xml  { 
-=begin      
+      format.xml  {
+=begin
 <Application id="12">
  <StorySetCategories>
    <StorySetCategory id="15" name="safsdf"><!-- Survey -->
@@ -36,9 +36,9 @@ class Admin::BrightTextApplicationsController < ApplicationController
      </StorySets>
    </StorySetCategory>
  </StorySetCategories>
-</Application>      
-=end      
-      
+</Application>
+=end
+
         result = REXML::Document.new("<Application/>")
         result.root.attributes["id"] = @bt_application.id.to_s
         categoriesEl = result.root.add_element("StorySetCategories")
@@ -56,50 +56,50 @@ class Admin::BrightTextApplicationsController < ApplicationController
             storiesEl = storySetEl.add_element("Stories")
             storyEntries = Story.find_by_sql ["select * from stories where story_set_id = ? order by rank", storySet.id ]
             storyEntries.each do | storyEntry |
-              storyEl = storiesEl.add_element("Story")      
+              storyEl = storiesEl.add_element("Story")
               storyEl.attributes["id"]   = storyEntry.id
-              storyEl.attributes["name"] = storyEntry.name              
+              storyEl.attributes["name"] = storyEntry.name
               storyEntry.toXml( storyEl )
               # puke out the xml-ified story data
             end
           end
         end
-        render :xml => result 
-      
+        render :xml => result
+
       }
     end
   end
-  
+
   def result
     appid = params[:id]
-    
+
     submissions = AppSubmission.find_by_sql( ["select * from app_submissions where bright_text_application_id = ?", appid ] )
-    
+
     stories = []
     result  = { :app => appid, :submissions => stories }
-    
+
     submissions.each do | submission |
-      
+
       answers = []
-      
+
       meta = { :company => "" } # default for older apps
-      
+
       values  = JSON.parse( submission.story_set_values )
       digests = JSON.parse( submission.story_set_digests )
       meta    = JSON.parse( submission.submission_metadata ) unless submission.submission_metadata == nil
-      
+
       story = { :created => submission.created_at.to_s, :company => meta["company"], :answers => answers }
-      
-      values.each_with_index do | value, index | 
+
+      values.each_with_index do | value, index |
         digest = digests[ index ]
         value[:digest] = digest["digest"]
         answers << value
       end
-      
+
       stories << story
-      
+
     end
-    
+
     logger.info " request format " + request.format.to_s
     case request.format.to_s
     when 'text/csv'
@@ -115,10 +115,10 @@ class Admin::BrightTextApplicationsController < ApplicationController
       end
       send_data rows.join("\n")
       headers['content-type']='text/comma-separated-values'
-      
+
     when 'text/javascript'
       render :js => result.to_json
-      headers['content-type']='text/javascript'    
+      headers['content-type']='text/javascript'
     end
   end
 
@@ -127,7 +127,7 @@ class Admin::BrightTextApplicationsController < ApplicationController
   def new
     @bt_application = BrightTextApplication.new
     respond_to do |format|
-      format.html # new.html.erb
+      format.html #{ render partial: "new", layout: false }
       format.xml  { render :xml => @bt_application }
     end
   end
@@ -183,7 +183,7 @@ class Admin::BrightTextApplicationsController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
+
   def clone
     @bt_application_original = BrightTextApplication.find(params[:id])
     @bt_application = @bt_application_original.clone
@@ -193,6 +193,6 @@ class Admin::BrightTextApplicationsController < ApplicationController
     #debugger
     respond_to do |format|
       format.html { render :action => "new" }
-    end 
+    end
   end
 end

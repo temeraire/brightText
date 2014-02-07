@@ -1,40 +1,47 @@
-<%= render :partial => "shared/reorder_rank_commons"%>
-<div style="height=60px; width:100px">&nbsp;</div>
+<%= render :partial => "admin/shared/reorder_rank_commons"%>
+<div class="row">
+  <div class="col-md-2 col-md-offset-1">
+    <h3><%=session[:style].story_alias.pluralize.titleize%> List</h3>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <%= form_tag update_stories_rank_admin_stories_path, :id=> "reorder_form" do %>
+      <%= hidden_field_tag :filter, params[:story_set_id]%>
+      <table id="sorted_table" class="table table-bordered table-striped sorted_table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Summary</th>
+            <th><%= session[:style].set_alias.titleize %></th>
+            <th class="rank_cell">Rank</th>
+          </tr>
+        </thead>
+        <tbody id="sortable">
+          <% @stories.each do |story| %>
+            <tr>
+              <td><%= story.name %></td>
+              <td>
+                <%= truncate(story.description, :length => 120) %>
+                <%= fields_for "stories[]",  story do |f| %>
+                  <% f.hidden_field :rank %>
+                <% end %>
+              </td>
+              <td><%= story.set %></td>
+              <td><%= story.rank %></td>
 
-<%= form_tag update_stories_rank_stories_path, :id=> "reorder_form" do %>
-	<%= hidden_field_tag :filter, params[:story_set_id]%>
-	<table id="stories_table" cellspacing="0">
-		<tbody id="sortable">
-		  <tr class="fixed_row" >
-		    <td class="sortable_column_header" width="200"><b>Name</b></td>
-		    <td class="sortable_column_header" width="400"><b>Summary</b></td>
-		    <td class="sortable_column_header" width="200"><b>Rank</b>
-		    <td class="sortable_column_header" width="200"><b><%= session[:style].set_alias.titleize %></b></td> 
-
-		  </tr>
-			
-			<% @stories.each do |story| %>
-			  <tr class="stories_info_row">
-			    <td class="sortable_row_cells" style="width:100px"><%= story.name %></td>
-			    <td class="sortable_row_cells" style="width:300px">
-			    	<%= truncate(story.description, :length => 120) %>
-			     	<%= fields_for "stories[]",  story do |f| %>
-			     		<% f.hidden_field :rank %>
-			     	<% end %>
-			    </td>
-			    <td class="sortable_row_cells"><%= story.rank %></td>
-			    <td class="sortable_row_cells" style="width:100px"><%= story.set %></td>			    
-			  </tr>
-			  
-			<% end %>
-			<tr class="fixed_row">
-			  	<td colspan="2">
-			  		<button onclick="window.location.assign('<%= stories_path(:filter => params[:story_set_id] )%>'); return false;">Cancel Reordering</button>
-			  	</td>
-			  	<td>
-			  		<button onclick="update_order(); return false;">Update order</button>
-			  	</td>
-			 </tr>
-		</tbody>
-	</table>
-<% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="col-md-2">
+          <%= link_to 'Back', admin_stories_path(:filter => params[:story_set_id]),  {:class => "btn btn-default"}   %>
+        </div>
+        <div class="col-md-2">
+          <%= link_to_function "Update Order", "update_order(); return false;", class: "btn btn-primary"%>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>

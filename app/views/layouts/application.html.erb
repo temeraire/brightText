@@ -1,227 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>BrightText</title>
-  
-<%
-  uiTheme = "/stylesheets/jquery-flick/jquery-ui.css"
-    if session[:domain]
-      
-      style = DomainStyle.find_by_domain_id( session[:domain].id )
-      
-      case style.style_id
-        when 1  #default
-          uiTheme = "/stylesheets/jquery-flick/jquery-ui.css"
-        when 2  # blue
-          uiTheme = "/stylesheets/jquery-cupertino/jquery-ui-1.8.22.custom.css"
-        when 3
-          uiTheme = "/stylesheets/jquery-swanky-purse/jquery-ui-1.8.22.custom.css"
-        when 4
-          uiTheme = "/stylesheets/jquery-eggplant/jquery-ui-1.8.22.custom.css"
-        when 5
-          uiTheme = "/stylesheets/jquery-vader/jquery-ui-1.8.22.custom.css"
-      end
-    end
-%>  
-<%
-if request.url.index "/app/"
-%>
-  <link type="text/css" href="/app<%= uiTheme %>" rel="stylesheet" />	
-<%
-else
-%>
-  <link type="text/css" href="<%= uiTheme %>" rel="stylesheet" />	
-<%
-end
-%>
-
-
-<%= javascript_include_tag :defaults %>
-  
-<%
-  jqueryUiSrc = "/js/jquery/jquery-ui-1.8.22.custom.min.js"
-%>
-  
-<%
-if request.url.index "/app/"
-%>  
-  <script src="/app/js/jquery/jquery.json-2.2.min.js"></script>
-  <script src="/app<%= jqueryUiSrc %>"></script>  
-  <script src="/app/js/jquery/jquery.conmenu.js"></script>  
-  <script src="/app/js/jquery/jquery.cookie.js"></script> 
-<%
-else
-%>  
-  <script src="/js/jquery/jquery.json-2.2.min.js"></script>
-  <script src="<%= jqueryUiSrc %>"></script> 
-  <script src="/js/jquery/jquery.cookie.js"></script> 
-  <script src="/js/jquery/jquery.conmenu.js"></script>  
-<%
-end
-%>  
-
-  <%= javascript_include_tag "rails.validations"%>
-  <%= javascript_include_tag "stupidtable"%>
-  <%= stylesheet_link_tag :all %>
-  
-  <style>
-    .page_content{
-      height:500px;
-      overflow-y:auto;
-    }
-  
-    .form_container{
-      padding: 0px 20px 50px 20px;
-      background-color:black;
-      border: 1px solid #666666;
-      margin:10px 0px 0px 100px;
-      width:572px;
-    }
-  
-    .form_element{
-      padding:3px 10px 15px 10px;
-      margin:10px 0px 10px 0px;
-      width:550px;
-    }
-    
-    .outlined{
-      border:1px dashed #666666;
-    
-    }
-  
-    .form_item_label{
-      width:200px;
-      float:left;
-      text-size:11pt;
-      padding:10px 0px 0px 0px;
-      
-    
-    }
-    
-    .form_item{
-      width:200px;
-      float:left;
-      padding-top:6px;
-    }  
-    
-    .form_element{
-      height:25px;
-    }  
-    
-
-	#breadcrumbs {
-	   float:left;
-	   width:100%;	   
-	   height: 25px;
-	   overflow:hidden;
-	   position:relative;
-	}
-	#breadcrumbs ul {
-	   clear:left;
-	   list-style:none;
-	   margin:2px;
-	   padding:0;
-	   position:relative;
-	   left:50%;
-	   text-align:center;
-	}
-	#breadcrumbs ul li {
-	   display:block;
-	   float:left;
-	   list-style:none;
-	   margin:0 3px;
-	   padding:0;
-	   position:relative;
-	   right:50%;
-	   font-weight: bold;
-	}
-  </style>
-
-
-  <%= csrf_meta_tag %>
-  
-  <script>
-<% if session[:domain].nickname == "Admin" %>
-    var landing = [ "/admin/domains" ];
-<% else %>    
-    var landing = [ "/admin/bright_text_applications", "/admin/story_set_categories", "/admin/story_sets",  "/admin/stories", "/admin/stories/" ];
-<% end %>
-  
- 
-    $(function() {
-      var selectedTabIndex = 0;
-      for ( var i = 0; i < landing.length; i++ ){
-        if ( document.location.href.indexOf( landing[i] ) !== -1 ){
-           selectedTabIndex = i;
-        }
-      }    
-      
-      if ( selectedTabIndex >= 0 ){
-        $( "#tabs" ).tabs( { selected: selectedTabIndex });   
-      }
-      else { // add a temporary tab that was navigated to by its full url
-        $( "#tabs" ).tabs( {selected:-1});
-        $( "#tabs" ).tabs( "add" , "#tab-content" , "Other", landing.count).tabs( "select" , landing.count );
-      }
-      $( "#tabs" ).bind( "tabsshow", function(event, ui) {
-        var selectedTab = $( "#tabs" ).tabs( "option", "selected" );
-        
-        document.location.href = landing[ selectedTab ]
-              
-      });   
-      
-      
-       $(".controlButton").button();
-    });
-    
-    function log( msg )
-    {
-      if ( typeof ( console ) != "undefined" ){
-        console.log( msg );
-      }
-    }    
-	</script>  
-</head>
-<body>
-
-
-<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-  <div>
-  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-<% if session[:domain].nickname == "Admin" %>
-    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tab-content">Admin</a></li>
-    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/admin/logout'" style="cursor:pointer; padding-left:5px; font-weight:regular; color: grey"><u>Log out</u></span></li>    
-<% else %>  
-    <li class="ui-state-default ui-corner-top"><a href="#tab-content"><%= session[:style].app_alias.pluralize.titleize %></a></li>
-    <li class="ui-state-default ui-corner-top"><a href="#tab-content"><%= session[:style].group_alias.pluralize.titleize %></a></li>
-    <li class="ui-state-default ui-corner-top"><a href="#tab-content"><%= session[:style].set_alias.pluralize.titleize %></a></li>
-    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tab-content"><%= session[:style].story_alias.pluralize.titleize %></a></li>
-    <li class="ui-state-disabled"><a href="#tab-content"><%= session[:style].story_alias.titleize %></a></li>
-    <li style="color: white; float:right; width:150px; height:20px; padding-top:10px"><%= session[:domain].nickname %><span onclick="document.location.href='/admin/logout'" style="cursor:pointer; padding-left:5px; font-weight:regular; color: grey"><u>Log out</u></span></li>
-    
-<% end %>      
-
-  </ul>
-  <% if controller_name != "bright_text_applications" && !@application.blank? %>
-	  <div id="breadcrumbs">
-	    <ul>
-	  		<li><%= link_to @application.name, admin_story_set_categories_path(:filter => @application.id) %></li>
-	  		<li>-></li>
-	  		<% if !@category.blank? %>
-		  		<li><%= link_to @category.name, admin_story_sets_path(:filter => @category.id) %> </li>
-		  		<li>-></li>
-		  		<% if !@story_set.blank? %>
-		  			<li><%= link_to @story_set.name, admin_stories_path(:filter => @story_set.id) %></li>
-		  		<% end %>
-		  	<% end %>
-	  	</ul>
-	  </div>
-  <% end %>
-  </div>
-  <div id="tab-content" class="page_content ui-tabs-panel ui-widget-content ui-corner-bottom">
-
-  <%= yield %>	
-  </div>
-</div>
-</body>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for?(:title) ? yield(:title) : "BrightText Applications" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "BrightText Admin Application" %>">
+    <%= stylesheet_link_tag params[:controller], media: "all", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <%= render 'layouts/navigation' %>
+    <div class="container">
+      <div class="jumbortonui-corner-all">
+        <div class="row">
+          <div class="col-md-12">
+            <%= render 'layouts/messages' %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

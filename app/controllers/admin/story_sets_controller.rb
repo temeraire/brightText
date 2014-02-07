@@ -1,43 +1,43 @@
 class Admin::StorySetsController < ApplicationController
   #before_filter :login_required
-  
+
   # GET /story_sets
   # GET /story_sets.xml
-  def index 
-    @filter = request[:filter] 
+  def index
+    @filter = request[:filter]
     @category = StorySetCategory.find_by_id @filter
     if @category.blank?
-      @application = find_application 
-      
+      @application = find_application
+
       unless @application.blank?
         @categories = @application.story_set_categories.order(:name)
         @category = @categories.find_by_id session[:br_category_id]
-        @category = @categories.first if @category.blank?             
+        @category = @categories.first if @category.blank?
       end
     else
       @application = @category.bright_text_application
       @categories = @application.story_set_categories.order(:name) unless @application.blank?
     end
-    
-    session[:br_category_id] = @category.id unless @category.blank? 
-    
+
+    session[:br_category_id] = @category.id unless @category.blank?
+
     if @filter == "__unassigned"
       @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
     else
       if @category.application_id.nil?
         @story_sets = StorySet.joins(:story_set_category).where(
                       {"story_sets.domain_id" => session[:domain].id}.merge(
-                           @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)        
+                           @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
       elsif
         @story_sets = StorySet.joins(:story_set_category => :bright_text_application).where(
-                      {"story_sets.domain_id" => session[:domain].id, 
+                      {"story_sets.domain_id" => session[:domain].id,
                        "bright_text_applications.id" => @application}.merge(
                            @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
       end
     end
 
     @filter = @category.id.to_s if @filter.blank? && !@category.blank? #update @filter for selection list and breadcrumbs similar values
-    
+
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @story_sets }
@@ -72,7 +72,7 @@ class Admin::StorySetsController < ApplicationController
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
     @story_set.category_id = filter.to_i
-    
+
     end
     respond_to do |format|
       format.html # new.html.erb
@@ -102,8 +102,8 @@ class Admin::StorySetsController < ApplicationController
           unless params[:original_story_set].blank?
             @stories_set_original = StorySet.find(params[:original_story_set])
             @stories = @stories_set_original.stories
-          end 
-          render :action => "new" 
+          end
+          render :action => "new"
         }
         format.xml  { render :xml => @story_set.errors, :status => :unprocessable_entity }
       end
@@ -132,7 +132,7 @@ class Admin::StorySetsController < ApplicationController
     @story_set = StorySet.find(params[:id])
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     @story_set.destroy
-    
+
     respond_to do |format|
       format.html { redirect_to admin_story_sets_path(:filter => @story_set.category_id.to_s) }
       format.xml  { head :ok }
@@ -143,14 +143,14 @@ class Admin::StorySetsController < ApplicationController
     @stories_set_original = StorySet.find(params[:id])
     @story_set = @stories_set_original.clone
     number_similar_named_storysets = StorySet.count(:conditions => ["category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%"])
-    @story_set.name = @story_set.name + "-" + (number_similar_named_storysets + 1).to_s    
+    @story_set.name = @story_set.name + "-" + (number_similar_named_storysets + 1).to_s
     @stories = @stories_set_original.stories
     #debugger
     respond_to do |format|
       format.html { render :action => "new" }
     end
   end
-  
+
   def reorder_story_sets_rank
     if( params[:category_id].blank? )
       redirect_to admin_story_sets_path
@@ -160,7 +160,7 @@ class Admin::StorySetsController < ApplicationController
       @story_sets = StorySet.where(:category_id => params[:category_id], :domain_id => session[:domain].id).order(:rank)
     end
   end
-  
+
   def update_story_sets_rank
     p params.to_yaml
     StorySet.update(params[:story_sets].keys, params[:story_sets].values)

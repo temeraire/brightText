@@ -9,21 +9,22 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 920130109084746) do
+ActiveRecord::Schema.define(version: 920130109084747) do
 
-  create_table "app_submissions", :force => true do |t|
+  create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
     t.integer  "domain_id"
     t.text     "story_set_values"
     t.text     "story_set_digests"
+    t.text     "submission_metadata"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "descriptor",                 :limit => 16777215
+    t.text     "descriptor",                 limit: 16777215
   end
 
-  create_table "bright_text_applications", :force => true do |t|
+  create_table "bright_text_applications", force: true do |t|
     t.integer  "domain_id"
     t.integer  "user_id"
     t.string   "name"
@@ -31,7 +32,7 @@ ActiveRecord::Schema.define(:version => 920130109084746) do
     t.datetime "updated_at"
   end
 
-  create_table "domain_styles", :force => true do |t|
+  create_table "domain_styles", force: true do |t|
     t.integer  "domain_id"
     t.integer  "style_id"
     t.string   "app_alias"
@@ -43,7 +44,7 @@ ActiveRecord::Schema.define(:version => 920130109084746) do
     t.datetime "updated_at"
   end
 
-  create_table "domains", :force => true do |t|
+  create_table "domains", force: true do |t|
     t.string   "name_first"
     t.string   "name_last"
     t.string   "email"
@@ -60,19 +61,29 @@ ActiveRecord::Schema.define(:version => 920130109084746) do
     t.datetime "updated_at"
   end
 
-  create_table "stories", :force => true do |t|
+  create_table "sessions", force: true do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "stories", force: true do |t|
     t.string   "name"
-    t.string   "description",  :limit => 1024
+    t.text     "description",  limit: 16777215
+    t.text     "descriptor",   limit: 16777215
+    t.integer  "rank"
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
-    t.text     "descriptor",   :limit => 16777215
-    t.integer  "rank"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "story_set_categories", :force => true do |t|
+  create_table "story_set_categories", force: true do |t|
     t.string   "name"
     t.string   "description"
     t.integer  "domain_id"
@@ -83,7 +94,7 @@ ActiveRecord::Schema.define(:version => 920130109084746) do
     t.integer  "rank"
   end
 
-  create_table "story_sets", :force => true do |t|
+  create_table "story_sets", force: true do |t|
     t.string   "name"
     t.integer  "domain_id"
     t.integer  "user_id"
@@ -93,7 +104,7 @@ ActiveRecord::Schema.define(:version => 920130109084746) do
     t.datetime "updated_at"
   end
 
-  create_table "users", :force => true do |t|
+  create_table "users", force: true do |t|
     t.string   "name"
     t.integer  "domain_id"
     t.string   "password_salt"
@@ -102,18 +113,18 @@ ActiveRecord::Schema.define(:version => 920130109084746) do
     t.string   "email"
     t.string   "password_hash"
     t.string   "lastname"
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "encrypted_password",     limit: 128, default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",                      default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
   end
 
-  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end

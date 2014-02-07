@@ -3,17 +3,14 @@ class Admin::DomainsController < ApplicationController
 
   # GET /domains
   # GET /domains.xml
-  def index    
+  def index
     @myDomain = session[:domain]
-    
-      
     @domains = Domain.find_by_sql( ["SELECT * from `domains` WHERE `owner_domain_id` = ?", @myDomain.id ]  )
-  
+
     puts "number of results: " + @domains.length.to_s
-  
-    
+
     @resultArray = []
- 
+
     @domains.each do | domain |
       @domainObj = {}
       @domainObj["name"] = domain["nickname"];
@@ -24,10 +21,10 @@ class Admin::DomainsController < ApplicationController
 
 
     @result = @resultArray.to_json
-    
+
     if params[:callback]
       @result = params[:callback] + "(" + @result + ")"
-    end    
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -44,12 +41,12 @@ class Admin::DomainsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @domain }
-      format.js   { 
+      format.js   {
         @result = { :name => @domain.nickname }.to_json()
         if params[:callback]
           @result = params[:callback] + "(" + @result + ")"
-        end            
-        render :js  => @result   
+        end
+        render :js  => @result
       }
     end
   end
@@ -76,8 +73,8 @@ class Admin::DomainsController < ApplicationController
   # POST /domains.xml
   def create
     @domain = Domain.new(params[:domain])
-    
-    
+
+
     respond_to do |format|
       if @domain.save && DomainStyle.new({:domain_id => @domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => "/static/default_logo.png" } ).save
         format.html { redirect_to(admin_domains_url) }
@@ -87,11 +84,11 @@ class Admin::DomainsController < ApplicationController
         format.xml  { render :xml => @domain.errors, :status => :unprocessable_entity }
       end
     end
-    
-    
+
+
     #storyGroup = StorySet.new( {:name => "Default", :domain_id => @domain.id} )
     #storyGroup.save
-    
+
   end
 
   # PUT /domains/1
@@ -114,7 +111,9 @@ class Admin::DomainsController < ApplicationController
   # DELETE /domains/1.xml
   def destroy
     @domain = Domain.find(params[:id])
+    @domain_style = DomainStyle.find_by_domain_id @domain.id
     @domain.destroy
+    @domain_style.destroy
 
     respond_to do |format|
       format.html { redirect_to(admin_domains_url) }

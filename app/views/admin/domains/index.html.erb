@@ -1,45 +1,52 @@
-<h2>ContextIT Accounts</h2>
-
-<div style="height:10px">&nbsp;</div>
-
-<div style="height:200px; padding:30px">
-<%
-
-  if @domains.length > 0
- 
-%>
-<table>
-  <tr>
-    <td style="width:300px; height:50px"><b>Name</td>
-    <td style="width:300px"><b>Enabled</td>
-    <td style="width:300px"><b>Privileged</td>
-    <td style="width:300px"><b>Self-Created</td>    
-    <td style="width:100px"></td>
-    <td style="width:100px"></td>
-  </tr>
-<% @domains.each do |domain|
-     domainStyle = DomainStyle.find_by_domain_id domain.id
-%>
-  <tr>
-    <td style="width:300px"><%= domain.nickname %></td>
-    <td style="width:300px"><%= domain.enabled %></td>
-    <td style="width:300px"><%= domain.priveleged %></td>
-    <td style="width:300px"><%= domain.self_created %></td>    
-    <td style="width:100px"><%= link_to 'Edit', edit_admin_domain_path(domain) %></td>
-    <td style="width:100px"><%= link_to 'Style', "/admin/domain_styles/" + domainStyle.id.to_s + "/edit" %></td>
-    <td style="width:100px"><%= link_to 'Delete', admin_domain_path(domain), :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<%
-
-  end
-  
-%>
-
-
+<script>
+  $(function(){
+  $("#main-table").tablesorter();
+});
+</script>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-1">
+      <h2>Domains List</h2>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-2 col-md-offset-1">
+          <%= link_to 'New Domain', new_admin_domain_path, {:class => "btn btn-primary"}%>
+    </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-md-10  col-md-offset-1">
+      <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
+        <thead class="tablesorter-header">
+          <tr class="tablesorter-headerRow">
+            <th data-sort="string" >Name</th>
+            <th data-defaultsort='disabled'>Enabled</th>
+            <th data-defaultsort='disabled'>Privileged</th>
+            <th data-defaultsort='disabled'>Self-Created</th>
+            <th data-defaultsort='disabled' class="sorter-false">Actions</th>
+          </tr>
+        </thead>
+        <%if @domains.length > 0
+          @domains.each do |domain|
+            domainStyle = DomainStyle.find_by_domain_id domain.id
+          %>
+            <tbody
+              <tr>
+                <td><%= domain.nickname %></td>
+                <td><%= domain.enabled %></td>
+                <td><%= domain.priveleged %></td>
+                <td><%= domain.self_created %></td>
+                <td>
+                  <span><%= link_to 'Edit', edit_admin_domain_path(domain) %></span>
+                  <span><%= link_to 'Style', "/admin/domain_styles/" + domainStyle.id.to_s + "/edit" %></span>
+                  <span><%= link_to 'Delete', admin_domain_path(domain), data: {confirm: 'Are you sure?', :method => :delete} %></span>
+                </td>
+              </tr>
+            </tbody>
+          <% end
+          end %>
+        </table>
+      </div>
+  </div>
 </div>
-
-<div style="height:100px">&nbsp;</div>
-<%= link_to 'Create New Account', new_admin_domain_path %>

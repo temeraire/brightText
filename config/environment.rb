@@ -1,10 +1,8 @@
-
-# Load the rails application
+# Load the Rails application.
 require File.expand_path('../application', __FILE__)
 
-
-# Initialize the rails application
-BrightText::Application.initialize!
+# Initialize the Rails application.
+BtWeb::Application.initialize!
 
 # Net::SMTP.enable_tls(OpenSSL::SSL::VERIFY_NONE)   
 # ActionMailer::Base.perform_deliveries = true
@@ -17,6 +15,4 @@ BrightText::Application.initialize!
 #   :password             => 'Duke2000',
 #   :authentication       => "plain",
 #   :enable_starttls_auto => true  
-# }    
-
-
+# }  

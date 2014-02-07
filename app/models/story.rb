@@ -1,13 +1,15 @@
 class Story < ActiveRecord::Base
 
   belongs_to :story_set
-  
+
   scoped_search :on => :name
   scoped_search :on => :description
-  
+
   before_save :set_rank
-  
-  validates :name, 
+
+  attr_accessible :name, :story_set_id, :description, :descriptor
+
+  validates :name,
               :uniqueness => { :scope => :story_set_id, :message => "This name is already taken. Please select another name" },
               :presence => {:message => "Please insert a name."}
 
@@ -23,13 +25,13 @@ class Story < ActiveRecord::Base
     c = StorySetCategory.find_by_name(c) || StorySetCategory.new(name: c)
     story_set.story_set_category = c
   end
-  
+
   def set_rank
     if self.rank.blank? || self.rank == 0 || self.story_set_id_changed?
       self.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", self.story_set_id]).to_i
     end
   end
-  
+
   def set
     setObj = StorySet.find_by_sql [ "select * from story_sets where id = ?", story_set_id ]
     return setObj[0].name unless setObj == nil || setObj.count < 1
@@ -40,48 +42,48 @@ class Story < ActiveRecord::Base
 
     storyEl.attributes["id"] = id.to_s;
     content = story["story"]
-    
+
     rankEl = storyEl.add_element("Rank")
     rankEl.text = rank.blank? ? "0" : rank.to_s
-    
+
     puts content.class
-    
-    
+
+
     contentEl = storyEl.add_element("Content")
     content.each do | piece |
       #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
       #puts piece
-      writeContent( piece, contentEl )     
+      writeContent( piece, contentEl )
       #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
-      #puts ""    
+      #puts ""
     end
 
     piles = story["piles"]
-    
-    pileEl = storyEl.add_element("PileContainer") 
-    piles.each do | id, pile | 
+
+    pileEl = storyEl.add_element("PileContainer")
+    piles.each do | id, pile |
       #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
       #puts pile
       writePile( pile, pileEl)
       #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
-      #puts ""       
+      #puts ""
     end
-    
+
     storyDimensions = story["storyDimensions"]
-    
-    dimensionEl = storyEl.add_element("StoryDimensionContainer") 
+
+    dimensionEl = storyEl.add_element("StoryDimensionContainer")
     storyDimensions.each do | storyDimension |
       #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
       #puts storyDimension
       writeStoryDimension( storyDimension, dimensionEl)
       #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
-      #puts ""     
-    end  
+      #puts ""
+    end
   end
-  
+
   def writeContent( container, element )
-     puts container.class 
-   
+     puts container.class
+
     if container.class == "".class  # simple
       flowElement = REXML::Text.new( container )
       element.add( flowElement )
@@ -100,22 +102,22 @@ class Story < ActiveRecord::Base
         flowElement.text = container["text"]
         element.add( flowElement )
       end
-    
+
     end
-  
+
   end
-  
-  def writePile( pile, element ) 
+
+  def writePile( pile, element )
     flowElement = REXML::Element.new("Pile")
     flowElement.attributes["id"]        = pile["id"]
     element.add( flowElement )
-    
+
     pile["elements"].each do | i, pileElement |
       writePileElement( pileElement, flowElement )
     end
-  
+
   end
-  
+
   def writePileElement( pel, element )
     flowElement = REXML::Element.new("PileElement")
     flowElement.attributes["id"]         = pel["id"]
@@ -131,32 +133,32 @@ class Story < ActiveRecord::Base
         choices.add( choiceRef )
       end
     end
-    
-    flowElement.add( choices )    
+
+    flowElement.add( choices )
     element.add( flowElement )
-    
+
   end
-  
-  def writeStoryDimension( dimension, element ) 
+
+  def writeStoryDimension( dimension, element )
     flowElement = REXML::Element.new("StoryDimension")
     flowElement.attributes["id"]        = dimension["id"]
     flowElement.attributes["name"]      = dimension["name"]
     element.add( flowElement )
-    
+
     dimension["choiceSets"].each do | choiceSet |
       writeChoiceSet( choiceSet, flowElement )
     end
   end
-  
+
   def writeChoiceSet( chos, element )
     flowElement = REXML::Element.new("ChoiceSet")
     flowElement.attributes["id"]     = chos["id"]
     flowElement.attributes["name"]   = chos["name"]
-    element.add( flowElement ) 
-  end  
-  
+    element.add( flowElement )
+  end
+
   def populateContainerData( currentElement )
-  
+
     data = []
     currentElement.each do | child |
       if child.is_a?(REXML::Element) && child.name == "ChangePoint"
@@ -165,21 +167,21 @@ class Story < ActiveRecord::Base
         data << cp
       elsif child.is_a?(REXML::Text)
         data << child.value
-      end      
+      end
     end
     return data
-  end  
-  
+  end
+
   def self.migrate_helper_import( storyId )
     story = Story.find_by_id( storyId )
-    if story && story.name != nil 
+    if story && story.name != nil
       puts '  ** story exists... assuming accurate data ** '
       return story.name
     end
-    
-    story = Story.new unless story  
+
+    story = Story.new unless story
     story.save
-    
+
     uri = "http://test.contextit.com/ProcessTemplateRequest.aspx?cmd=GETXML&validationKey=75&storyID=" + storyId.to_s + "&doNotEncrypt=TRUE"
     data = open(uri).read
     if ( data.length == 0 )
@@ -191,77 +193,77 @@ class Story < ActiveRecord::Base
     #puts ' XML\n' + doc.to_s
     #puts '\n\n\n\n\n'
 
-    
+
     # convert to json
-    
+
     proxy = BtProxyController.new
     result = proxy.xmlToJson( doc )
     storyObj = JSON.parse( result )
-    
-    
+
+
     puts ' JSON\n' + result
-    #puts '\n\n\n\n\n'    
-    
+    #puts '\n\n\n\n\n'
+
     # create a local db entry
-    
+
     author = storyObj["meta"]["authorName"]
     user = User.find_by_name author
-    
+
     user = User.new( {:name => author, :domain_id => 2} ) unless user
     user.save
-    
-    
+
+
     story.descriptor  = result
     story.name        = storyObj["meta"]["title"]
     story.user_id     = user.id
     story.domain_id   = 2
-    
-    
+
+
     # save
     story.save
-    
+
     puts '  *** story created.  local story id: ' + story.id.to_s
   end
- 
-  
+
+
   def self.migrate_helper_related( storyId )
-  
+
     existingStory = Story.find_by_id( storyId )
     if existingStory == nil
       raise 'story does not exist'
-    end    
-    
-    
+    end
+
+
     uri = "http://test.contextit.com/ProcessTemplateRequest.aspx?cmd=getrelatedstories&validationKey=75&storyID=" + storyId.to_s + "&doNotEncrypt=TRUE"
     data = open(uri).read
     if ( data.length == 0 )
       puts ' ***** NO STORY ***** '
       return
     end
-    
+
     doc = REXML::Document.new( data )
     #puts ' XML\n' + doc.to_s
     #puts '\n\n\n\n\n'
 
-    
+
     storyIds = [];
-    doc.root.each_element( "//StoryId" ){ |e|  storyIds << e.text.to_i } 
-    
+    doc.root.each_element( "//StoryId" ){ |e|  storyIds << e.text.to_i }
+
     puts ' RELATED STORIES: ' + storyIds.to_s
-    #puts '\n\n\n\n\n'    
-    
+    #puts '\n\n\n\n\n'
+
     existingSet = nil
-    
+
     # if more than 0 find whether story set was created for those stories
-    if storyIds.count > 0 
+    if storyIds.count > 0
       existingSetId = Story.find_by_sql ["select story_set_id from stories where stories.id = ?", storyId ]
       raise ' too many story sets!!! ' if existingSetId.count > 1
-      
+
       puts '  ** story set count ** ' + existingSetId.count.to_s
-      
-      existingSet = StorySet.find_by_id(existingSetId[0].story_set_id) if existingSetId.count == 1    
-    
-    
+
+      existingSet = StorySet.find_by_id(existingSetId[0].story_set_id) if existingSetId.count == 1
+
+
       #  create story set if not
       if ( existingSet == nil )
         puts '  *** creating new story set'
@@ -271,16 +273,16 @@ class Story < ActiveRecord::Base
         existingSet.user_id   = existingStory.user_id
         existingSet.save
       end
-    
-    
+
+
       #  asocciate story with story sets
       existingStory.story_set_id = existingSet.id
       existingStory.save
       #  done
-      
-      puts '  *** asocciated story set id ' + existingStory.story_set_id.to_s + ' with story ' + existingStory.id.to_s    
-    
-    
+
+      puts '  *** asocciated story set id ' + existingStory.story_set_id.to_s + ' with story ' + existingStory.id.to_s
+
+
       queryParams = []
       storyIds.each do | id |
         story = Story.find_by_id id.to_i
@@ -288,14 +290,14 @@ class Story < ActiveRecord::Base
           story = Story.new
           story.save
           story.domain_id = 2
-          puts '  *** generated intermediate story ' + story.id.to_s 
+          puts '  *** generated intermediate story ' + story.id.to_s
         end
         story.story_set_id = existingSet.id
-        puts '  *** asocciated story set id ' + existingStory.story_set_id.to_s + ' with story ' + story.id.to_s    
+        puts '  *** asocciated story set id ' + existingStory.story_set_id.to_s + ' with story ' + story.id.to_s
         story.save
       end
     end
   end
-  
-  
+
+
 end

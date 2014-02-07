@@ -5,6 +5,10 @@ class Admin::DomainStylesController < ApplicationController
     @domain       = Domain.find( @domain_style.domain_id )
   end
 
+  def new
+    @domain_style = DomainStyle.new
+  end
+
 
   # PUT /domain_styles/1
   # PUT /domain_styles/1.xml

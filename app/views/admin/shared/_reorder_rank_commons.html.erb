@@ -1,0 +1,23 @@
+<script>
+// Sortable rows
+$(function () {
+$('.sorted_table').sortable({
+  containerSelector: 'table',
+  itemPath: '> tbody',
+  itemSelector: 'tr',
+  placeholder: '<tr class="placeholder"/>'
+})})
+
+function update_order() {
+        $(".rank_cell input:hidden").each(function(i, v) {
+                $(this).val(i + 1);
+        });
+        $("#reorder_form").submit();
+}
+</script>
+
+<style>
+    .rank_cell {
+        color: #666699;
+    }
+</style>

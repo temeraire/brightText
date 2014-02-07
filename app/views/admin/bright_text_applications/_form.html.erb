@@ -1,18 +1,7 @@
-<script>
-  $(function(){
-   $("#save_application_btn").button(); 
-   $("#back_btn").button().click( function(e){
-    e.preventDefault();
-    document.location.href='/admin/bright_text_applications'; 
-    return false;     
-   });; 
-  });
-</script>
-
-<%= form_for([:admin, @bt_application]) do |f| %>
+<%= form_for([:admin, @bt_application], :html => { :role => "form", :class=>"form"} ) do |f| %>
   <% if @bt_application.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@bt_application.errors.count, "error") %> prohibited this application from being saved:</h2>
+    <div id="error_explanation" class="row">
+      <h4><%= pluralize(@bt_application.errors.count, "error") %> prohibited this <%= session[:style].app_alias.titleize %> from being saved:</h4>
 
       <ul>
       <% @bt_application.errors.full_messages.each do |msg| %>
@@ -21,22 +10,29 @@
       </ul>
     </div>
   <% end %>
-  <div class="field form-field">
-    <div class="form-field-label"><%= f.label :name %>:</div>
-    <div class="form-field-value"><%= f.text_field :name %></div>
+  <div class="form-group">
+      <%= f.label :name, :class=>'control-label' %>
+      <%= f.text_field :name, :class=>'form-control' %>
   </div>
   <% unless @categories.blank? %>
-	<div class="field form-field" style="height: auto;">
-		<div class="form-field-label" style="width: auto; float: none;">Select Categories to clone:</div>
-		<br />
-	  	<% @categories.each do |category| %>
-		    <div class="form-field-label"><%= check_box_tag "category_ids[]", category.id, true %></div>
-		    <div class="form-field-value"><%= category.name %></div>
-		    <br style="clear: both;" />
-	    <% end %>
-	</div>
-  <% end %> 
-  <div class="actions" style="padding-top:100px">
-    <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_application_btn", :value => "Save" %>
+  <div class="form-group">
+          <label for="categories" class="control-label">Select Categories to clone</label >
+
+          <% @categories.each do |category| %>
+          <div id="categories" class="checkbox">
+              <label for="<%=category.id%>">
+                <%= check_box_tag category.id, category.id, true %><%=category.name%>
+              </label>
+          </div>
+      <% end %>
   </div>
+  <% end %>
+<div class="row">
+  <div class="col-md-2">
+    <%= link_to 'Back', admin_bright_text_applications_path,  {:class => "btn btn-default"}   %>
+  </div>
+  <div class="col-md-2">
+    <%= f.submit :id => "save_application_btn", :value => "Save", :class => "btn btn-primary" %>
+  </div>
+</div>
 <% end %>

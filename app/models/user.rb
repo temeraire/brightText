@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
                 :presence => {:message => "Please insert password(minimum 4 charecters long)."},
                 #:confirmation => true, 
                 :length => {:minimum => 4}
-  validates :email, :format => { :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :message => "Please insert a valid email." }
+  validates :email, :format => { :with => /\A(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})\z/i, :message => "Please insert a valid email." }
   validates :email, uniqueness: true
 
   validates :password, :confirmation => true, :on => :create
