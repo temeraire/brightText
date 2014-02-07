@@ -1,5 +1,5 @@
 class ApologywizController < ActionController::Base
-  protect_from_forgery
+  #protect_from_forgery
   def login_required
     if session[:domain].present? && session[:user_id].present?
       return true
@@ -39,22 +39,22 @@ class ApologywizController < ActionController::Base
       story.save
     end
   end
-  
+
   def clone_story_sets(story_set_ids, category_id)
     #debugger
     story_set_ids.each do |story_set_id|
       story_set_original = StorySet.find(story_set_id)
-      story_set = story_set_original.clone      
-      story_set.category_id = category_id  
-      #debugger    
+      story_set = story_set_original.clone
+      story_set.category_id = category_id
+      #debugger
       if story_set.save
         story_ids = story_set_original.stories.select(:id)
         clone_stories(story_ids, story_set.id)
       end
     end
   end
-  
-  def clone_categories(category_ids, application_id)    
+
+  def clone_categories(category_ids, application_id)
     category_ids.each do |category_id|
       category_original = StorySetCategory.find(category_id)
       category = category_original.clone

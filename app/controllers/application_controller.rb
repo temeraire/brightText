@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-  #protect_from_forgery
   def login_required
     if !session[:domain].nil? && (session[:domain].nickname=="Admin" || session[:domain].nickname=="ContextIT")
       return true
