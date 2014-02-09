@@ -30,9 +30,9 @@ class Admin::SessionsController < ApplicationController
   end
 
   def destroy
-    #session[:domain] = nil
-    #session[:style] = nil
-    #reset_session
+    session[:domain] = nil
+    session[:style] = nil
+    reset_session
     redirect_to "/admin/login"
   end
 

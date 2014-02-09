@@ -1,4 +1,5 @@
 class Admin::DomainsController < ApplicationController
+  protect_from_forgery :except => [:index]
   before_filter :login_required
 
   # GET /domains

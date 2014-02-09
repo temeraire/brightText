@@ -5,6 +5,11 @@
           <ul class="nav navbar-nav">
             <%= render 'layouts/navigation_links' %>
           </ul>
+          <%if session[:domain].present?%>
+          <ul class="nav navbar-nav pull-right">
+            <li><%=link_to 'Logout', admin_logout_path, class: 'navbar-brand'%></li>
+          </ul>
+          <% end %>
         </div>
       </div>
     </div>

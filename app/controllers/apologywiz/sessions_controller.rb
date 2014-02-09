@@ -1,11 +1,16 @@
 class Apologywiz::SessionController < ApologywizController
-  before_filter :login_required, :except => [:create]
+  before_filter :login_required, :except => [:new, :create]
 
+  def new
+    #reset_session
+    #redirect_to "/aplogywiz/index.html"
+  end
 
   def create
     #if request.post?
     @user = params[:username]
     @pass = params[:password]
+    puts @user
     @domain = Domain.authenticate( @user, @pass )
 
     if @domain
@@ -13,22 +18,14 @@ class Apologywiz::SessionController < ApologywizController
       session[:style]  = DomainStyle.find_by_domain_id @domain.id
 
       if @domain.id == 1
-        redirect_to "/domains"
+        redirect_to aplogywiz_domains_path, status: :found #"/admin/domains"
       else
-        redirect_to "/bright_text_applications"
+        redirect_to  aplogywiz_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
       end
 
     else
-      redirect_to "/index.html#2"
+      redirect_to "/aplogywiz/login"
     end
-
-=begin
-      render :js => @result  #always return the json respose
-      headers['content-type']='text/javascript';
-    #else
-    #  redirect_to "/index.html#1"
-    #end
-=end
 
   end
 
@@ -36,7 +33,7 @@ class Apologywiz::SessionController < ApologywizController
     #session[:domain] = nil
     #session[:style] = nil
     #reset_session
-    redirect_to "/apologywiz/login"
+    redirect_to "/aplogywiz/login"
   end
 
 end

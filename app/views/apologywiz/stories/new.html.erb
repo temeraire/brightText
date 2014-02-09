@@ -136,7 +136,7 @@ DIV.btContent {
           var subtitle = $("#story_name").val();
           if(subtitle===''){
             $("#subTitleValidation").show();
-          }else{          
+          }else{
             $.ajax({
               type: "post",
               url: "/apologywiz/stories",
@@ -165,13 +165,13 @@ DIV.btContent {
     });
 
     $("a[href='.step1']").click(function() {
-      showStories();    
+      showStories();
     });
-    
+
     $(document).ready(function(){
       showStories();
     });
-    
+
     function showStories(){
          $.ajax({
            type: "get",
@@ -207,7 +207,7 @@ DIV.btContent {
       if(summary===''){
         $("#textValidation").show();
       }else{
-        //$("#saveDialog").show();      
+        //$("#saveDialog").show();
         $.ajax({
           type: "post",
           url: $("form.edit_story").get(0).getAttribute("action"),
@@ -221,13 +221,13 @@ DIV.btContent {
         });
       }
     });
-    
+
     $("#titleValidationOk").click(function(){
       $("#titleValidation").hide();
       $("a[href='.step1']").click();
-      
+
     });
-    
+
     $("#subTitleValidationOk").click(function(){
       $("#subTitleValidation").hide();
       $("a[href='.step1']").click();
@@ -312,7 +312,8 @@ DIV.btContent {
     });
 
     $("#instant_rewrite1").button();
-    $("#instant_rewrite1").bind("click", function(){
+    $("#instant_rewrite1").bind("click", function(event){
+      event.preventDefault();
       _bt1.rewrite();
     });
 
@@ -339,7 +340,7 @@ DIV.btContent {
 <!--<li id="step_2" ><a href=".step2" title="" >Step 2</a></li>-->
 <li id="step_3" ><a href=".step3" title="" >Step 2</a><span class="last-img"></span></li>
 </ul>
-  
+
 
 <div class="step1">
 
@@ -383,7 +384,7 @@ DIV.btContent {
        </tbody>
   </table>
 </div>
-</div>  
+</div>
 <div class="step3">
 <ul class="random">
     <li> <a href="#" title="Highlight text">Highlight some text and right-click</a></li>
@@ -428,20 +429,20 @@ DIV.btContent {
   </p>
 <% end %>
 </div>
-  
+
 <div id="titleValidation" class="popup-bg" style="display:none;">
   <div class="text1">
     <h1>Title can't be blank</h1>
     <button id="titleValidationOk" class="btn1">Ok</button>
   </div>
-</div> 
-  
+</div>
+
 <div id="subTitleValidation" class="popup-bg" style="display:none;">
   <div class="text1">
     <h1>Subtitle can't be blank</h1>
     <button id="subTitleValidationOk" class="btn1">Ok</button>
   </div>
-</div>  
+</div>
 
 <div id="textValidation" class="popup-bg" style="display:none;">
   <div class="text1">

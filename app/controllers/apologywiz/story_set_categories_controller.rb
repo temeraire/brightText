@@ -1,7 +1,8 @@
 require 'rexml/document'
 
 class Apologywiz::StorySetCategoriesController < ApologywizController
-  #before_filter :login_required
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
   # GET /story_categories
   # GET /story_categories.xml
   def index
@@ -70,7 +71,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     respond_to do |format|
       if @story_set_category.save
         clone_story_sets(params[:story_sets], @story_set_category.id) unless params[:story_sets].blank?
-        format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/aplogywiz/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { render :xml => @story_set_category, :status => :created, :location => @story_set_category }
       else
         format.html { render :action => "new" }
@@ -86,7 +87,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/apologywiz/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -108,14 +109,14 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
+      format.html { redirect_to apologywiz_story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
       format.xml  { head :ok }
     end
   end
 
   def reorder_story_set_categories_rank
     if( params[:application_id].blank? )
-      redirect_to story_set_categories_path
+      redirect_to apologywiz_story_set_categories_path
     elsif( params[:application_id] ==  "__unassigned")
       @story_set_categories = StorySetCategory.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -126,7 +127,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def update_story_set_categories_rank
     #p params.to_yaml
     @story_set_categories = StorySetCategory.update(params[:story_set_categories].keys, params[:story_set_categories].values)
-    redirect_to story_set_categories_path(:filter => params[:filter])
+    redirect_to apologywiz_story_set_categories_path(:filter => params[:filter])
   end
 
   def clone

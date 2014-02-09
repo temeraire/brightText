@@ -1,5 +1,6 @@
 class Apologywiz::StorySetsController < ApologywizController
-  #before_filter :login_required
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
   
   # GET /story_sets
   # GET /story_sets.xml
@@ -24,10 +25,16 @@ class Apologywiz::StorySetsController < ApologywizController
     if @filter == "__unassigned"
       @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
     else
+      if @category.application_id.nil?
+        @story_sets = StorySet.joins(:story_set_category).where(
+                      {"story_sets.domain_id" => session[:domain].id}.merge(
+                           @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
+      elsif
       @story_sets = StorySet.joins(:story_set_category => :bright_text_application).where(
                       {"story_sets.domain_id" => session[:domain].id, 
                        "bright_text_applications.id" => @application}.merge(
                            @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
+      end
     end
 
     @filter = @category.id.to_s if @filter.blank? && !@category.blank? #update @filter for selection list and breadcrumbs similar values
@@ -89,7 +96,7 @@ class Apologywiz::StorySetsController < ApologywizController
     respond_to do |format|
       if @story_set.save
         clone_stories(params[:stories], @story_set.id) unless params[:stories].blank?
-        format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s ) }
+        format.html { redirect_to("/apologywiz/story_sets?filter=" + @story_set.category_id.to_s ) }
         format.xml  { render :xml => @story_set, :status => :created, :location => @story_set }
       else
         format.html {
@@ -111,7 +118,7 @@ class Apologywiz::StorySetsController < ApologywizController
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set.update_attributes(params[:story_set])
-        format.html { redirect_to("/story_sets?filter=" + @story_set.category_id.to_s) }
+        format.html { redirect_to("/apologywiz/story_sets?filter=" + @story_set.category_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -128,7 +135,7 @@ class Apologywiz::StorySetsController < ApologywizController
     @story_set.destroy
     
     respond_to do |format|
-      format.html { redirect_to story_sets_path(:filter => @story_set.category_id.to_s) }
+      format.html { redirect_to apologywiz_story_sets_path(:filter => @story_set.category_id.to_s) }
       format.xml  { head :ok }
     end
   end
@@ -147,7 +154,7 @@ class Apologywiz::StorySetsController < ApologywizController
   
   def reorder_story_sets_rank
     if( params[:category_id].blank? )
-      redirect_to story_sets_path
+      redirect_to apologywiz_story_sets_path
     elsif( params[:category_id] ==  "__unassigned")
       @story_sets = StorySet.where("category_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -158,6 +165,6 @@ class Apologywiz::StorySetsController < ApologywizController
   def update_story_sets_rank
     p params.to_yaml
     StorySet.update(params[:story_sets].keys, params[:story_sets].values)
-    redirect_to story_sets_path(:filter => params[:filter])
+    redirect_to apologywiz_story_sets_path(:filter => params[:filter])
   end
 end

@@ -1,4 +1,6 @@
 class Admin::DomainStylesController < ApplicationController
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
   # GET /domain_styles/1/edit
   def edit
     @domain_style = DomainStyle.find(params[:id])

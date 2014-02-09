@@ -164,15 +164,16 @@ DIV.btEditor{
       updateToneSlider1(_bt1.toneGradients(), _bt1.selectedTone());
     });
 
-    $("#instant_rewrite1").button();
-    $("#instant_rewrite1").bind("click", function() {
-      _bt1.rewrite();
+    $("#instant_rewrite1").on( "click", function(event){
+          event.preventDefault();
+          _bt1.rewrite();
     });
 
     $("#tone-control1").hide( );
-    $("#fetchStory").button();
-    $("#saveStory").button();
-    $("#edit_choicesets").button().click(_bt1.editChoicesets);
+    $("#edit_choicesets").on( "click", function(event){
+          event.preventDefault();
+          _bt1.editChoicesets();
+    });
 
     //set client_side_validation for selection list
     $("#story_story_set_id").change(function() {

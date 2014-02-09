@@ -1,7 +1,8 @@
 require 'rexml/document'
 
 class Admin::StorySetCategoriesController < ApplicationController
-  #before_filter :login_required
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
   # GET /story_categories
   # GET /story_categories.xml
   def index
@@ -139,5 +140,5 @@ class Admin::StorySetCategoriesController < ApplicationController
     respond_to do |format|
       format.html { render :action => "new" }
     end
-  end 
+  end
 end

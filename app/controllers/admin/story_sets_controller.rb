@@ -1,5 +1,6 @@
 class Admin::StorySetsController < ApplicationController
-  #before_filter :login_required
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
 
   # GET /story_sets
   # GET /story_sets.xml

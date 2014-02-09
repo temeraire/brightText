@@ -1,5 +1,5 @@
 class Apologywiz::StoriesController < ApologywizController
-
+  protect_from_forgery :except => [:index]
   before_filter :login_required
 
   # GET /stories
@@ -141,7 +141,7 @@ class Apologywiz::StoriesController < ApologywizController
     @story.destroy
 
     respond_to do |format|
-      format.html { redirect_to("/stories?filter=" + @story.story_set_id.to_s) }
+      format.html { redirect_to("/apologywiz/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
     end
   end
@@ -182,7 +182,7 @@ class Apologywiz::StoriesController < ApologywizController
 
   def reorder_stories_rank
     if( params[:story_set_id].blank? )
-      redirect_to stories_path
+      redirect_to apologywiz_stories_path
     elsif( params[:story_set_id] ==  "__unassigned")
       @stories = Story.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -193,7 +193,7 @@ class Apologywiz::StoriesController < ApologywizController
   def update_stories_rank
     #p params.to_yaml
     @stories = Story.update(params[:stories].keys, params[:stories].values)
-    redirect_to stories_path(:filter => params[:filter])
+    redirect_to apologywiz_stories_path(:filter => params[:filter])
   end
 
   private
