@@ -109,9 +109,9 @@ var BrightTextEditor = function( divId, editable ){
 
   };
 
-  this._btDiv.bind( "keyup", this.onKeyUp );
+  this._btDiv.on( "keyup", this.onKeyUp );
 
-  this._btDiv.bind( "keydown", function( event ) {
+  this._btDiv.on( "keydown", function( event ) {
     log( "keydown" );
 
   });
@@ -364,7 +364,7 @@ var BrightTextEditor = function( divId, editable ){
 
 
     var self = this;
-    p.bind( "mouseover", function(){
+    p.on( "mouseover", function(){
       p.removeClass("changePointResting").addClass( "changePointHover" );
 
       if (!editable){
@@ -374,11 +374,11 @@ var BrightTextEditor = function( divId, editable ){
       }
     });
 
-    p.bind( "mouseout", function(){
+    p.on( "mouseout", function(){
       p.removeClass("changePointHover").addClass( "changePointResting" );
     });
 
-    p.bind( "click", function(){
+    p.on( "click", function(){
       if ( editable ){
         self._cpSelect( event );
       }
@@ -912,7 +912,7 @@ var _modelFactory = new ObjectFactory();
         return;
       }
       resetMenu();
-      $(document.body).unbind('mousedown');
+      $(document.body).off('mousedown');
     });
 
     $(container).removeClass("largeChoiceMenu");
@@ -1199,7 +1199,7 @@ var _modelFactory = new ObjectFactory();
 
       elementContainer.append( elementDeleteImg );
 
-      elementContainer.bind("mouseover", function( event ) {
+      elementContainer.on("mouseover", function( event ) {
           $(".choiceEditContainer").removeClass("choiceEditContainerHighlight");
           elementContainer.addClass( "choiceEditContainerHighlight" );
 
@@ -1222,7 +1222,7 @@ var _modelFactory = new ObjectFactory();
       elementContainer.append( elementEditField );
 
 
-      elementEditField.bind( "keyup", function( event ) {
+      elementEditField.on( "keyup", function( event ) {
         event.target["pel"].text = event.target.value;
       } );
 
@@ -1231,11 +1231,11 @@ var _modelFactory = new ObjectFactory();
 
       elementContainer.append( elementExpandImg );
 
-      elementExpandImg.bind( "mouseover", function( event ) {
+      elementExpandImg.on( "mouseover", function( event ) {
         showToneDimensions( pileElement, event );
       } );
 
-      elementExpandImg.bind( "mouseout", function( event ){
+      elementExpandImg.on( "mouseout", function( event ){
         timedHideToneDimensions( pileElement, event );
       } );
 
@@ -1266,13 +1266,13 @@ var _modelFactory = new ObjectFactory();
     elementEditField[0]["pel"] = null;
     elementContainer.append( elementEditField );
 
-    elementContainer.bind("mouseover", function( event ) {
+    elementContainer.on("mouseover", function( event ) {
         $(".choiceEditContainer").removeClass("choiceEditContainerHighlight");
         elementContainer.addClass( "choiceEditContainerHighlight" );
 
       });
 
-    elementEditField.bind( "keyup", function( event ) {
+    elementEditField.on( "keyup", function( event ) {
       if ( event.target.value.length > 0 ){
         log("do have something indeed!");
 
@@ -1283,9 +1283,9 @@ var _modelFactory = new ObjectFactory();
 
     });
 
-    elementEditField.bind( "change", function( event ) {
+    elementEditField.on( "change", function( event ) {
       log( "create this");
-      $(event.target).unbind( "change");
+      $(event.target).off( "change");
       var pileElement = modelFactory.createPileElement( event.target.value );
       pile.elements[pileElement.id] = pileElement;
       this["pel"] = pileElement;
@@ -1302,16 +1302,16 @@ var _modelFactory = new ObjectFactory();
       var elementExpandImg = $("<img src='/images/expand.png' class='expandPileElement'/>");
       elementExpandImg.insertAfter( elementEditField );
 
-      elementExpandImg.bind( "mouseover", function( event ) {
+      elementExpandImg.on( "mouseover", function( event ) {
         showToneDimensions( pileElement, event );
       } );
 
-      elementExpandImg.bind( "mouseout", function( event ){
+      elementExpandImg.on( "mouseout", function( event ){
         timedHideToneDimensions( pileElement, event );
       } );
       */
 
-      $(this).bind( "keyup", function( event ) {
+      $(this).on( "keyup", function( event ) {
         event.target["pel"].text = event.target.value;
       } );
 
@@ -1551,7 +1551,7 @@ function log( msg )
       $("#choice-set-editor-body").append( csName );
       $("#choiceset-name")[0].value = self._data[0].name;
 
-      $("#choiceset-name").bind( "keyup", function( event ) {
+      $("#choiceset-name").on( "keyup", function( event ) {
         self._data[0].name = event.target.value;
         options.onDataChange();
       } );
@@ -1579,7 +1579,7 @@ function log( msg )
       choiceContainer.append( $(self._choiceIconTemplate.replace( "%COLOR%", color )) );
       choiceContainer.append( choiceLabel );
       choiceContainer.addClass("choiceSetAssignContainer");
-      choiceContainer.bind("click", function( event ) {
+      choiceContainer.on("click", function( event ) {
           $(".choiceSetAssignContainer").removeClass("choiceSetAssignContainerHighlight");
           choiceContainer.addClass( "choiceSetAssignContainerHighlight" );
           options.onAssignModeEnter();
@@ -1605,7 +1605,7 @@ function log( msg )
 
         elementContainer.append( elementDeleteImg );
 
-        elementContainer.bind("mouseover", function( event ) {
+        elementContainer.on("mouseover", function( event ) {
             $(".choiceSetEditContainer").removeClass("choiceSetEditContainerHighlight");
             elementContainer.addClass( "choiceSetEditContainerHighlight" );
 
@@ -1617,7 +1617,7 @@ function log( msg )
         elementContainer.append( elementEditField );
 
 
-        elementEditField.bind( "keyup", function( event ) {
+        elementEditField.on( "keyup", function( event ) {
           event.target["chos"].name = event.target.value;
           options.onDataChange();
         } );
@@ -1635,13 +1635,13 @@ function log( msg )
       elementEditField[0]["pel"] = null;
       elementContainer.append( elementEditField );
 
-      elementContainer.bind("mouseover", function( event ) {
+      elementContainer.on("mouseover", function( event ) {
           $(".choiceSetEditContainer").removeClass("choiceSetEditContainerHighlight");
           elementContainer.addClass( "choiceSetEditContainerHighlight" );
 
         });
 
-      elementEditField.bind( "keyup", function( event ) {
+      elementEditField.on( "keyup", function( event ) {
         if ( event.target.value.length > 0 ){
           log("do have something indeed!");
 
@@ -1652,9 +1652,9 @@ function log( msg )
 
       });
 
-      elementEditField.bind( "change", function( event ) {
+      elementEditField.on( "change", function( event ) {
         log( "create this");
-        $(event.target).unbind( "change");
+        $(event.target).off( "change");
         var choiceSet = _modelFactory.createChoiceSet( event.target.value );
         self._data[0].choiceSets.push( choiceSet );
         options.onDataChange();
@@ -1669,7 +1669,7 @@ function log( msg )
         });
         elementDeleteImg.insertBefore( elementEditField );
 
-        $(this).bind( "keyup", function( event ) {
+        $(this).on( "keyup", function( event ) {
           event.target["chos"].name = event.target.value;
           options.onDataChange();
         } );
