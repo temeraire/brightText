@@ -1,17 +1,5 @@
 <style type="text/css" media="screen">
 
-  body {
-    margin: 0;
-    margin-bottom: 25px;
-    padding: 0;
-    padding-top: 70px;
-    font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
-    font-size: 13px;
-    color: #333;
-    overflow:hidden;
-  }
-
-
 textarea.dataport{
   width:764px;
   height:392px;
@@ -41,79 +29,6 @@ DIV.btEditor{
 }
 
 </style>
-
-
-<script>
-  function onSetSelect()
-  {
-    var selector = $("#setSelector")[0];
-    $("#storySetId")[0].value = selector.options[ selector.selectedIndex ].value;
-  }
-
-  function saveStory() {
-    var form, type;
-    if ($(".new_story")[0] === undefined) {
-      form = $(".edit_story")[0];
-      type = "PUT";
-    }
-    else {
-      form = $(".new_story")[0];
-      type = "POST";
-    }
-    $.ajax({
-      type: $(form).attr("method"),
-      url: $(form).attr("action"),
-      data: $(form).serialize(),
-      dataType: "json",
-      success: function(data) {
-        settings = window[$('form[data-validate]').attr('id')];
-        element = $("#story_name");
-        //clientSideValidations.formBuilders[settings.type].remove(element, settings);
-        if (data["success"] === "true") {
-          console.log(data);
-          show_response_dialog("Story saved successfully", "Success!");
-          if (data["story_id"] !== null) { // If the story was just created
-            // Change form class to "edit_story"
-            $(form).removeClass('new_story');
-            $(form).addClass('edit_story');
-            $(form).attr('action', "/admin/stories/" + data["story_id"]);
-            $(form).attr('method', 'PUT');
-          }
-        }
-        else if (data["name"]) {
-          message = data["name"];
-          //clientSideValidations.formBuilders[settings.type].add(element, settings, message);
-        }
-
-        else
-          show_response_dialog("Something went wrong! Please try again later.", "Failed!");
-      }
-    });
-  }
-
-  function show_response_dialog(dialog_text, dialog_title) {
-    $("#dialog p").html(dialog_text);
-    $("#dialog").attr("title", dialog_title);
-    $("#dialog").dialog({
-      autoOpen: true,
-      resizable: false,
-      show: {effect: "fadeOut", duration: 500},
-      hide: {effect: "fadeOut", duration: 500},
-      dialogClass: 'no-close'
-    });
-    //$( "#dialog" ).dialog( "open" );
-    setTimeout(function() {
-      $("#dialog").dialog("close");
-    }, 2500);
-  }
-
-  $(function() {
-    $("#save_story_btn").click(function(e) {
-      saveStory();
-    });
-  });
-</script>
-
 
 <!-- BrightText WAND script -->
 <script>
@@ -185,9 +100,10 @@ DIV.btEditor{
       _bt1.renderData(<%=raw @story.descriptor %>);
 <%end%>
   });
+
 </script>
 
-  <%= form_for([:admin, @story], :validate => true, :html => { :role => "form", :class=>"form"} ) do |f| %>
+  <%= form_for([:admin, @story], :remote=> true, :validate => true, :html => { :role => "form", :class=>"form"} ) do |f| %>
   <div class="form-group">
   <%= f.label :name, :class=>'control-label' %>
   <%= f.text_field :name, :class=>'form-control' %>
@@ -196,8 +112,7 @@ DIV.btEditor{
     <label for="strories" class="control-label"><%= session[:style].set_alias.titleize %>:</label>
   <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id ), :id, :name, @story.story_set_id), {},{:class => "form-control"}%>
   </div>
-
-
+  <%#= hidden_field_tag 'format', 'json' %>
   <div class="row">
     <!--   WAND WAND WAND WAND WAND  -->
     <div id="main_container" class="col-md-12" style="height:290px">
@@ -247,6 +162,16 @@ DIV.btEditor{
   <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
 <% end %>
 
-<div id="dialog" title="Basic dialog" display="none" >
-  <p></p>
+
+<div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p id="dialog-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
 </div>
