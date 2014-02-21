@@ -2,7 +2,7 @@
   $(function(){
     $("#main-table").tablesorter();
   });
-  
+
   function onFilterSetSelect()
   {
     var selector = $("#setSelector")[0];
@@ -93,8 +93,8 @@
               <td><%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story) %></td>
               <td><%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story) %></td>
               <td>
-                <span><%= link_to 'Clone', '/admin/stories/' + story.id.to_s + '/clone' %></span>
-                <span><%= link_to 'Delete', '/admin/stories/' + story.id.to_s + '/delete', dara:{confirm: 'Are you sure?'}, :method => :delete %></span>
+                <span><%= link_to 'Clone', clone_admin_story_path(story)%></span>
+                <span><%= link_to 'Delete', admin_story_path(story), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
               </td>
             </tr>
           <% end %>

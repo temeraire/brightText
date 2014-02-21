@@ -34,6 +34,9 @@ BtWeb::Application.routes.draw do
 
     get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
     resources :stories do
+      member do
+        get :clone
+      end
       collection do
         post :update_stories_rank
       end
