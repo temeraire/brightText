@@ -32,7 +32,7 @@ class Apologywiz::SessionController < ApologywizController
   def destroy
     #session[:domain] = nil
     #session[:style] = nil
-    #reset_session
+    reset_session
     redirect_to "/aplogywiz/login"
   end
 

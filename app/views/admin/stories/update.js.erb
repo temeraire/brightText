@@ -1,6 +1,12 @@
 <% if @story.errors.count == 0 %>
-  $('#dialog-message').replaceWith('Story was updated successfully');
+  $('#dialog-message').replaceWith('Story was updated successfully.');
   $('#dialog').modal({
-  keyboard: true
-})
+    keyboard: true
+  })
+<% elsif %>
+  $('#dialog-message').replaceWith('An error occurred while updating Story.');
+  $('#dialog').modal({
+      keyboard: true
+  })
+
 <% end %>

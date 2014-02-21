@@ -20,7 +20,8 @@ gem 'bootstrap-sass'
 gem 'protected_attributes'
 
 gem "scoped_search"
-#gem 'client_side_validations'
+gem 'html5_validators'
+
 gem 'bcrypt-ruby', :require => 'bcrypt'
 
 group :development do

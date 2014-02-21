@@ -20,4 +20,4 @@
 //= require jquery.json-2.4
 //= require bootstrap-slider
 //= require jquery-ui-1.10.4.custom
-//= require btedit
+//= require ./btedit

@@ -24,7 +24,7 @@ class Admin::SessionsController < ApplicationController
       end
 
     else
-      redirect_to "/admin/login"
+      redirect_to admin_login_path
     end
 
   end

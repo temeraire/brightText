@@ -3,14 +3,24 @@ require 'digest/sha1'
 class Domain < ActiveRecord::Base
   has_one :user
 
-  validates_uniqueness_of :nickname, :scope => :id
-  validates_length_of :nickname, :within => 3..40
-  validates_length_of :password, :within => 4..40 unless :password == nil
-  validates_presence_of :nickname, :email,  :password, :password_confirmation
-  validates_uniqueness_of :nickname, :email
-  validates_confirmation_of :password
-  validates_format_of :email, :with => /\A(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})\z/i, :message => "Invalid email"
+    validates :nickname,
+    presence: true,
+    length: { in: 3..40 },
+    uniqueness: true
 
+  validates :email,
+    presence: true,
+    :format => { :with => /\A(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})\z/i, :message => "Please insert a valid email." },
+    :uniqueness => true
+   validates :password,
+     presence: true, :on => :create,
+    length: { in: 4..40 },
+    confirmation: true
+
+  validates :password_confirmation,
+    presence: true,
+    length: { in: 4..40 }
+  
   attr_protected :id, :salt
 
   attr_accessor :password, :password_confirmation

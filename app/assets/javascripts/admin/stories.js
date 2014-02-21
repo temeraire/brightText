@@ -14,10 +14,10 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap
+//= require bootstrap-slider
 //= require jquery-sortable
 //= require jquery.tablesorter.min
 //= require jquery.conmenu
 //= require jquery.json-2.4
-//= require bootstrap-slider
 //= require jquery-ui-1.10.4.custom
 //= require ./btedit

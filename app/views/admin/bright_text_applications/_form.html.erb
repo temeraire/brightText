@@ -1,13 +1,12 @@
 <%= form_for([:admin, @bt_application], :html => { :role => "form", :class=>"form"} ) do |f| %>
-  <% if @bt_application.errors.any? %>
-    <div id="error_explanation" class="row">
-      <h4><%= pluralize(@bt_application.errors.count, "error") %> prohibited this <%= session[:style].app_alias.titleize %> from being saved:</h4>
 
-      <ul>
-      <% @bt_application.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+  <% if @bt_application.errors.any? %>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@bt_application.errors.count, "error") %> prohibited this <%= session[:style].app_alias.titleize %> from being saved:</b>
+        <% @bt_application.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
     </div>
   <% end %>
   <div class="form-group">

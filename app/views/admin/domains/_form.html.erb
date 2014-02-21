@@ -1,12 +1,11 @@
 <%= form_for([:admin, @domain], :html => { :role => "form", :class=>"form"} ) do |f| %>
   <% if @domain.errors.any? %>
-    <div id="error_explanation" class="row">
-      <h3><%= pluralize(@domain.errors.count, "error") %> prohibited this domain from being saved:</h3>
-      <ul>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@domain.errors.count, "error") %> prohibited this Domain from being saved:</b>
         <% @domain.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
+          <p><%= msg %></p>
         <% end %>
-      </ul>
     </div>
   <% end %>
   <div class="col-md-12">

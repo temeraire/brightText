@@ -7,14 +7,14 @@
 </script>
 
 <%= form_for([:admin, @domain_style], :html => { :role => "form", :class=>"form"} ) do |f| %>
+
   <% if @domain_style.errors.any? %>
-    <div id="error_explanation" class="row">
-      <h3><%= pluralize(@domain_style.errors.count, "error") %> prohibited this domain_style from being saved:</h3>
-      <ul>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@domain_style.errors.count, "error") %> prohibited this Domain Style from being saved:</b>
         <% @domain_style.errors.full_messages.each do |msg| %>
-         <li><%= msg %></li>
+          <p><%= msg %></p>
         <% end %>
-      </ul>
     </div>
   <% end %>
 

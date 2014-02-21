@@ -15,18 +15,16 @@
 </script>
 
 <%= form_for([:admin, @story_set], :validate => true, :html => { :role => "form", :class=>"form"} ) do |f| %>
+
   <% if @story_set.errors.any? %>
-    <div id="error_explanation" class="row">
-      <h3><%= pluralize(@story_set.errors.count, "error") %> prohibited this <%= session[:style].set_alias.titleize %> from being saved:</h3>
-      <ul>
-      <% @story_set.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@story_set.errors.count, "error") %> prohibited this <%= session[:style].set_alias.titleize %> from being saved:</b>
+        <% @story_set.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
     </div>
   <% end %>
-
-
   <div class="form-group">
     <%= f.label :name, :class=>'control-label' %>
     <%= f.text_field :name, :class=>'form-control' %>

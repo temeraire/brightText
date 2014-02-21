@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? yield(:title) : "BrightText Applications" %></title>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "BrightText Admin Application" %>">
+    <title><%= content_for?(:title) ? yield(:title) : "BrightText" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "BrightText Admin Console" %>">
     <%= stylesheet_link_tag params[:controller], media: "all", "data-turbolinks-track" => true %>
     <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
