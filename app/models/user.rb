@@ -1,13 +1,14 @@
 class User < ActiveRecord::Base
   belongs_to :domain
   attr_accessor :password
-  
+  attr_accessible :name,:lastname, :email, :password, :password_confirmation
+
   before_save :encrypt_password, :set_domain
 
   validates :name, :email, :presence => true
-  validates :password, 
+  validates :password,
                 :presence => {:message => "Please insert password(minimum 4 charecters long)."},
-                #:confirmation => true, 
+                #:confirmation => true,
                 :length => {:minimum => 4}
   validates :email, :format => { :with => /\A(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})\z/i, :message => "Please insert a valid email." }
   validates :email, uniqueness: true
@@ -18,9 +19,9 @@ class User < ActiveRecord::Base
   def set_domain
     unless domain_id.present?
       self.domain_id = Domain.find_by_nickname("ContextIT").id
-    end 
+    end
   end
-  
+
   def encrypt_password
     if password.present?
       self.password_salt = BCrypt::Engine.generate_salt
