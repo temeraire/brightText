@@ -318,9 +318,11 @@ var BrightTextEditor = function(divId, editable) {
 
         //log("have data of length: " + this._story.length);
 
-        for (var c = 0; c < this._story.length; c++) {
-            var pos = new DataPositioner(c);
-            this.renderContainer(storyContentDiv, this._story[c]["container"], pos, randomize, preserveChoice);
+        if(typeof(this._story)!=="undefined"){
+            for (var c = 0; c < this._story.length; c++) {
+                var pos = new DataPositioner(c);
+                this.renderContainer(storyContentDiv, this._story[c]["container"], pos, randomize, preserveChoice);
+            }
         }
     };
 
