@@ -61,7 +61,7 @@ class Apologywiz::UsersController < ApologywizController
   def authenticate
     if (@user = User.authenticate params[:user][:email], params[:user][:password])
       log_in! @user
-      redirect_to new_apologywiz_story_path, notice: "Logged in!"
+      redirect_to apologywiz_stories_path, notice: "Logged in!"
     else
       @user = User.new
       flash.now[:error] = "Email or password is invalid"
