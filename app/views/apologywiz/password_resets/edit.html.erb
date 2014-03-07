@@ -2,20 +2,20 @@
   <h3>Reset Password</h3>
 
 
-  <p id="notice"><%= notice %></p>
+<p id="notice"><%= notice %></p>
 
 
   <%= form_for([:apologywiz,@user], html: { role: "form", class: "form"}, validate:true, :url => apologywiz_password_reset_path(params[:id])) do |f| %>
-      <% if @user.errors.any? %>
+  <% if @user.errors.any? %>
         <div id="error_messages" class="row">
           <h4><%= pluralize(@user.errors.count, "error") %> prohibited this password reset:</h4>
-          <ul>
-            <% for message in @user.errors.full_messages %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
+      <ul>
+        <% for message in @user.errors.full_messages %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
       <div class="form-group">
         <%= f.label :password, :class=>'control-label' %>
         <%= f.password_field :password, :class=>'form-control' %>
@@ -31,5 +31,5 @@
           <%= f.submit :id => "reset_password", :value => "Update Password", :class => "btn btn-primary" %>
         </div>
       </div>
-    <% end %>
-  </div>
+<% end %>
+</div>

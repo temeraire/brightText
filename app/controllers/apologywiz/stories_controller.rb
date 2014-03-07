@@ -5,6 +5,7 @@ class Apologywiz::StoriesController < ApologywizController
   # GET /stories
   # GET /stories.xml
   def index
+    @story = Story.new
     @highlighted_phreses = params[:q]
     @filter = request[:filter]
 

@@ -6,19 +6,15 @@ var BrightTextEditor = function(divId, editable) {
     this._piles = {};
     this._changePoints = [];
     this._storyDimensions = [];
-
-
     this._toneFilter = null;  // no filter
 
-
     var self = this;
-
     self._choiceSetAssignMode = false;
     self._choiceSetEditor = null;
 
 
     this._btDiv = $("#" + divId);
-    if (this._btDiv[0] instanceof HTMLDivElement != true) {
+    if (this._btDiv[0] instanceof HTMLDivElement !== true) {
         alert("BrightTextEditor must be a DIV node");
         return;
     }
@@ -114,7 +110,6 @@ var BrightTextEditor = function(divId, editable) {
 
     this._btDiv.on("keydown", function(event) {
         log("keydown");
-
     });
 
 
@@ -188,7 +183,6 @@ var BrightTextEditor = function(divId, editable) {
             self._btChangeCallback();
     };
 
-
     this.toData = function() {
         log("toData");
 
@@ -199,7 +193,6 @@ var BrightTextEditor = function(divId, editable) {
         return {"story": story, "piles": this._piles, storyDimensions: this._storyDimensions, "meta": this._meta};
     };
 
-
     this.toString = function() {
         log("toString");
 
@@ -209,9 +202,7 @@ var BrightTextEditor = function(divId, editable) {
         return resultBuffer.toString();
     };
 
-
-    this.bufferChildData = function(node, buffer)
-    {
+    this.bufferChildData = function(node, buffer){
         //log( "bufferChildData.  NodeName: " + node.nodeName );
         var child = node.firstChild;
         while (child != null) {
@@ -245,8 +236,7 @@ var BrightTextEditor = function(divId, editable) {
         }
     };
 
-    this._streamChildData = function(node, story)
-    {
+    this._streamChildData = function(node, story) {
         //log( "streamChildData.  NodeName: " + node.nodeName );
         var child = node.firstChild;
         while (child != null) {
@@ -291,19 +281,14 @@ var BrightTextEditor = function(divId, editable) {
         }
     };
 
-
-    this._getPileFor = function(changepoint)
-    {
+    this._getPileFor = function(changepoint) {
         var pile = this._piles[ changepoint["pile"] ];
         return pile;
     };
-
-
     /**
      *  Story rendering
      */
-    this.renderStory = function(randomize, preserveChoice)
-    {
+    this.renderStory = function(randomize, preserveChoice) {
         if (randomize)
             randomize = true;
         else
@@ -326,9 +311,7 @@ var BrightTextEditor = function(divId, editable) {
         }
     };
 
-
-    this.renderContainer = function(div, data, pos, randomize, preserveChoice)
-    {
+    this.renderContainer = function(div, data, pos, randomize, preserveChoice) {
         //log( "rendering container of length: " + data.length );
 
         if (data.length == 0)
@@ -349,11 +332,7 @@ var BrightTextEditor = function(divId, editable) {
         }
     };
 
-    this._undimTimeout;
-    this._nodeCount = 0;
-
-    this.renderChangepoint = function(el, pos, randomize, preserveChoice)
-    {
+    this.renderChangepoint = function(el, pos, randomize, preserveChoice) {
         if (randomize && preserveChoice === el) {
             randomize = false;
         }
@@ -394,9 +373,7 @@ var BrightTextEditor = function(divId, editable) {
         return p;
     };
 
-
-    this.renderText = function(el, pos)
-    {
+    this.renderText = function(el, pos){
         var p = $("<span/>");
         p.addClass("plainText");
         var t = document.createTextNode(el);
@@ -404,8 +381,7 @@ var BrightTextEditor = function(divId, editable) {
         return p;
     };
 
-    this.editChoicesets = function( )
-    {
+    this.editChoicesets = function() {
         if (self._choiceSetEditor)
             return;
         self._choiceSetEditor = new $.choiceSetEditor(self._storyDimensions, {
@@ -434,8 +410,7 @@ var BrightTextEditor = function(divId, editable) {
         self._choiceSetAssignMode = false;
     };
 
-    this._randomPileElement = function(cp)
-    {
+    this._randomPileElement = function(cp) {
         var pileId = cp.pile;
         var pile = this._piles[ pileId ];
 
@@ -461,9 +436,7 @@ var BrightTextEditor = function(divId, editable) {
         return pileEls.length > 0 ? pileEls[ index ].text : "[NO MATCH IN TONE]";
     };
 
-
-    this._createChangepointFromSelection = function()
-    {
+    this._createChangepointFromSelection = function() {
         var selection = this._getSelectedText();
         //alert("selected text: " + selection );
 
@@ -546,9 +519,7 @@ var BrightTextEditor = function(divId, editable) {
         self._cpEdit(cp[0]);
     };
 
-
-    this._cpToPlainText = function(el)
-    {
+    this._cpToPlainText = function(el) {
         var rt = this.renderText(el.firstChild.nodeValue);
         el.parentNode.insertBefore(rt[0], el);
         el.parentNode.removeChild(el);
@@ -558,8 +529,7 @@ var BrightTextEditor = function(divId, editable) {
 
     };
 
-    this._cpDelete = function(el)
-    {
+    this._cpDelete = function(el) {
         el.parentNode.removeChild(el);
         // TODO: delete any data associated with this cp (splice)
         if (this._btChangeCallback)
@@ -567,8 +537,7 @@ var BrightTextEditor = function(divId, editable) {
 
     };
 
-    this._cpEdit = function(el)
-    {
+    this._cpEdit = function(el){
         var changepoint = this._changePoints[ el["dataIndex"] ];
         var pile = this._getPileFor(changepoint);
 
@@ -577,9 +546,7 @@ var BrightTextEditor = function(divId, editable) {
         $.pileEditor(pile, options, _modelFactory, self);
     }
 
-
-    this._cpSelect = function(event)
-    {
+    this._cpSelect = function(event) {
         var el = event.target;
         var changepoint = this._changePoints[ el["dataIndex"] ];
         var pile = this._getPileFor(changepoint);
@@ -599,9 +566,7 @@ var BrightTextEditor = function(divId, editable) {
         $.choiceMenu(event, options, self._toneFilter);
     };
 
-
-    this._cpEditChoiceSet = function(event)
-    {
+    this._cpEditChoiceSet = function(event) {
         var el = event.target;
         var changepoint = this._changePoints[ el["dataIndex"] ];
         var pile = this._getPileFor(changepoint);
@@ -627,9 +592,7 @@ var BrightTextEditor = function(divId, editable) {
         $.choiceSetMenu(event, options, spec, chosCount);
     };
 
-
-    this._cpUpdateSelection = function(pile, elementId, el)
-    {
+    this._cpUpdateSelection = function(pile, elementId, el) {
         var element = pile["elements"][ elementId ];
         var value = element.text;
 
@@ -661,8 +624,7 @@ var BrightTextEditor = function(divId, editable) {
             this._btChangeCallback();
     };
 
-    this._cpUpdateChoiceSet = function(pile, elementId, el, choiceSetId)
-    {
+    this._cpUpdateChoiceSet = function(pile, elementId, el, choiceSetId) {
         var validOp = false;
         var element = pile["elements"][ elementId ];
         if (choiceSetId != null) {
@@ -697,8 +659,7 @@ var BrightTextEditor = function(divId, editable) {
         };
     };
 
-    this._getSelectedText = function()
-    {
+    this._getSelectedText = function() {
         var selection = '';
         if (window.getSelection) {
             log("one");
@@ -715,9 +676,7 @@ var BrightTextEditor = function(divId, editable) {
         return selection;
     };
 
-
-    this._attachContextMenu = function()
-    {
+    this._attachContextMenu = function() {
 
         var self = this;
         $.conmenu("DIV.btContent", [{
@@ -775,10 +734,10 @@ var BrightTextEditor = function(divId, editable) {
     if (editable) {
         this._btDiv[0].contentEditable = true;
         this._attachContextMenu();
+        //alert('context menu attached');
     }
 
-    this.rewrite = function()
-    {
+    this.rewrite = function() {
         log("rewrite");
         this.renderStory(true);
         this.toData();
@@ -787,8 +746,7 @@ var BrightTextEditor = function(divId, editable) {
 
     };
 
-    this.commitEdits = function()
-    {
+    this.commitEdits = function() {
         if (this._btChangeCallback)
             this._btChangeCallback();
     };
@@ -1186,8 +1144,7 @@ var _modelFactory = new ObjectFactory();
         return false;
     }
 
-    function renderPileElement(id, pile)
-    {
+    function renderPileElement(id, pile) {
         var pileElement = pile.elements[ id ];
 
         var elementContainer = $("<div class='choiceEditContainer'/>");
