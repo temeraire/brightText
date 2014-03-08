@@ -29,8 +29,8 @@
 
 </style>
 <ul id="story_tabs" class="nav nav-tabs nav-justified">
-  <li class="active"><a href="#step_1"><h5>Step-1</h5></a></li>
-  <li><a href="#step_2"><h5>Step-2</h5></a></li>
+  <li class="active"><a id="astep_1" href="#step_1"><h4>Step 1</h4></a></li>
+  <li><a id="astep_2" href="#step_2"><h4>Step 2</h4></a></li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
@@ -51,17 +51,14 @@
             </div>
             <div class="col-md-6">
               <h3>Apologies List</h3>
-              <div class="col-md-12">
+              <div class="col-md-12" style="overflow: scroll; height: 200px">
                 <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
                   <thead>
                     <tr>
-                      <th data-sort="int" style="width:50px;"><b>ID</b></th>
-                      <th data-sort="string" style="width:500px;"><b>Name</b></th>
-                      <th data-sort="int" style="width:50px;"><b>Rank</b></th>
+                      <th data-sort="string">Name</th>
                     </tr>
                   </thead>
-                  <tbody style="align:center">
-
+                  <tbody>
                   </tbody>
                 </table>
               </div>
@@ -79,7 +76,7 @@
           <!--   END WAND END WAND END WAND  -->
           <%= f.hidden_field :id, id: 'story_id' %>
           <h3 id="category_name"><%= @story.category %></h3>
-          <h2 id="name"><%= @story.name %></h2>
+          <h4 id="name"><%= @story.name %></h4>
           <label for="description" class="control-label"><h4>Please enter some text</h4></label>
           <div class="row">
             <!--   WAND WAND WAND WAND WAND  -->
@@ -100,7 +97,7 @@
         </div>
           <div class="col-md-6">
             <br/>
-            <div class="bs-callout bs-callout-info" style="display: none">
+            <div class="bs-callout bs-callout-info">
               <p>Highlight some text and right-click</p>
               <p>Select 'Create Changepoint'</p>
               <p>Enter some alternative text</p>
@@ -112,7 +109,7 @@
           </div>
           <div class="row">
             <div class="col-md-2">
-              <%= f.submit :id => "save_story_btn", :value => "Save " + session[:style].story_alias.titleize, :class => "btn btn-primary" %>
+              <%= f.submit :id => "save_story_btn", :value => "Save ", :class => "btn btn-primary" %>
             </div>
             <div class="col-md-6 col-md-offset-4">
               <span class="clk"><h4>Advanced Features</h4></span>
@@ -130,21 +127,56 @@
 
   </div>
 </div>
-<script>
-  $(function(){
-    $("#main-table").tablesorter();
-  });
 
+
+<div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p id="dialog-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+  var stories;
+  var formSubmitted = false;
+
+
+  /*
   $('#story_tabs a').click(function(e){
-    e.preventDefault();
+    //e.preventDefault();
     $(this).tab('show');
   });
+  */
 
 
   $(document).ready(function() {
+    $(function(){
+      $("#main-table").tablesorter();
+    });
+/*
     $('span.clk').hover(function(){$("div.bs-callout-info").show();},
                         function(){$("div.bs-callout-info").hide();}
     );
+*/
+    $(function() {
+      $("#main-table").on('click','a.clickme', function(event){
+          event.preventDefault();
+          var index = $(this).attr("id");
+          var story = stories[index];
+          $("#story_id").val(story["id"]);
+          $("#category_name").html("");
+          $("#name").html(story["name"]);
+          _bt1.renderData(JSON.parse(story["descriptor"]));
+          $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
+          $("#astep_2").tab('show');
+      });
+    });
   });
 
   $(document).ready(function() {
@@ -157,8 +189,91 @@
       rawData[0].value = $.toJSON(_bt1.toData());
       textData[0].value = _bt1.toString();
     });
-
-
+    showStories();
   });
+
+    function showStories(){
+         $.ajax({
+           type: "get",
+           url: "/apologywiz/stories",
+           dataType: "json",
+           data: "",
+           success: function(data) {
+             if(data["success"] === "true") {
+                stories = data["stories"];
+                console.log(stories);
+                var rows = "";
+                $.each(stories, function (i, apology) {
+                  console.log(apology);
+                  rows += "<tr>" +
+                            "<td><a id='" + i +"' class='clickme' href='#'>" + apology["name"] + "</a></td>" +
+                          "</tr>";
+                });
+                $("#main-table tbody").html("");
+                $("#main-table tbody").append(rows);
+             }
+           }
+         });
+    };
+
+    $("#astep_1").click(function() {
+        formSubmitted = false;
+        showStories();
+        $(this).tab('show');
+
+    });
+
+    $("#astep_2").click(function() {
+      if(formSubmitted===false){
+        var title = $("#story_category").val();
+        if(title===''){
+          $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
+          $('#dialog').modal({
+            keyboard: true
+          });
+        }else{
+          var subtitle = $("#story_name").val();
+          if(subtitle===''){
+            $('#dialog-message').replaceWith('<p id=\"dialog-message\">Subtitle can\'t be blank</p>');
+            $('#dialog').modal({
+              keyboard: true
+            });
+          }else{
+            $.ajax({
+              type: "post",
+              url: "/apologywiz/stories",
+              dataType: "json",
+              data: $("#new_story").serialize(),
+              success: function(data) {
+                formSubmitted = true;
+                if(data["id"] !== "") {
+                  $("#story_id").val(data["id"]);
+                  $("#category_name").text($("#story_category").val());
+                  $("#name").text($("#story_name").val());
+                  $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+data["id"]);
+                  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Apology was saved successfully</p>');
+                  $('#dialog').modal({
+                    keyboard: true
+                  });
+                }
+                else if(data["name"]){
+                  message = data["name"];
+                  $("#story_name").parent().addClass('field_with_errors');
+                  $("#story_name + .message").remove();
+                  $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
+                }
+              }
+            });
+
+            $(this).tab('show');
+
+          }
+        }
+      }
+    });
+
+
+
+
 
 </script>

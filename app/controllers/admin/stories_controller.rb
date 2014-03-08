@@ -128,6 +128,7 @@ class Admin::StoriesController < ApplicationController
         format.json{ render :json=> @story.errors }
 #        format.html { render :action => "new" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
+        format.js
       end
     end
 
@@ -150,6 +151,7 @@ class Admin::StoriesController < ApplicationController
         format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
+        format.js
       end
     end
   end

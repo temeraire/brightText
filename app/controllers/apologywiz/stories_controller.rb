@@ -103,14 +103,16 @@ class Apologywiz::StoriesController < ApologywizController
 
     respond_to do |format|
       if @story.save
-        format.json{ render :json=> {:success => "true", :story_id => @story.id } }
-        format.html { redirect_to(root_path, :notice => 'Story was successfully created.') }
+        format.html { redirect_to @story, notice: 'Story was successfully created.' }
         format.xml  { render :xml => @story, :status => :created, :location => @story }
+        format.json { render json: @story, status: :created}
+        format.js
       else
         #debugger
         format.json{ render :json=> @story.errors }
-        format.html { render :action => "new" }
+#        format.html { render :action => "new" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
+        format.js
       end
     end
   end
@@ -122,14 +124,16 @@ class Apologywiz::StoriesController < ApologywizController
     raise ' not owner ' unless @story.domain_id == session[:domain].id
     respond_to do |format|
       if @story.update_attributes(params[:story])
-        format.json{ render :json=> {:success => "true"} }
-        format.html { redirect_to("/apologywiz/stories?filter=" + @story.story_set_id.to_s, :notice => 'Story was successfully updated.') }
-        format.xml  { head :ok }
+        format.html { redirect_to @story, notice: 'Story was successfully created.' }
+        format.xml  { render :xml => @story, :status => :updated, :location => @story }
+        format.json { render json: @story, status: :updated, location: @story }
+        format.js
       else
         logger.debug "#{@story}"
         format.json{ render :json=> {:success => "false"} }
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
+        format.js
       end
     end
   end
