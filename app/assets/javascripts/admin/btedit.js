@@ -364,7 +364,7 @@ var BrightTextEditor = function(divId, editable) {
             p.removeClass("changePointHover").addClass("changePointResting");
         });
 
-        p.on("click", function() {
+        p.on("click", function(event) {
             if (editable) {
                 self._cpSelect(event);
             }
@@ -942,7 +942,7 @@ var _modelFactory = new ObjectFactory();
 
         actionElement.mousedown(function(clickEvent) {
             clickEvent.stopPropagation();
-            choice.action(event.target);
+            choice.action(clickEvent.target);
             resetMenu();
         });
 
@@ -981,10 +981,6 @@ var _modelFactory = new ObjectFactory();
             container = $("<div id='choiceSetMenu' style='position:absolute'/>");
             $('body').append(container);
         }
-
-        //$(document).ready(function(){
-
-        //    });
 
         this._showmenu = function(event, choices) {
             event.stopPropagation();
