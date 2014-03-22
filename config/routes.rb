@@ -79,7 +79,7 @@ BtWeb::Application.routes.draw do
     post '/users/authenticate' => 'users#authenticate'
     get '/login' => 'users#new_session', as: :login
     get '/register' => 'users#new', as: :register
-    get '/logout' => 'sessions#destroy', as: :logout
+    get '/logout' => 'users#destroy_session', as: :logout
 
     resources :stories
 

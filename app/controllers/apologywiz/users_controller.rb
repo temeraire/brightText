@@ -96,4 +96,11 @@ class Apologywiz::UsersController < ApologywizController
       format.xml  { head :ok }
     end
   end
+
+  def destroy_session
+    #session[:domain] = nil
+    #session[:style] = nil
+    reset_session
+    redirect_to "/apologywiz/login"
+  end
 end
