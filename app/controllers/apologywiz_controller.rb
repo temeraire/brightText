@@ -1,8 +1,8 @@
 class ApologywizController < ActionController::Base
   #protect_from_forgery
-  after_filter{
-    puts response.body
-  }
+  #  after_filter{
+  #    puts response.body
+  #  }
   def login_required
     if session[:domain].present? && session[:user_id].present?
       return true
