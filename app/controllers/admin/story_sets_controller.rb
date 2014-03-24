@@ -96,7 +96,7 @@ class Admin::StorySetsController < ApplicationController
     respond_to do |format|
       if @story_set.save
         clone_stories(params[:stories], @story_set.id) unless params[:stories].blank?
-        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s ) }
+        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s, :notice => session[:style].set_alias.titleize + ' was successfully created.' ) }
         format.xml  { render :xml => @story_set, :status => :created, :location => @story_set }
       else
         format.html {
@@ -118,7 +118,7 @@ class Admin::StorySetsController < ApplicationController
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set.update_attributes(params[:story_set])
-        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s) }
+        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s, :notice => session[:style].set_alias.titleize + ' was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

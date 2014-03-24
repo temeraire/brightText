@@ -71,7 +71,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     respond_to do |format|
       if @story_set_category.save
         clone_story_sets(params[:story_sets], @story_set_category.id) unless params[:story_sets].blank?
-        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s, :notice => session[:style].group_alias.titleize + ' was successfully created.') }
         format.xml  { render :xml => @story_set_category, :status => :created, :location => @story_set_category }
       else
         format.html { render :action => "new" }
@@ -87,7 +87,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s, :notice => session[:style].group_alias.titleize + ' was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

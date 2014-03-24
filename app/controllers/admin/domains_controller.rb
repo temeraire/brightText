@@ -78,7 +78,7 @@ class Admin::DomainsController < ApplicationController
 
     respond_to do |format|
       if @domain.save && DomainStyle.new({:domain_id => @domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => "/static/default_logo.png" } ).save
-        format.html { redirect_to(admin_domains_url) }
+        format.html { redirect_to(admin_domains_url, :notice => 'Domain was successfully updated.') }
         format.xml  { render :xml => @domain, :status => :created, :location => @domain }
       else
         format.html { render :action => "new" }

@@ -19,7 +19,7 @@ class Admin::DomainStylesController < ApplicationController
 
     respond_to do |format|
       if @domain_style.update_attributes(params[:domain_style])
-        format.html { redirect_to("/admin/domains", :notice => 'Domain style was successfully updated.') }
+        format.html { redirect_to(admin_domains_url, :notice => 'Domain style was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
