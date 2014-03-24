@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084747) do
+ActiveRecord::Schema.define(version: 920130109084748) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -73,15 +73,18 @@ ActiveRecord::Schema.define(version: 920130109084747) do
 
   create_table "stories", force: true do |t|
     t.string   "name"
-    t.text     "description",  limit: 16777215
-    t.text     "descriptor",   limit: 16777215
+    t.text     "description",                limit: 16777215
+    t.text     "descriptor",                 limit: 16777215
     t.integer  "rank"
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "bright_text_application_id"
   end
+
+  add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree
 
   create_table "story_set_categories", force: true do |t|
     t.string   "name"

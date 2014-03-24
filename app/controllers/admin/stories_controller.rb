@@ -116,6 +116,7 @@ class Admin::StoriesController < ApplicationController
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
     @story.rank = 0
+    @story.bright_text_application_id = session[:br_application_id]
 
     respond_to do |format|
       if @story.save

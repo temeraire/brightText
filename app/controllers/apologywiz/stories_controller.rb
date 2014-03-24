@@ -97,6 +97,7 @@ class Apologywiz::StoriesController < ApologywizController
     @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: params[:story][:description])
     #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
+    @story.bright_text_application_id = session[:br_application_id]
     @story.story_set.story_set_category.domain_id = session[:domain].id
     @story.story_set.story_set_category.application_id = session[:br_application_id]
     @story.rank = 0
