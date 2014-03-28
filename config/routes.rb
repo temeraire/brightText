@@ -1,5 +1,9 @@
 BtWeb::Application.routes.draw do
 
+  namespace :api do
+    match "/mystories", :to => "stories#index", :via => :post
+  end
+
   namespace :admin do
     resources :app_submissions
     resources :domain_styles
