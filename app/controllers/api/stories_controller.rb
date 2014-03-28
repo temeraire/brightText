@@ -8,7 +8,7 @@ class Api::StoriesController < ApplicationController
     @application_id = request[:application_id]
 
     if (@user = User.authenticate @user_name, @password)
-      @stories = Story.where("(user_id IS NULL OR user_id = ?) AND bright_text_application_id = ?",@user.id, @application_id).order(:name)
+      @stories = Story.where("(user_id IS NULL OR user_id = ?) AND (bright_text_application_id = ? OR bright_text_application_id is NULL)",@user.id, @application_id).order(:name)
     else
 
     end
