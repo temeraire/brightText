@@ -1,7 +1,8 @@
 BtWeb::Application.routes.draw do
 
   namespace :api do
-    match "/mystories", :to => "stories#index", :via => :post
+    match "/user_stories", :to => "stories#get_user_stories", :via => :post
+    match "/user_app_stories", :to => "stories#get_user_application_stories", :via => :post
   end
 
   namespace :admin do

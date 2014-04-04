@@ -1,6 +1,7 @@
+require 'rexml/document'
 class Admin::BrightTextApplicationsController < ApplicationController
   protect_from_forgery :except => [:index]
-  before_filter :login_required
+  before_filter :login_required, :except => [:show]
   # GET /applications
   # GET /applications.xml
   def index
