@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084748) do
+ActiveRecord::Schema.define(version: 920130109084750) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -57,6 +57,23 @@ ActiveRecord::Schema.define(version: 920130109084748) do
     t.boolean  "priveleged"
     t.boolean  "self_created"
     t.string   "role"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "group_members", force: true do |t|
+    t.string   "email"
+    t.integer  "group_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_members", ["email"], name: "index_group_members_on_email", using: :btree
+
+  create_table "groups", force: true do |t|
+    t.string   "name"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

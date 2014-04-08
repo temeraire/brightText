@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
   belongs_to :domain
+  has_one :group, autosave: true
+  has_many :groups, through: :group_members
   attr_accessor :password
   attr_accessible :name,:lastname, :email, :password, :password_confirmation
 

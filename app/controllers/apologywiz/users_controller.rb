@@ -45,9 +45,12 @@ class Apologywiz::UsersController < ApologywizController
   # POST /users.xml
   def create
     @user = User.new(params[:user])
+    @user.group = Group.new
+    @user.group.name = "Apologies"
 
     respond_to do |format|
       if @user.save
+        GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         log_in! @user
         format.html { redirect_to(apologywiz_root_url, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }

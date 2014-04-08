@@ -1,0 +1,27 @@
+<div class="tab-pane active" id="step_1">
+  <div class="jumbotron">
+    <div class="container">
+        <div class="col-md-6">
+          <%= form_for([:apologywiz, @story], :html => { :role => "form", :class=>"form"}, :validate => true) do |f| %>
+          <div class="form-group">
+            <label class="control-label">Title</label>
+            <%= f.text_field :category, class: 'form-control', placeholder: "example: John's Apologies" %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Subtitle</label>
+            <%= f.text_field :name, class: 'form-control', placeholder: "example: Sorry I've been a creep" %>
+          </div>
+          <% end %>
+        </div>
+      <div class="col-md-6">
+        <h3>My Apologies</h3>
+        <div class="col-md-12" style="overflow: scroll; height: 200px">
+          <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
