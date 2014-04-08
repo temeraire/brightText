@@ -6,6 +6,8 @@ class Apologywiz::StoriesController < ApologywizController
   # GET /stories.xml
   def index
     @story = Story.new
+    @group_member = GroupMember.new
+    
     @highlighted_phreses = params[:q]
     @filter = request[:filter]
 
@@ -29,7 +31,7 @@ class Apologywiz::StoriesController < ApologywizController
         @application = @category.bright_text_application unless @category.blank?
         @story_sets = @category.story_sets.order(:name) unless @category.blank?
       end
-      @stories = Story.find_all_by_user_id(session[:user_id])
+      @stories = Story.where(:user_id => session[:user_id])
     end
 
     session[:br_story_set_id] = @story_set.id unless @story_set.blank?

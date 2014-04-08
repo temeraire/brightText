@@ -80,6 +80,8 @@ BtWeb::Application.routes.draw do
     resources :domain_styles
     resources :password_resets
     resources :users
+    resources :groups
+    resources :group_members
 
     post '/users/authenticate' => 'users#authenticate'
     get '/login' => 'users#new_session', as: :login
