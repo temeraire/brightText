@@ -41,9 +41,14 @@
       </div>
       <div class="row">
         <div class="col-md-2">
-          <%= f.submit :id => "save_story_btn", :value => "Save ", :class => "btn btn-primary" %>
+          <button id="instant_rewrite1" class="btn btn-success">Instant Rewrite</button>
         </div>
-        <div class="col-md-6 col-md-offset-4">
+        <div class="col-md-2 col-md-offset-2">
+          <span class="pull-right">
+            <%= f.submit :id => "save_story_btn", :value => "Save ", :class => "btn btn-primary" %>
+          </span>
+        </div>
+        <div class="col-md-6">
           <span class="clk"><h4>Advanced Features</h4></span>
           <p><a href="#"><h4>View a video on more advanced features</h4></a></p>
         </div>

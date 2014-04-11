@@ -100,16 +100,24 @@ $(function() {
 
 $(document).ready(function() {
 
-_bt1 = new BrightTextEditor("bt_one", true);
-var rawData = $("#fieldDescriptor");
-var textData = $("#fieldSummary");
+    _bt1 = new BrightTextEditor("bt_one", true);
+    var rawData = $("#fieldDescriptor");
+    var textData = $("#fieldSummary");
 
-_bt1.onChange(function() {
-rawData[0].value = $.toJSON(_bt1.toData());
-textData[0].value = _bt1.toString();
-});
-showStories();
-});
+    _bt1.onChange(function() {
+      rawData[0].value = $.toJSON(_bt1.toData());
+      textData[0].value = _bt1.toString();
+    });
+
+    $("#instant_rewrite1").on( "click", function(event){
+      event.preventDefault();
+      _bt1.rewrite();
+    });
+
+    showStories();
+  });
+
+
 
 function showMembers(){
    $.ajax({
