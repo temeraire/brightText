@@ -1,7 +1,10 @@
 // import the CSS framework
 @import "bootstrap";
 
-body { padding-top: 70px; }
+body {
+    padding-top: 70px;
+    font-size: 12px;
+}
 
 // make all images responsive by default
 img {
