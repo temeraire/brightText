@@ -32,10 +32,6 @@ class Apologywiz::UsersController < ApologywizController
     end
   end
 
-  def new_session
-    @user = User.new
-  end
-
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
@@ -58,17 +54,6 @@ class Apologywiz::UsersController < ApologywizController
         format.html { render :action => "new" , :layout => "apologywiz" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
-    end
-  end
-
-  def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
-      log_in! @user
-      redirect_to apologywiz_stories_path, notice: "Logged in!"
-    else
-      @user = User.new
-      flash.now[:error] = "Email or password is invalid"
-      render 'new_session', layout: "apologywiz"
     end
   end
 
@@ -100,10 +85,26 @@ class Apologywiz::UsersController < ApologywizController
     end
   end
 
-  def destroy_session
-    #session[:domain] = nil
-    #session[:style] = nil
+  def new_session
     reset_session
-    redirect_to "/apologywiz/login"
+    @user = User.new
+  end
+
+  def authenticate
+    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+      log_in! @user
+      redirect_to apologywiz_stories_path, notice: "Logged in!"
+    else
+      @user = User.new
+      flash.now[:error] = "Email or password is invalid"
+      render 'new_session', layout: "apologywiz"
+    end
+  end
+
+  def destroy_session
+    session[:domain] = nil
+    session[:style] = nil
+    reset_session
+    redirect_to apologywiz_login_path
   end
 end

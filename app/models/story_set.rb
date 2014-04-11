@@ -20,4 +20,10 @@ class StorySet < ActiveRecord::Base
       self.rank = 1 + StorySet.maximum(:rank, :conditions => ["category_id = ?", self.category_id]).to_i
     end
   end
+
+  def self.dummy_story_set()
+    dummy = StorySet.new
+    dummy.name = "My Apologies"
+    return dummy
+  end
 end

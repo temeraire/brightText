@@ -90,7 +90,7 @@ class Apologywiz::GroupMembersController < ApologywizController
   def destroy
     @group_member = GroupMember.find(params[:id])
     # @filter = @story_set_category.application_id.to_s
-    # if ( @filter == nil || @filter == "0")
+    # if ( @filter.blank? || @filter == "0")
     # @filter = ""
     # end
 

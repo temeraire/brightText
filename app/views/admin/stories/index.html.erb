@@ -40,7 +40,7 @@
             %>
             <option <%= selected %> value="__unassigned">-- unassigned --</option>
             <%
-            unless @story_sets.nil?
+            unless @story_sets.blank?
               @story_sets.each do | set |
                 selected = ''
                 selected = 'selected' if storySetFilter == set.id.to_s

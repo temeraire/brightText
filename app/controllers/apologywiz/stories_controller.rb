@@ -7,7 +7,7 @@ class Apologywiz::StoriesController < ApologywizController
   def index
     @story = Story.new
     @group_member = GroupMember.new
-    
+
     @highlighted_phreses = params[:q]
     @filter = request[:filter]
 
@@ -65,7 +65,7 @@ class Apologywiz::StoriesController < ApologywizController
   def new
     @story = Story.new
     filter = params[:filter]
-    if ( filter != nil && filter != "__unassigned" )
+    if ( filter.present? && filter != "__unassigned" )
       @story.story_set_id = filter.to_i
     end
     respond_to do |format|

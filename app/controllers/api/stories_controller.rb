@@ -31,26 +31,70 @@ class Api::StoriesController < ApplicationController
 
     if (@user = User.authenticate @user_name, @password)
       @bt_application = BrightTextApplication.find(@application_id)
-      respond_to do |format|
-        format.xml  {
+    else
+      @bt_application = BrightTextApplication.find(@application_id)
+      @user = User.find_by_email(@user_name);
+      if(@user.blank?)
+        @user = User.new
+        @user.email = @user_name;
+        @user.password = @password
+        @user.domain_id = @bt_application.domain_id
 
-          #<Application id="12">
-          # <StorySetCategories>
-          #   <StorySetCategory id="15" name="safsdf"><!-- Survey -->
-          #     <StorySets>
-          #       <StorySet id="32" name="asdfasdf"><!-- Question -->
-          #         <Stories>
-          #           <Story id="1140" name="afdaf"><!-- Recombinant Answer 1 --></Story>
-          #           <Story id="1143" name="bb"><!-- Recombinant Answer 2 --></Story>
-          #           <Story id="1137" name="ddaa"><!-- Recombinant Answer 3 --></Story>
-          #         </Stories>
-          #       </StorySet>
-          #     </StorySets>
-          #   </StorySetCategory>
-          # </StorySetCategories>
-          #</Application>
+        @user.group = Group.new
+        @user.group.name = "Apologies"
 
-          result = REXML::Document.new("<Application/>")
+        if @user.save
+          GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
+
+          @category = StorySetCategory.dummy_story_set_category
+          @category.application_id = @bt_application.id
+          @category.domain_id = @bt_application.domain_id
+          @category.user_id = @user.id
+
+          if @category.save
+            @story_set = StorySet.dummy_story_set
+            @story_set.category_id = @category.id
+
+            @story_set.bright_text_application_id = @bt_application.id
+            @story_set.domain_id = @bt_application.domain_id
+            @story_set.user_id = @user.id
+            if @story_set.save
+
+              @story = Story.dummy_story
+
+              @story.bright_text_application_id = @bt_application.id
+              @story.domain_id = @bt_application.domain_id
+              @story.user_id = @user.id
+
+              @story.save
+
+            end
+          end
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.xml  {
+
+        #<Application id="12">
+        # <StorySetCategories>
+        #   <StorySetCategory id="15" name="safsdf"><!-- Survey -->
+        #     <StorySets>
+        #       <StorySet id="32" name="asdfasdf"><!-- Question -->
+        #         <Stories>
+        #           <Story id="1140" name="afdaf"><!-- Recombinant Answer 1 --></Story>
+        #           <Story id="1143" name="bb"><!-- Recombinant Answer 2 --></Story>
+        #           <Story id="1137" name="ddaa"><!-- Recombinant Answer 3 --></Story>
+        #         </Stories>
+        #       </StorySet>
+        #     </StorySets>
+        #   </StorySetCategory>
+        # </StorySetCategories>
+        #</Application>
+
+        result = REXML::Document.new("<Application/>")
+        if(@bt_application..present?)
           result.root.attributes["id"] = @bt_application.id.to_s
           categoriesEl = result.root.add_element("StorySetCategories")
           @categories_sql = "SELECT DISTINCT story_set_categories.* FROM story_set_categories " +
@@ -84,10 +128,11 @@ class Api::StoriesController < ApplicationController
               end
             end
           end
-          render :xml => result
-        }
-      end
+        end
+        render :xml => result
+      }
     end
+
   end
 
 end

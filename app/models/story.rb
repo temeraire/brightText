@@ -15,7 +15,7 @@ class Story < ActiveRecord::Base
 
 
   def category
-    unless story_set.nil?
+    unless story_set.blank?
       story_set.story_set_category.name
     end
     ''
@@ -35,6 +35,18 @@ class Story < ActiveRecord::Base
   def set
     setObj = StorySet.find_by_sql [ "select * from story_sets where id = ?", story_set_id ]
     return setObj[0].name unless setObj == nil || setObj.count < 1
+  end
+
+  def self.dummy_story()
+
+    dummy = Story.new
+    dummy.name = "Replace me!"
+    dummy.description = "Go to www.apologywiz.com/create and create your personal stuff, which will then appear here!"
+    dummy.descriptor = "{\"story\":[{\"container\":[\"Go to www.apologywiz.com/create and create your personal stuff, which will then appear here!\"]},{\"container\":[]}],\"piles\":{},\"storyDimensions\":[],\"meta\":{}}"
+    dummy.rank = 1
+
+    return dummy
+
   end
 
   def toXml( storyEl )
@@ -225,7 +237,6 @@ class Story < ActiveRecord::Base
     puts '  *** story created.  local story id: ' + story.id.to_s
   end
 
-
   def self.migrate_helper_related( storyId )
 
     existingStory = Story.find_by_id( storyId )
@@ -298,6 +309,5 @@ class Story < ActiveRecord::Base
       end
     end
   end
-
 
 end

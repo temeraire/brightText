@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   def login_required
-    if !session[:domain].nil? && (session[:domain].nickname=="Admin" || session[:domain].nickname=="ContextIT")
+    if session[:domain].present? && (session[:domain].nickname=="Admin" || session[:domain].nickname=="ContextIT")
       return true
     end
     flash[:warning]='Please login to continue'

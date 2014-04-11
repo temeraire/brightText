@@ -47,7 +47,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def new
     @story_set_category = StorySetCategory.new
     filter = params[:filter]
-    if ( filter != nil && filter != "__unassigned" )
+    if ( filter.present? && filter != "__unassigned" )
     @story_set_category.application_id = filter.to_i
     end
     respond_to do |format|
@@ -101,7 +101,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def destroy
     @story_set_category = StorySetCategory.find(params[:id])
     # @filter = @story_set_category.application_id.to_s
-    # if ( @filter == nil || @filter == "0")
+    # if ( @filter.blank? || @filter == "0")
     # @filter = ""
     # end
 
@@ -140,5 +140,5 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     respond_to do |format|
       format.html { render :action => "new" }
     end
-  end 
+  end
 end

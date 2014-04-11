@@ -2,7 +2,7 @@ class Admin::SessionsController < ApplicationController
   #before_filter :login_required, :except => [:new, :create]
 
   def new
-    #reset_session
+    reset_session
     redirect_to "/admin/index.html"
   end
 

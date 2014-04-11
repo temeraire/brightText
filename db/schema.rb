@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084750) do
+ActiveRecord::Schema.define(version: 920130109084751) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -122,7 +122,10 @@ ActiveRecord::Schema.define(version: 920130109084750) do
     t.integer  "rank"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "bright_text_application_id"
   end
+
+  add_index "story_sets", ["bright_text_application_id"], name: "index_story_sets_on_bright_text_application_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "name"
