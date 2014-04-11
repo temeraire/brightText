@@ -20,4 +20,11 @@ class StorySetCategory < ActiveRecord::Base
       self.rank = 1 + StorySetCategory.maximum(:rank, :conditions => ["application_id = ?", self.application_id]).to_i
     end
   end
+
+  def self.dummy_story_set_category()
+    dummy = StorySetCategory.new
+    dummy.name = "My Stuff Will Appear Here";
+    dummy.rank = 1;
+    return dummy
+  end
 end

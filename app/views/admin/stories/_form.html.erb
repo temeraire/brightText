@@ -96,7 +96,7 @@ DIV.btEditor{
       $("#story_name").isValid(settings.validators);
     });
 
-<%if @story.descriptor != nil &&  !@story.descriptor.empty?%>
+<%if @story.descriptor.present?%>
       _bt1.renderData(<%=raw @story.descriptor %>);
 <%end%>
   });

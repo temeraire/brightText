@@ -2,7 +2,7 @@ class Apologywiz::SessionController < ApologywizController
   #before_filter :login_required, :except => [:new, :create]
 
   def new
-    #reset_session
+    reset_session
     #redirect_to "/aplogywiz/index.html"
   end
 
@@ -30,8 +30,8 @@ class Apologywiz::SessionController < ApologywizController
   end
 
   def destroy
-    #session[:domain] = nil
-    #session[:style] = nil
+    session[:domain] = nil
+    session[:style] = nil
     reset_session
     redirect_to "/aplogywiz/login"
   end
