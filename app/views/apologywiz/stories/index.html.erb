@@ -183,7 +183,7 @@ if(formSubmitted===false){
       keyboard: true
     });
     $("#astep_1").click();
-    title.focus();
+    $("#story_category").focus();
   }else{
     var subtitle = $("#story_name").val();
     if(subtitle===''){
@@ -192,7 +192,7 @@ if(formSubmitted===false){
         keyboard: true
       });
       $("#astep_1").click();
-      subtitle.focus();
+      $("#story_name").focus();
     }else{
       $.ajax({
         type: "post",

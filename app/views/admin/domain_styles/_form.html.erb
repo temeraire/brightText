@@ -59,8 +59,10 @@
     <div class="col-md-2">
       <%= link_to 'Back', admin_domain_styles_path,  {:class => "btn btn-default"}   %>
     </div>
-    <div class="col-md-2">
-      <%= f.submit :id => "save_style_btn", :value => "Save", :class => "btn btn-primary" %>
+    <div class="col-md-10">
+      <span class="pull-right">
+        <%= f.submit :id => "save_style_btn", :value => "Save", :class => "btn btn-primary" %>
+      </span>
     </div>
   </div>
 <% end %>
