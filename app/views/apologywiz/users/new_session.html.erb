@@ -22,7 +22,9 @@
               <%= link_to 'Forgot password?', new_apologywiz_password_reset_path,  {:class => "btn btn-default"}   %>
             </div>
             <div class="col-md-6">
-              <%= f.submit :id => "save_application_btn", :value => "Log in", :class => "btn btn-primary" %>
+              <span class="pull-right">
+                <%= f.submit :id => "save_application_btn", :value => "Log in", :class => "btn btn-primary" %>
+              </span>
             </div>
           </div>
         <% end %>
