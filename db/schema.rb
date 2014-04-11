@@ -103,6 +103,30 @@ ActiveRecord::Schema.define(version: 920130109084750) do
 
   add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree
 
+  create_table "stories_1", force: true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.text     "descriptor",   limit: 16777215
+    t.integer  "rank"
+    t.integer  "domain_id"
+    t.integer  "user_id"
+    t.integer  "story_set_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stories_2", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+    t.string   "description",  limit: 1024
+    t.integer  "domain_id"
+    t.integer  "user_id"
+    t.integer  "story_set_id"
+    t.text     "descriptor",   limit: 16777215
+    t.integer  "rank"
+  end
+
   create_table "story_set_categories", force: true do |t|
     t.string   "name"
     t.string   "description"
