@@ -101,6 +101,15 @@ DIV.btEditor{
 <%end%>
   });
 
+(function() {
+    window.alert = function(str) {
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">'+ str +'</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+    };
+})();
+
 </script>
 
   <%= form_for([:admin, @story], :remote=> true, :validate => true, :html => { :role => "form", :class=>"form"} ) do |f| %>
@@ -149,13 +158,10 @@ DIV.btEditor{
                 <button id="instant_rewrite1" class="btn btn-primary">Instant Rewrite</button>
               </span>
             </div>
-
           </div>
-
           <div id="bt_one" class="form-control btEditor">BT Wand</div>
         </div>
       </div>
-
     </div>
   </div>
 

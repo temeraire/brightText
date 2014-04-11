@@ -1,4 +1,3 @@
-
 var BrightTextEditor = function(divId, editable) {
 
     this._story;
@@ -1063,7 +1062,7 @@ var _modelFactory = new ObjectFactory();
 
         this._renderChoiceSetIndicator = function(actionElement, choiceSetIds, i) {
             var colors = self._spec.storyDimensionSpec;
-            var choiceSetIndicator = $("<div class='choiceSetIndicator ui-corner-all'/>");
+            var choiceSetIndicator = $("<div class='choiceSetIndicator'/>");
             var mappedCount = choiceSetIds.length - self._chosCount + i;
             var bgcolor = null;
             if (mappedCount >= 0 && i < self._chosCount) {
@@ -1160,13 +1159,13 @@ var _modelFactory = new ObjectFactory();
 
         });
 
-        if (pileElement.text.length < 32) {
+        if (pileElement.text != null && pileElement.text.length < 32) {
             elementEditField = $("<input class='choiceEditField' type='text'></input>");
             elementEditField[0].value = pileElement.text;
         }
         else {
             elementEditField = $("<textarea></textarea>");
-            if (pileElement.text.length > 150) {
+            if (pileElement.text != null && pileElement.text.length > 150) {
                 elementEditField.addClass("choiceEditTextAreaHuge");
             } else {
                 elementEditField.addClass("choiceEditTextArea");
@@ -1412,23 +1411,41 @@ var _modelFactory = new ObjectFactory();
         self._assignSetId = null;
 
         self._init = function() {
-            var editor = $("<div id='choiceset-editor'><div style='width:100%; margin: 0px 15px 20px 3px'<form><div id='choiceset-mode-selector'><input type='radio' id='mode-new' name='radio'/><label for='mode-new' >New</label><input type='radio' id='mode-edit' name='radio'/><label for='mode-edit' >Edit</label><input type='radio' id='mode-assign' name='radio' checked='checked'/><label for='mode-assign'>Assign</label></div></form></div><div id='choice-set-editor-body' style='width:100%; height:100%'></div></div>");
+            //var editor = $("<div id='choiceset-editor'><div style='width:100%; margin: 0px 15px 20px 3px'><form><div id='choiceset-mode-selector'><input type='radio' id='mode-new' name='radio'/><label for='mode-new' >New</label><input type='radio' id='mode-edit' name='radio'/><label for='mode-edit' >Edit</label><input type='radio' id='mode-assign' name='radio' checked='checked'/><label for='mode-assign'>Assign</label></div></form></div><div id='choice-set-editor-body' style='width:100%; height:100%'></div></div>");
+            //var editor = $("<div id='choiceset-editor' class='modal fade' tabindex='-1' role='dialog'><div style='width:100%; margin: 0px 15px 20px 3px'><form><div class='radio-inline'><label><input type='radio' name='optionsRadios' id='mode-new' value='option1' checked>New</label></div><div class='radio-inline'><label><input type='radio' name='optionsRadios' id='mode-edit' value='option2'>Edit</label></div><div class='radio-inline'><label><input type='radio' name='optionsRadios' id='mode-assign' value='option3' checked>Assign</label></div></form></div><div id='choice-set-editor-body' style='width:100%; height:100%'></div></div>");
+
+            var editor = $(
+                    "<div id='choiceset-editor' class='modal fade' tabindex='-1' role='dialog'>" +
+                    "<div class='modal-dialog modal-sm'>" +
+                    "<div class='modal-content'>" +
+                    "<div class='modal-header'>" +
+                    "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>" +
+                    "<form>" +
+                    "<div class='radio-inline'><label><input type='radio' name='optionsRadios' id='mode-new' value='option1' checked>New</label></div>" +
+                    "<div class='radio-inline'><label><input type='radio' name='optionsRadios' id='mode-edit' value='option2'>Edit</label></div>" +
+                    "<div class='radio-inline'><label><input type='radio' name='optionsRadios' id='mode-assign' value='option3' checked>Assign</label></div>" +
+                    "</form>" +
+                    "<h4 id='choiceset-editor-title' class='modal-title'></h4>" +
+                    "</div>" +
+                    "<div id='choice-set-editor-body' class='modal-body'></div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
+            );
             $('body').append(editor);
 
             colors = ["#ffffff", "#ff9999", "#99ff99", "#9999ff", "#ffff99", "#ff99ff", "#99ffff"];
 
+            var dialog = $("#choiceset-editor").modal({
+                keyboard: true
+            });
 
-            var dialog = $("#choiceset-editor").dialog({close: function() {
-                    $("#choiceset-editor").remove();
-                    options.onClose();
-                }});
+            //dialog[0].parentNode.style.width = '223px';
+            //dialog[0].parentNode.style.height = '380px';
+            //dialog[0].style.overflowX = 'hidden';
+            //dialog[0].style.overflowY = 'hidden';
 
-            dialog[0].parentNode.style.width = '223px';
-            dialog[0].parentNode.style.height = '380px';
-            dialog[0].style.overflowX = 'hidden';
-            dialog[0].style.overflowY = 'hidden';
-
-            $("#choiceset-mode-selector").buttonset();
+            //$("#choiceset-mode-selector").buttonset();
 
             $("#mode-edit").click(self._renderEditUI);
             $("#mode-assign").click(self._renderAssignUI);
@@ -1441,21 +1458,40 @@ var _modelFactory = new ObjectFactory();
 
 
             if (self._data.length > 0) {   // TODO: key off the number of choicesets... only support 1 for now...
-                $("#mode-new").button("disable");
+                $("#mode-new").attr('disabled',true);
                 $("#mode-assign").click();
             } else {
-                $("#mode-edit").button("disable");
-                $("#mode-assign").button("disable");
+                $("#mode-edit").attr('disabled',true);
+                $("#mode-assign").attr('disabled',true);
                 $("#mode-new").click();
             }
+
+            dialog.on('hidden.bs.modal', function (e) {
+                $("#choiceset-editor").remove();
+                options.onClose();
+            });
         };
 
         self._renderNewUI = function() {
             self._clearBody();
-            $("#choice-set-editor-body").append($("<div style='float:left; display:block'>Name: <input type='text' id='choiceset-name' style='width:143px' value=''>"));
-            $("#choice-set-editor-body").append($("<button id='save-new-choiceset' style='float:right; margin:40px 5px 0px 0px'>Create</button>").button().button("disable").click(function() {
+            $("#choiceset-editor-title").replaceWith("<h4 id='choiceset-editor-title' class='modal-title'></h4>");
+            var csName = $(
+                "<div class='form-group'>" +
+                "<label for='choiceset-name' class='control-label'>Name</label>" +
+                "<input id='choiceset-name' class='form-control' type='text'>" +
+                "</div>"
+            );
+
+            var csBtn = $(
+                "<div class='modal-footer'>" +
+                "<button id='save-new-choiceset' class='btn btn-primary' type='button' data-dismiss='modal'>Create</button>" +
+                "</div>"
+            );
+            $("#choice-set-editor-body").append(csName);
+            $("#choice-set-editor-body").append(csBtn).on('click',function() {
                 self._finishCreateChoiceSet($("#choiceset-name")[0].value);
-            }));
+            });
+
             $("#choiceset-name").keyup(function(event) {
                 if (event.target.value.length > 0) {
                     $("#save-new-choiceset").button("enable");
@@ -1469,12 +1505,11 @@ var _modelFactory = new ObjectFactory();
             self._clearBody();
             // append the name
             // append the name
-            $("#choice-set-editor-body").append($("<div style='width:100%; height:30px'></div>"));
+            //$("#choice-set-editor-body").append($("<div style='width:100%; height:30px'></div>"));
 
-            var csName = $("<div style='width:100%; text-align:center; display:block; font-size:14pt; font-face:Lucida Sans Unicode; font-weight:bold; padding-bottom:20px'></div>")
-            $("#choice-set-editor-body").append(csName);
-            csName[0].innerHTML = self._data[0].name;
-
+            //var csName = $("<div style='width:100%; text-align:center; display:block; font-size:14pt; font-face:Lucida Sans Unicode; font-weight:bold; padding-bottom:20px'></div>")
+            $("#choiceset-editor-title").replaceWith("<h4 id='choiceset-editor-title' class='modal-title'>"+ self._data[0].name +"</h4>");
+            //csName[0].innerHTML = self._data[0].name;
 
             self._storyDimensionSet = {};
             self._renderAssignment(null, "UNASSIGNED", colors[0]);
@@ -1487,8 +1522,14 @@ var _modelFactory = new ObjectFactory();
 
         self._renderEditUI = function() {
             self._clearBody();
+            $("#choiceset-editor-title").replaceWith("<h4 id='choiceset-editor-title' class='modal-title'></h4>");
 
-            var csName = $("<div style='width:100%; height:30px; margin-bottom: 20px'>Name: <input id='choiceset-name' type='text' style='width:140px'></div>");
+            var csName = $(
+                    "<div class='form-group'>"+
+                    "<label for='choiceset-name' class='control-label'>Name</label>" +
+                    "<input id='choiceset-name' class='form-control' type='text'>"+
+                    "</div>"
+            );
             $("#choice-set-editor-body").append(csName);
             $("#choiceset-name")[0].value = self._data[0].name;
 
@@ -1506,10 +1547,10 @@ var _modelFactory = new ObjectFactory();
             self._renderBlankElement( );
         };
 
-        self._choiceContainerTemplate = "<div style='width:180px; height:30px; border: 1px dashed black; margin:2px'>";
-        self._choiceIconTemplate = "<div style='float:left; width:20px; height:20px; margin:5px; background-color:%COLOR%' class='ui-corner-all'>";
-        self._choiceLabelTemplate = "<div style='float:left;  width:100px; height:25px; padding: 7px 0px 0px 5px;'></div>";
-        self._newChoiceTemplate = "<div style='float:left;  width:100px; height:30px; padding: 2px 0px 0px 5px;'><input type='text' style='width:100px'></input></div>";
+        self._choiceContainerTemplate = "<div style='width:100%; height:30px; border: 1px dashed black; margin:2px'>";
+        self._choiceIconTemplate = "<div style='float:left; width:20px; height:20px; margin:5px; background-color:%COLOR%'>";
+        self._choiceLabelTemplate = "<div style='float:left;  width:80%; height:25px; padding: 7px 0px 0px 5px;'></div>";
+        self._newChoiceTemplate = "<div style='float:left;  width:80%; height:30px; padding: 2px 0px 0px 5px;'><input type='text' style='width:100%'></input></div>";
 
 
         self._renderAssignment = function(id, name, color)
@@ -1567,8 +1608,8 @@ var _modelFactory = new ObjectFactory();
         };
 
 
-        self._renderBlankElement = function( )
-        {
+        self._renderBlankElement = function(){
+
             var elementContainer = $("<div class='choiceSetEditContainer'/>");
             var elementPlusImg = $("<img src='/images/plus_new.png' class='choiceSetPlusIcon'/>");
             elementContainer.append(elementPlusImg);
