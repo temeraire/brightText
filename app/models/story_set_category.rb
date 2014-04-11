@@ -3,7 +3,7 @@ class StorySetCategory < ActiveRecord::Base
   belongs_to :bright_text_application, :foreign_key => :application_id
   attr_accessible :rank, :name, :description, :application_id
   validates :name,
-              :uniqueness => { :scope => :application_id, :message => "This name is already taken. Please select another name" },
+              :uniqueness => { :scope => :user_id, :message => "This name is already taken. Please select another name" },
               :presence => {:message => "Please insert a name."}
 
   def application
