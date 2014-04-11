@@ -170,17 +170,21 @@ $("#astep_2").click(function() {
 if(formSubmitted===false){
   var title = $("#story_category").val();
   if(title===''){
-    $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
+    $('#dialog-message').replaceWith('<p id=\"dialog-message\">Name can\'t be blank</p>');
     $('#dialog').modal({
       keyboard: true
     });
+    $("#astep_1").click();
+    title.focus();
   }else{
     var subtitle = $("#story_name").val();
     if(subtitle===''){
-      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Subtitle can\'t be blank</p>');
+      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
       $('#dialog').modal({
         keyboard: true
       });
+      $("#astep_1").click();
+      subtitle.focus();
     }else{
       $.ajax({
         type: "post",
@@ -222,5 +226,14 @@ $("#astep_3").click(function() {
   showMembers();
   $(this).tab('show');
 });
+
+(function() {
+    window.alert = function(str) {
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">'+ str +'</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+    };
+})();
 
 </script>
