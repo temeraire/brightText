@@ -23,7 +23,7 @@
   }
 
   DIV.btEditor{
-    height:150px;
+    height:170px;
     padding:10px;
   }
 
@@ -69,6 +69,9 @@ $(function() {
         $("#story_id").val(story["id"]);
         $("#category_name").html("");
         $("#name").html(story["name"]);
+        $("#bt_one").html("");
+        $("#fieldDescriptor").val("");
+        $("#fieldSummary").val("");
         _bt1.renderData(JSON.parse(story["descriptor"]));
         $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
         $("#astep_2").tab('show');
