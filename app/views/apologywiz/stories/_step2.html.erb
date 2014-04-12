@@ -7,14 +7,14 @@
       <!--   END WAND END WAND END WAND  -->
       <%= f.hidden_field :id, id: 'story_id' %>
       <h3 id="category_name"><%= @story.category %></h3>
-      <h4 id="name"><%= @story.name %></h4>
-      <label for="description" class="control-label"><h4>Please enter some text</h4></label>
+      <label id="name" for="description" class="control-label"><%= @story.name %></label>
+      <!--<label for="description" class="control-label">Please enter some text</label>-->
       <div class="row">
         <!--   WAND WAND WAND WAND WAND  -->
-        <div id="main_container" class="col-md-12" style="height:250px">
+        <div id="main_container" class="col-md-12">
           <div class="panel panel-primary">
             <div class="panel-heading">
-              <h3 class="panel-title">Editor</h3>
+              <h4 class="panel-title">Editor</h4>
             </div>
             <div class="panel-body">
               <div id="bt_one" class="form-control btEditor">BT Wand</div>
@@ -28,7 +28,6 @@
     </div>
       <div class="col-md-6">
         <br/>
-        <br/>
         <div class="bs-callout bs-callout-info">
           <p>Highlight some text and right-click</p>
           <p>Select 'Create Changepoint'</p>
@@ -36,6 +35,10 @@
           <p>Hit 'enter'</p>
           <p>Click away from the Changepoint menu to make it disappear.</p>
           <p>Click on the Changepoint you've created to see your changes. Be sure to Save!</p>
+        </div>
+        <div class="col-md-12">
+          <span class="clk"><h4>Advanced Features</h4></span>
+          <p><a href="#"><h4>View a video on more advanced features</h4></a></p>
         </div>
       </div>
       </div>
@@ -49,13 +52,7 @@
           </span>
         </div>
         <div class="col-md-6">
-          <span class="clk"><h4>Advanced Features</h4></span>
-          <p><a href="#"><h4>View a video on more advanced features</h4></a></p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <h4>Click Save at any time. Then restart the app on your mobile device to see what you created!</h4>
+          <h5>Click Save and restart the app on your device to see what you created!</h5>
         </div>
       </div>
       <% end %>

@@ -142,13 +142,17 @@ var BrightTextEditor = function(divId, editable) {
 
     this.renderData = function(data) {
         log("renderData");
-
+        if(data==null)
+            return;
         self._toneFilter = null;
-
-        self._meta = data["meta"];
-        self._story = data["story"];
-        self._piles = data["piles"];
-        self._storyDimensions = data["storyDimensions"];
+        if(data["meta"]!=null)
+            self._meta = data["meta"];
+        if(data["story"]!=null)
+            self._story = data["story"];
+        if(data["piles"]!=null)
+            self._piles = data["piles"];
+        if(data["storyDimensions"]!=null)
+            self._storyDimensions = data["storyDimensions"];
 
         for (var pile in self._piles) {
             var pileMeta = self._piles[ pile ];
