@@ -3,7 +3,7 @@
 
 body {
     padding-top: 10px;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 // make all images responsive by default
@@ -27,6 +27,12 @@ img {
     padding-bottom: 12px;
     padding-left: 12px;
     padding-right: 12px;
+}
+
+.jumbotron p {
+    margin-bottom: 15px;
+    font-size: small;
+    font-weight: 200;
 }
 
 /* Side notes for calling out things
