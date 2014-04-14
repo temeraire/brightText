@@ -82,6 +82,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/new.xml
   def new
     @story = Story.new
+
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
       @story.story_set_id = filter.to_i
