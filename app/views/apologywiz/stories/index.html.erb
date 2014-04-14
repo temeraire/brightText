@@ -23,7 +23,7 @@
   }
 
   DIV.btEditor{
-    height:190px;
+    height:160px;
     padding:10px;
   }
 
@@ -112,7 +112,12 @@ $(document).ready(function() {
       textData[0].value = _bt1.toString();
     });
 
-    $("#instant_rewrite1").on( "click", function(event){
+    $("#edit_choicesets").on( "click", function(event){
+          event.preventDefault();
+          _bt1.editChoicesets();
+    });
+
+    $("#instant_rewrite").on( "click", function(event){
       event.preventDefault();
       _bt1.rewrite();
     });
@@ -173,6 +178,8 @@ function showStories(){
 
 $("#astep_1").click(function() {
   formSubmitted = false;
+  $('#story_category').val('');
+  $('#story_name').val('');
   showStories();
   $(this).tab('show');
 });

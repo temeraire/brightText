@@ -7,7 +7,7 @@ class Story < ActiveRecord::Base
 
   before_save :set_rank
 
-  attr_accessible :id, :name, :story_set_id, :description, :descriptor, :user_id, :story_set, :category
+  attr_accessible :id, :name, :story_set_id, :description, :descriptor, :user_id, :story_set, :category, :public
 
   validates :name,
               :uniqueness => { :scope => :story_set_id, :message => "This name is already taken. Please select another name" },

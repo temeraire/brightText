@@ -8,7 +8,7 @@ class ApologywizController < ActionController::Base
       return true
     end
     flash[:warning]='Please login to continue'
-    session[:return_to]=request.request_uri
+    session[:return_to] = request.url
     redirect_to apologywiz_login_path
     return false
   end

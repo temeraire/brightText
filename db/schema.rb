@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084751) do
+ActiveRecord::Schema.define(version: 920130109084752) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 920130109084751) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bright_text_application_id"
+    t.boolean  "public",                                      default: false
   end
 
   add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree

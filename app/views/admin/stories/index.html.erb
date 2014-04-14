@@ -83,15 +83,23 @@
             <th data-sort="int">Order</th>
             <th data-sort="string">Name</th>
             <th data-sort="string">Summary</th>
+            <th data-sort="string">Public</th>
+            <th data-sort="string">Author</th>
             <th data-defaultsort='disabled' class="sorter-false">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <% @stories.each do |story| %>
+          <%
+          @stories.each do |story|
+            user = User.where(:id=>story.user_id).first
+          %>
             <tr>
               <td><%= story.rank %></td>
               <td><%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story) %></td>
               <td><%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story) %></td>
+              <td><%= check_box :story, :public, {:checked => story.public?, :disabled => true}%></td>
+              <td><%= user.email%></td>
+
               <td>
                 <span><%= link_to 'Clone', clone_admin_story_path(story)%></span>
                 <span><%= link_to 'Delete', admin_story_path(story), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
