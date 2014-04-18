@@ -6,6 +6,7 @@
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "BrightText Admin Console" %>">
     <%= stylesheet_link_tag params[:controller], media: "all", "data-turbolinks-track" => true %>
     <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
+    <%= yield :javascript %>
     <%= csrf_meta_tags %>
   </head>
   <body>

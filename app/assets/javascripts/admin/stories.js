@@ -19,4 +19,3 @@
 //= require jquery.conmenu
 //= require jquery.json-2.4
 //= require bootstrap-slider
-//= require ./btedit
