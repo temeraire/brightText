@@ -98,7 +98,7 @@
               <td><%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story) %></td>
               <td><%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story) %></td>
               <td><%= check_box :story, :public, {:checked => story.public?, :disabled => true}%></td>
-              <td><%= user.email%></td>
+              <td><%= user.email unless user.nil?%></td>
 
               <td>
                 <span><%= link_to 'Clone', clone_admin_story_path(story)%></span>
