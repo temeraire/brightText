@@ -100,11 +100,16 @@ class Api::StoriesController < ApplicationController
         if(@bt_application..present?)
           result.root.attributes["id"] = @bt_application.id.to_s
           categoriesEl = result.root.add_element("StorySetCategories")
-          @categories_sql = "SELECT DISTINCT story_set_categories.* FROM story_set_categories " +
-                            "INNER JOIN story_sets ON story_set_categories.id = story_sets.category_id " +
-                            "INNER JOIN stories ON story_sets.id= stories.story_set_id " +
-                            "WHERE story_set_categories.application_id = ? AND stories.user_id = ?";
-          categoryObjects = StorySetCategory.find_by_sql [@categories_sql, @bt_application.id, @user.id ]
+          @categories_sql =
+            "SELECT DISTINCT story_set_categories.* FROM story_set_categories " +
+            "INNER JOIN story_sets ON story_set_categories.id = story_sets.category_id " +
+            "INNER JOIN stories ON story_sets.id= stories.story_set_id " +
+            "WHERE story_set_categories.application_id = ? " +
+            "AND (stories.user_id = ? " +
+            "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
+            "WHERE group_members.email = ? ) " +
+            "OR stories.public = TRUE)";
+          categoryObjects = StorySetCategory.find_by_sql [@categories_sql, @bt_application.id, @user.id, @user.email ]
 
           categoryObjects.each do | category |
             categoryEl = categoriesEl.add_element("StoryCategory")
@@ -112,16 +117,28 @@ class Api::StoriesController < ApplicationController
             categoryEl.attributes["name"] = category.name
             storySetsEl = categoryEl.add_element("StorySets");
 
-            @story_set_sql = "SELECT DISTINCT story_sets.* FROM story_sets " +
-                             "INNER JOIN stories ON story_sets.id= stories.story_set_id " +
-                             "WHERE  story_sets.category_id = ? AND stories.bright_text_application_id = ? AND stories.user_id = ?";
-            storySetObjects = StorySet.find_by_sql [ @story_set_sql, category.id, @bt_application.id, @user.id ]
+            @story_set_sql =
+              "SELECT DISTINCT story_sets.* FROM story_sets " +
+              "INNER JOIN stories ON story_sets.id= stories.story_set_id " +
+              "WHERE  story_sets.category_id = ? AND stories.bright_text_application_id = ? " +
+              "AND (stories.user_id = ? " +
+              "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
+              "WHERE group_members.email = ? ) " +
+              "OR stories.public = TRUE)";
+            storySetObjects = StorySet.find_by_sql [ @story_set_sql, category.id, @bt_application.id, @user.id, @user.email ]
             storySetObjects.each do | storySet |
               storySetEl = storySetsEl.add_element("StorySet");
               storySetEl.attributes["id"]   = storySet.id
               storySetEl.attributes["name"] = storySet.name
               storiesEl = storySetEl.add_element("Stories")
-              storyEntries = Story.find_by_sql ["SELECT DISTINCT stories.* FROM stories WHERE stories.story_set_id = ? AND stories.bright_text_application_id = ? AND stories.user_id = ?", storySet.id, @bt_application.id, @user.id ]
+              @stories_sql =
+                "SELECT DISTINCT stories.* FROM stories " +
+                "WHERE stories.story_set_id = ? AND stories.bright_text_application_id = ? " +
+                "AND (stories.user_id = ? " +
+                "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
+                "WHERE group_members.email = ? ) " +
+                "OR stories.public = TRUE)";
+              storyEntries = Story.find_by_sql [@stories_sql, storySet.id, @bt_application.id, @user.id, @user.email ]
               storyEntries.each do | storyEntry |
                 storyEl = storiesEl.add_element("Story")
                 storyEl.attributes["id"]   = storyEntry.id
