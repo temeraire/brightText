@@ -7,39 +7,17 @@ class Apologywiz::StoriesController < ApologywizController
   def index
     @story = Story.new
     @group_member = GroupMember.new
-
-    @highlighted_phreses = params[:q]
-    @filter = request[:filter]
-
+    @user = User.find(session[:user_id]);
     @application = find_application
 
-    if @filter == "__unassigned"
-      @stories = Story.where("domain_id = ? AND story_set_id is NULL",session[:domain].id).order(:name)
-    else
-      @story_set = StorySet.find_by_id @filter
-      if @story_set.blank?
-        @application = find_application
-        @category = find_category_for @application
-        unless @category.blank?
-          #debugger
-          @story_sets = @category.story_sets.order(:name)
-          @story_set = @story_sets.find_by_id session[:br_story_set_id]
-          @story_set = @story_sets.first if @story_set.blank?
-        end
-      else
-        @category = @story_set.story_set_category
-        @application = @category.bright_text_application unless @category.blank?
-        @story_sets = @category.story_sets.order(:name) unless @category.blank?
-      end
-      @stories = Story.where(:user_id => session[:user_id])
-    end
-
-    session[:br_story_set_id] = @story_set.id unless @story_set.blank?
-    @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and breadcrumbs similar values
-    if not params[:q].blank?
-      @stories = @stories.search_for params[:q]
-      @highlighted_phreses = params[:q].split()
-    end
+    stories_sql =
+      "SELECT stories.* FROM stories " +
+      "WHERE stories.bright_text_application_id = ? " +
+      "AND (stories.user_id = ? " +
+      "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
+      "WHERE group_members.email = ? ) " +
+      "OR stories.public = TRUE)";
+    @stories = Story.find_by_sql [stories_sql, @application.id, @user.id, @user.email ]
 
     respond_to do |format|
       format.json {render :json=> { :success => "true", :stories => @stories } }
