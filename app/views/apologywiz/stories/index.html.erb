@@ -60,8 +60,9 @@ function updateToneSlider1(gradients, value){
   var toneIndex = Math.round(value % gradients.length);
   if (gradients.length > 1) {
     console.log(toneIndex);
-    $("#gradient1").html(gradients[ toneIndex ].name);
-    $("#tone-control1").show();
+    if(gradients[ toneIndex ]!=undefined)
+      $("#gradient1").html(gradients[ toneIndex ].name);
+    //$("#tone-control1").show();
   }
 }
 
