@@ -1432,6 +1432,7 @@ var _modelFactory = new ObjectFactory();
                     "<h4 id='choiceset-editor-title' class='modal-title'></h4>" +
                     "</div>" +
                     "<div id='choice-set-editor-body' class='modal-body'></div>" +
+                    "<div class='modal-footer'></div>" +
                     "</div>" +
                     "</div>" +
                     "</div>"
@@ -1444,18 +1445,9 @@ var _modelFactory = new ObjectFactory();
                 keyboard: true
             });
 
-            //dialog[0].parentNode.style.width = '223px';
-            //dialog[0].parentNode.style.height = '380px';
-            //dialog[0].style.overflowX = 'hidden';
-            //dialog[0].style.overflowY = 'hidden';
-
-            //$("#choiceset-mode-selector").buttonset();
-
             $("#mode-edit").click(self._renderEditUI);
             $("#mode-assign").click(self._renderAssignUI);
             $("#mode-new").click(self._renderNewUI);
-
-
 
             self._dialogBody = $("#choice-set-editor-body");
             self._clearBody();
@@ -1487,21 +1479,13 @@ var _modelFactory = new ObjectFactory();
             );
 
             var csBtn = $(
-                "<div class='modal-footer'>" +
-                "<button id='save-new-choiceset' class='btn btn-primary' type='button' data-dismiss='modal'>Create</button>" +
-                "</div>"
+                "<button id='save-new-choiceset' class='btn btn-primary' type='button'>Create</button>"
             );
             $("#choice-set-editor-body").append(csName);
-            $("#choice-set-editor-body").append(csBtn).on('click',function() {
+            $(".modal-footer").append(csBtn);
+            $(".modal-footer").on('click','#save-new-choiceset',function() {
+                $('.modal-footer').hide();
                 self._finishCreateChoiceSet($("#choiceset-name")[0].value);
-            });
-
-            $("#choiceset-name").keyup(function(event) {
-                if (event.target.value.length > 0) {
-                    $("#save-new-choiceset").button("enable");
-                } else {
-                    $("#save-new-choiceset").button("disable");
-                }
             });
         };
 
@@ -1688,9 +1672,9 @@ var _modelFactory = new ObjectFactory();
             var ch = _modelFactory.createStoryDimension(name);
             self._data.push(ch);
 
-            $("#mode-new").button("disable");  // only one choiceset allowed
-            $("#mode-edit").button("enable").click();
-            $("#mode-assign").button("enable");
+            $("#mode-new").attr('disabled',true);  // only one choiceset allowed
+            $("#mode-edit").attr('disabled',false).click();
+            $("#mode-assign").attr('disabled',false);
 
             self._renderEditUI();
 

@@ -1,6 +1,5 @@
 <%
   content_for :javascript do
-    #javascript_include_tag '/assets/jquery.conmenu.js', "data-turbolinks-track" => true
     javascript_include_tag '/assets/admin/btedit.js', "data-turbolinks-track" => true
   end
 %>
@@ -41,33 +40,10 @@ DIV.btEditor{
   var _bt1;
   var _s1;
 
-  function updateToneSlider1(gradients, value)
-  {
-    var toneIndex = 0;
-    for (var i = 0; i < gradients.length; i++) {
-      if (gradients[i].id === value) {
-        toneIndex = i;
-        break;
-      }
-    }
-    $("#tone-control1").hide( );
-    $("#slider1").slider({
-      value: toneIndex,
-      min: 0,
-      max: gradients.length - 1,
-      //range: false,
-      step: 0.001,
-      slide: function(event, ui) {
-        var toneGradients = gradients;
-        var s1 = Math.round(ui.value);
-        if (_s1 !== s1) { // allow smooth moving of the tone selector
-          _s1 = s1;
-          $("#gradient1").html(gradients[ s1 ].name);
-          _bt1.handleToneSelection(gradients[ s1 ].id);
-        }
-      }
-    });
+  function updateToneSlider1(gradients, value){
+    var toneIndex = Math.round(value % gradients.length);
     if (gradients.length > 1) {
+      console.log(toneIndex);
       $("#gradient1").html(gradients[ toneIndex ].name);
       $("#tone-control1").show();
     }
@@ -91,15 +67,20 @@ DIV.btEditor{
     });
 
     $("#tone-control1").hide( );
+    $("#slider1").slider({
+      value: 1,
+      min: 1,
+      max: 10,
+      step: 0.001
+    });
+
+    $("#slider1").on('slide', function(slideEvt) {
+      _bt1.handleToneSelection(slideEvt.value);
+    });
+
     $("#edit_choicesets").on( "click", function(event){
           event.preventDefault();
           _bt1.editChoicesets();
-    });
-
-    //set client_side_validation for selection list
-    $("#story_story_set_id").change(function() {
-      var settings = window[$('form[data-validate]').attr('id')];
-      $("#story_name").isValid(settings.validators);
     });
 
 <%if @story.descriptor.present?%>
@@ -159,9 +140,9 @@ DIV.btEditor{
             </div>
             <div class="col-md-6">
               <div id="tone-control1">
-                <div id="gradient1" style="float:right; padding: 0px 0px 0px 0px; font-weight:bold;"></div>
-                <div style="padding:0px 0px 5px 0px;">Tone: </div>
-                <div id="slider1" style="width:100%;"></div>
+                <div class="col-md-6">Tone:</div>
+                <div class="col-md-6"><span id="gradient1" class="pull-right"></span></div>
+                <div id="slider1" style="width:400px"></div>
               </div>
             </div>
             <div class="col-md-3">
@@ -170,6 +151,7 @@ DIV.btEditor{
               </span>
             </div>
           </div>
+
           <div id="bt_one" class="form-control btEditor">BT Wand</div>
         </div>
       </div>

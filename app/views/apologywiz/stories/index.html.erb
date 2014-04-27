@@ -56,12 +56,21 @@
 var stories;
 var formSubmitted = false;
 
-$(document).ready(function() {
-$(function(){
-$("#main-table").tablesorter();
-});
+function updateToneSlider1(gradients, value){
+  var toneIndex = Math.round(value % gradients.length);
+  if (gradients.length > 1) {
+    console.log(toneIndex);
+    $("#gradient1").html(gradients[ toneIndex ].name);
+    $("#tone-control1").show();
+  }
+}
 
-$(function() {
+$(document).ready(function() {
+  $(function(){
+    $("#main-table").tablesorter();
+  });
+
+  $(function() {
     $("#main-table").on('click','a.clickapology', function(event){
         event.preventDefault();
         var index = $(this).attr("id");
@@ -78,27 +87,27 @@ $(function() {
     });
   });
 
-$(function() {
-    $("#groups-table").on('click','a.clickmember', function(event){
-        event.preventDefault();
-        var index = $(this).attr("id");
-         $.ajax({
-            type: "DELETE",
-            url: "/apologywiz/group_members/"+index,
-            dataType: "json",
-            data: "",
-            success: function(data) {
-              if(data["success"] === "true") {
-                $('#dialog-message').replaceWith('<p id=\"dialog-message\">Email is removed successfully</p>');
-                $('#dialog').modal({
-                  keyboard: true
-                });
-                showMembers();
+  $(function() {
+      $("#groups-table").on('click','a.clickmember', function(event){
+          event.preventDefault();
+          var index = $(this).attr("id");
+           $.ajax({
+              type: "DELETE",
+              url: "/apologywiz/group_members/"+index,
+              dataType: "json",
+              data: "",
+              success: function(data) {
+                if(data["success"] === "true") {
+                  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Email is removed successfully</p>');
+                  $('#dialog').modal({
+                    keyboard: true
+                  });
+                  showMembers();
+                }
               }
-            }
-         });
-    });
-  });
+           });
+      });
+   });
 });
 
 $(document).ready(function() {
@@ -110,6 +119,19 @@ $(document).ready(function() {
     _bt1.onChange(function() {
       rawData[0].value = $.toJSON(_bt1.toData());
       textData[0].value = _bt1.toString();
+      updateToneSlider1(_bt1.toneGradients(), _bt1.selectedTone());
+    });
+
+    //$("#tone-control1").hide( );
+    $("#slider1").slider({
+      value: 1,
+      min: 1,
+      max: 10,
+      step: 0.001
+    });
+
+    $("#slider1").on('slide', function(slideEvt) {
+      _bt1.handleToneSelection(slideEvt.value);
     });
 
     $("#edit_choicesets").on( "click", function(event){
