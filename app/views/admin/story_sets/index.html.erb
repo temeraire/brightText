@@ -26,7 +26,7 @@
       <form class="form-inline" role="form">
         <div class="form-group">
           <label for="filterSelector" class="control-label">Select <%= session[:style].group_alias.titleize %></label>
-          <select id="filterSelector" onChange="onFilterSelect()" class="form-control">
+          <select id="filterSelector" onChange="onFilterSelect();" class="form-control">
               <%
               selected = 'selected' if @filter.blank?
             %>
@@ -88,8 +88,8 @@
               <td><a href="/admin/stories?filter=<%= story_set.id %>"><%=story_set.name%></a></td>
               <td><a href="/admin/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>
               <td>
-                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set)%></span>
-                <span><%= link_to 'Delete', admin_story_set_path(story_set), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
+                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set)%> | </span>
+                <span><%= link_to 'Delete', admin_story_set_path(story_set), data:{confirm: 'Are you sure?'}, :method => :delete %> | </span>
                 <span><%= link_to 'Properties', edit_admin_story_set_path(story_set) %></span>
               </td>
             </tr>

@@ -28,7 +28,7 @@
       <%= form_tag(admin_stories_path, :method => :get, :role => "form", :class=>"form-inline") do %>
         <div class="form-group">
           <label for="setSelector" class="control-label">Select <%= session[:style].set_alias.titleize %></label>
-          <select id="setSelector" onChange="onFilterSetSelect()" class="form-control">
+          <select id="setSelector" onChange="onFilterSetSelect();" class="form-control">
             <%
             storySetFilter = @filter
             selected = 'selected' if storySetFilter.blank?
@@ -101,7 +101,7 @@
               <td><%= user.email unless user.nil?%></td>
 
               <td>
-                <span><%= link_to 'Clone', clone_admin_story_path(story)%></span>
+                <span><%= link_to 'Clone', clone_admin_story_path(story)%> | </span>
                 <span><%= link_to 'Delete', admin_story_path(story), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
               </td>
             </tr>

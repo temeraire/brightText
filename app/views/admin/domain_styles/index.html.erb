@@ -39,8 +39,8 @@
               <td><%= domain_style.set_alias %></td>
               <td><%= domain_style.story_alias %></td>
               <td>
-                <span><%= link_to 'Show', admin_domain_style_path(:id=>domain_style.id) %></span>
-                <span><%= link_to 'Edit', edit_admin_domain_style_path(domain_style) %></span>
+                <span><%= link_to 'Show', admin_domain_style_path(:id=>domain_style.id) %> | </span>
+                <span><%= link_to 'Edit', edit_admin_domain_style_path(domain_style) %> | </span>
                 <span><%= link_to 'Destroy', admin_domain_style_path(domain_style), data: {confirm: 'Are you sure?', :method => :delete} %></span>
               </td>
             </tr>
