@@ -9,7 +9,7 @@
     document.location.href = "/admin/story_set_categories?filter=" + selector.options[ selector.selectedIndex ].value;
   }
 </script>
-
+<% breadcrumb :bright_text_application, @application%>
 <div class="container">
   <div class="row">
     <div class="col-md-2 col-md-offset-9">
@@ -27,7 +27,7 @@
       <form class="form-inline" role="form">
         <div class="form-group">
           <label for="filterSelector" class="control-label">Select <%= session[:style].app_alias.titleize %></label>
-          <select id="filterSelector" onChange="onFilterSelect()" class="form-control">
+          <select id="filterSelector" onChange="onFilterSelect();" class="form-control">
             <%
             selected = 'selected' if @filter == "__none"
           %>
@@ -87,8 +87,8 @@
               <td><a href="/admin/story_sets?filter=<%= story_set_category.id %>"><%=story_set_category.description%></a></td>
               <td><a href="/admin/story_sets?filter=<%= story_set_category.id %>"><%= count %> <%= label %></a></td>
               <td>
-                <span><%= link_to 'Clone', clone_admin_story_set_category_path(story_set_category) %></span>
-                <span><%= link_to 'Delete', admin_story_set_category_path(story_set_category), data:{:confirm => 'Are you sure?'}, :method => :delete %></span>
+                <span><%= link_to 'Clone', clone_admin_story_set_category_path(story_set_category) %> | </span>
+                <span><%= link_to 'Delete', admin_story_set_category_path(story_set_category), data:{:confirm => 'Are you sure?'}, :method => :delete %> | </span>
                 <span style="text-align: left;"><%= link_to 'Properties', edit_admin_story_set_category_path(story_set_category) %></span>
               </td>
             </tr>

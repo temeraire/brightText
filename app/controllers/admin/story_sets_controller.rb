@@ -48,7 +48,8 @@ class Admin::StorySetsController < ApplicationController
   # GET /story_sets/1
   # GET /story_sets/1.xml
   def show
-    @story_set = StorySet.find(params[:id])
+    @story_set = StorySet.find(params[:id])        
+       
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       format.html # show.html.erb
@@ -72,8 +73,8 @@ class Admin::StorySetsController < ApplicationController
     @story_set = StorySet.new
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
-    @story_set.category_id = filter.to_i
-
+      @category = StorySetCategory.find_by_id filter    
+      @story_set.category_id = @category.id
     end
     respond_to do |format|
       format.html # new.html.erb

@@ -1,4 +1,5 @@
 <%= render :partial => "admin/shared/reorder_rank_commons"%>
+<% breadcrumb :story_set_category, @category%>
 <div class="row">
   <div class="col-md-2 col-md-offset-1">
     <h3><%=session[:style].set_alias.pluralize.titleize%> List</h3>

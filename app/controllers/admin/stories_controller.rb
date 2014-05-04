@@ -85,7 +85,8 @@ class Admin::StoriesController < ApplicationController
 
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
-      @story.story_set_id = filter.to_i
+      @story_set = StorySet.find_by_id filter      
+      @story.story_set_id = @story_set.id
     end
     respond_to do |format|
       format.html # new.html.erb

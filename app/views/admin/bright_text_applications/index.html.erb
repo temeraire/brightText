@@ -3,6 +3,7 @@
     $("#main-table").tablesorter();
   });
 </script>
+<% breadcrumb :root%>
 
 <div class="container">
     <div class="row">
@@ -40,8 +41,8 @@
                       <td><a href="/admin/story_set_categories?filter=<%= bt_application.id %>"><%=bt_application.name%></a></td>
                       <td><a href="/admin/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
                       <td>
-                        <span><%= link_to "Clone", clone_admin_bright_text_application_path(bt_application)%></span>
-                        <span><%= link_to 'Delete', admin_bright_text_application_path(bt_application), data: {:confirm => 'Are you sure?'}, :method => :delete %></span>
+                        <span><%= link_to "Clone", clone_admin_bright_text_application_path(bt_application)%> | </span>
+                        <span><%= link_to 'Delete', admin_bright_text_application_path(bt_application), data: {:confirm => 'Are you sure?'}, :method => :delete %> | </span>
                         <span><%= link_to 'Properties', '/admin/bright_text_applications/' + bt_application.id.to_s + '/edit' %></span>
                       </td>
 
