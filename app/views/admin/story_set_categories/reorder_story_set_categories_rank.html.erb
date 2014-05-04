@@ -1,5 +1,5 @@
 <%= render :partial => "admin/shared/reorder_rank_commons"%>
-
+<% breadcrumb :bright_text_application, @application%>
 <div class="row">
   <div class="col-md-2 col-md-offset-1">
     <h3><%=session[:style].group_alias.pluralize.titleize%> List</h3>

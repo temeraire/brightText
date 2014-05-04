@@ -8,7 +8,7 @@
     document.location.href = "/admin/story_sets?filter=" + selector.options[ selector.selectedIndex ].value;
   }
 </script>
-
+<% breadcrumb :story_set_category, @category%>
 <div class="container">
   <div class="row">
     <div class="col-md-2 col-md-offset-9">

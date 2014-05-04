@@ -32,12 +32,13 @@ class Admin::StorySetCategoriesController < ApplicationController
   # GET /story_categories/1
   # GET /story_categories/1.xml
   def show
-    @story_set_category = StorySetCategory.find(params[:id])
-    raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
+    @category = StorySetCategory.find(params[:id])
+        
+    raise ' not owner ' unless @category.domain_id == session[:domain].id
     respond_to do |format|
       format.html # show.html.erb
       format.xml  {
-        render :xml => @story_set_category
+        render :xml => @category
       }
     end
   end
@@ -48,7 +49,8 @@ class Admin::StorySetCategoriesController < ApplicationController
     @story_set_category = StorySetCategory.new
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
-    @story_set_category.application_id = filter.to_i
+      @application = BrightTextApplication.find_by_id filter
+      @story_set_category.application_id = @application.id
     end
     respond_to do |format|
       format.html # new.html.erb
