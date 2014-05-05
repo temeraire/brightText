@@ -48,25 +48,21 @@
             %>
           </select>
         </div>
-
+        <% if @story_sets.size > 1 %>
         <div class="form-group">
             <% if(@filter != "__none" && !@category.blank?) %>
                 <%= link_to 'Reorder ' + session[:style].set_alias.pluralize.titleize, admin_reorder_story_sets_rank_path(@category),  {:class => "btn btn-primary"}   %>
             <% else %>
-              <button class="btn btn-primary" disabled="disabled">Reorder StorySets</button>
+              <button class="btn btn-primary" disabled="disabled"><%= 'Reorder ' + session[:style].set_alias.pluralize.titleize %></button>
             <% end %>
         </div>
+        <% end %>
       </form>
     </div>
   </div>
   <br/>
   <div class="row">
     <div class="col-md-10  col-md-offset-1">
-      <%
-      parentObj = StorySetCategory.find_by_id( @filter )
-      parentId = "__undefined"
-      parentId = parentObj.application_id.to_s unless parentObj == nil
-    %>
       <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
         <thead class="tablesorter-header">
           <tr class="tablesorter-headerRow">
