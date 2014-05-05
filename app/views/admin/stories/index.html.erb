@@ -50,18 +50,15 @@
           <%end%>
           </select>
         </div>
+        <% if @stories.size > 1 %>
         <div class="form-group">
-          <%
-          parentObj = StorySet.find_by_id( @filter )
-          parentId = "__undefined"
-          parentId = parentObj.category_id.to_s unless parentObj == nil
-        %>
           <% if(@filter != "__none" && !@story_set.blank?) %>
             <%= link_to 'Reorder '+ session[:style].story_alias.pluralize.titleize, admin_reorder_stories_rank_path(@story_set),  {:class => "btn btn-primary"}   %>
           <% else %>
-            <button class="btn btn-primary" disabled="disabled">Reorder Categories</button>
+            <button class="btn btn-primary" disabled="disabled"><%= 'Reorder '+ session[:style].story_alias.pluralize.titleize%></button>
           <% end %>
-        </div>
+        </div> 
+        <% end %>
       <span class="pull-right">
         <div class="form-group">
           <input type="hidden" id="filter" name="filter" value="<%=@filter%>"/>
