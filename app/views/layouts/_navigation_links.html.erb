@@ -3,9 +3,13 @@
 <% if session[:domain].nickname == "Admin" %>
   <li><%= link_to 'Domains', admin_domains_path%></li>
 <% else %>
-  <li class="<%= 'active' if current_page?(admin_bright_text_applications_path) %>"><%= link_to session[:style].app_alias.pluralize.titleize, admin_bright_text_applications_path, class: 'navbar-brand' %></li>
-  <li class="<%= 'active' if current_page?(admin_story_set_categories_path) %>"><%= link_to session[:style].group_alias.pluralize.titleize, admin_story_set_categories_path, class: 'navbar-brand' %></li>
-  <li class="<%= 'active' if current_page?(admin_story_sets_path) %>"><%= link_to session[:style].set_alias.pluralize.titleize, admin_story_sets_path, class: 'navbar-brand' %></li>
-  <li class="<%= 'active' if current_page?(admin_stories_path) %>"><%= link_to session[:style].story_alias.pluralize.titleize, admin_stories_path, class: 'navbar-brand' %></li>
-  <li class="<%= 'active' if current_page?(new_admin_story_path) %>"><%= link_to session[:style].story_alias.titleize, new_admin_story_path, class: 'navbar-brand' %></li>
+  <li <%= 'class=active' if current_page?(admin_bright_text_applications_path) %>><%= link_to session[:style].app_alias.pluralize.titleize, admin_bright_text_applications_path, class: 'navbar-brand' %></li>
+  <li class="divider-vertical"></li>
+  <li <%= 'class=active' if current_page?(admin_story_set_categories_path) %>><%= link_to session[:style].group_alias.pluralize.titleize, admin_story_set_categories_path, class: 'navbar-brand' %></li>
+  <li class="divider-vertical"></li>
+  <li <%= 'class=active' if current_page?(admin_story_sets_path) %>><%= link_to session[:style].set_alias.pluralize.titleize, admin_story_sets_path, class: 'navbar-brand' %></li>
+  <li class="divider-vertical"></li>
+  <li <%= 'class=active' if current_page?(admin_stories_path) %>><%= link_to session[:style].story_alias.pluralize.titleize, admin_stories_path, class: 'navbar-brand' %></li>
+  <li class="divider-vertical"></li>
+  <li <%= 'class=active' if current_page?(new_admin_story_path) %>><%= link_to session[:style].story_alias.titleize, new_admin_story_path, class: 'navbar-brand' %></li>
 <% end %>

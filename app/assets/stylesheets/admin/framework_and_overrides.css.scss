@@ -14,7 +14,32 @@ img {
 // override for the 'Home' navigation link
 .navbar-brand {
   font-size: inherit;
+  text-align: center;
+  width: 100px;
 }
+.navbar .divider-vertical {
+    height: 50px;
+    margin: 0 0px;
+    border-right: 1px solid #ffffff;
+    border-left: 1px solid #BDBDBD;
+}
+
+.navbar-inverse .divider-vertical {
+    border-right-color: #222222;
+    border-left-color: #111111;
+}
+
+@media (min-width: 768px) {
+    .navbar > .container .navbar-brand {
+      margin-left: 0px; 
+    } 
+}
+
+/*@media (max-width: 767px) {
+.navbar-collapse .nav > .divider-vertical {
+    display: none;
+  }
+}*/
 
 .container .jumbotron {
     padding-left: 12px;
