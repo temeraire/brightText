@@ -6,7 +6,7 @@ class Admin::PasswordResetsController < ApplicationController
   def create
     user = User.find_by_email params[:email]
     user.send_password_reset if user
-    redirect_to new_user_path, notice: "Email sent with password reset instructions."
+    redirect_to admin_login_path, notice: "Email sent with password reset instructions."
   end
 
   def edit
@@ -19,7 +19,7 @@ class Admin::PasswordResetsController < ApplicationController
       redirect_to new_password_reset_path, alert: "Passowrd &crarr; reset has expired."
     else
       if @user.update_attributes! params[:user]
-        redirect_to root_url, notice: "Password has been reset."
+        redirect_to admin_login_path, notice: "Password has been reset."
       else
         logger.debug "#{@user.errors}"
         render :edit
