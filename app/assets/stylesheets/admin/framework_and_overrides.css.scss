@@ -14,7 +14,55 @@ img {
 // override for the 'Home' navigation link
 .navbar-brand {
   font-size: inherit;
+  text-align: center;
+  width: 150px;
 }
+.navbar .divider-vertical {
+    height: 50px;
+    margin: 0 0px;
+    border-right: 1px solid #ffffff;
+    border-left: 1px solid #BDBDBD;
+}
+
+.navbar-inverse .divider-vertical {
+    border-right-color: #222222;
+    border-left-color: #111111;
+}
+
+@media (min-width: 768px) {
+    .navbar > .container .navbar-brand {
+      margin-left: 0px; 
+    } 
+}
+
+.breadcrumb {
+      padding: 10px 5px 10px 5px; 
+}
+
+.breadcrumb > li {
+      width: 148px; 
+      padding: 0 0 0 10px;
+}
+
+.breadcrumb > li:first-child{
+    width: 130px;   
+}
+
+.breadcrumb > li:last-child{
+    width: 300px;   
+}
+
+.breadcrumb > li + li:before {
+      content: "|";
+      padding: 0 5px 0 0px;
+      color: #cccccc; 
+}
+
+/*@media (max-width: 767px) {
+.navbar-collapse .nav > .divider-vertical {
+    display: none;
+  }
+}*/
 
 .container .jumbotron {
     padding-left: 12px;
