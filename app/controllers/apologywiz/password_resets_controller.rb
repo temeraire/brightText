@@ -19,7 +19,7 @@ class Apologywiz::PasswordResetsController < ApologywizController
       redirect_to new_apologywiz_password_reset_path, notice: "Passowrd reset has expired."
     else
       if @user.update_attributes! params[:user]
-        redirect_to root_url, notice: "Password has been reset."
+        redirect_to apologywiz_login_path, notice: "Password has been reset."
       else
         logger.debug "#{@user.errors}"
         render :edit
