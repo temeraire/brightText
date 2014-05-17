@@ -50,46 +50,45 @@ class Story < ActiveRecord::Base
   end
 
   def toXml( storyEl )
-    story = JSON.parse( descriptor )
+    story = descriptor && descriptor.length >= 2 ? JSON.parse(descriptor) : nil
 
     storyEl.attributes["id"] = id.to_s;
-    content = story["story"]
-
     rankEl = storyEl.add_element("Rank")
     rankEl.text = rank.blank? ? "0" : rank.to_s
+    if story.present?    
+      content = story["story"]
+      puts content.class
 
-    puts content.class
+      contentEl = storyEl.add_element("Content")
+      content.each do | piece |
+        #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
+        #puts piece
+        writeContent( piece, contentEl )
+        #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        #puts ""
+      end
 
+      piles = story["piles"]
 
-    contentEl = storyEl.add_element("Content")
-    content.each do | piece |
-      #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
-      #puts piece
-      writeContent( piece, contentEl )
-      #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
-      #puts ""
-    end
+      pileEl = storyEl.add_element("PileContainer")
+      piles.each do | id, pile |
+        #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
+        #puts pile
+        writePile( pile, pileEl)
+        #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        #puts ""
+      end
 
-    piles = story["piles"]
+      storyDimensions = story["storyDimensions"]
 
-    pileEl = storyEl.add_element("PileContainer")
-    piles.each do | id, pile |
-      #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
-      #puts pile
-      writePile( pile, pileEl)
-      #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
-      #puts ""
-    end
-
-    storyDimensions = story["storyDimensions"]
-
-    dimensionEl = storyEl.add_element("StoryDimensionContainer")
-    storyDimensions.each do | storyDimension |
-      #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
-      #puts storyDimension
-      writeStoryDimension( storyDimension, dimensionEl)
-      #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
-      #puts ""
+      dimensionEl = storyEl.add_element("StoryDimensionContainer")
+      storyDimensions.each do | storyDimension |
+        #puts "VVVVVVVVVVVVVVVVVVVVVVVVV"
+        #puts storyDimension
+        writeStoryDimension( storyDimension, dimensionEl)
+        #puts "^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        #puts ""
+      end
     end
   end
 
