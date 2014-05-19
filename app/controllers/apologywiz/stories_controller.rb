@@ -11,13 +11,16 @@ class Apologywiz::StoriesController < ApologywizController
     @application = find_application
 
     stories_sql =
-      "SELECT stories.* FROM stories " +
+      "SELECT stories.id as id, story_set_categories.name as name, stories.descriptor as descriptor  FROM stories " + 
+      "INNER JOIN story_sets ON stories.story_set_id = story_sets.id "+
+      "INNER JOIN story_set_categories ON story_sets.category_id = story_set_categories.id " +
       "WHERE stories.bright_text_application_id = ? " +
       "AND (stories.user_id = ? " +
       "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
       "WHERE group_members.email = ? ) " +
       "OR stories.public = TRUE)";
     @stories = Story.find_by_sql [stories_sql, @application.id, @user.id, @user.email ]
+    #@stories = ActiveRecord::Base.connection.execute [stories_sql, @application.id, @user.id, @user.email ]
 
     respond_to do |format|
       format.json {render :json=> { :success => "true", :stories => @stories } }
