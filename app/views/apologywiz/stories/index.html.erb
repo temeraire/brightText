@@ -82,7 +82,8 @@ $(document).ready(function() {
         $("#bt_one").html("");
         $("#fieldDescriptor").val("");
         $("#fieldSummary").val("");
-        _bt1.renderData(JSON.parse(story["descriptor"]));
+        if(story["descriptor"]!=="")
+          _bt1.renderData(JSON.parse(story["descriptor"]));
         $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
         $("#astep_2").tab('show');
     });
