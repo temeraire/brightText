@@ -92,7 +92,7 @@ class Api::StoriesController < ApplicationController
         #</Application>
 
         result = REXML::Document.new("<Application/>")
-        if(@bt_application..present?)
+        if(@bt_application.present?)
           result.root.attributes["id"] = @bt_application.id.to_s
           categoriesEl = result.root.add_element("StorySetCategories")
           @categories_sql =
@@ -152,7 +152,7 @@ class Api::StoriesController < ApplicationController
   
   def get_application_public_stories
     @application_id = request[:application_id]
-
+    @bt_application = BrightTextApplication.find(@application_id)
     
     respond_to do |format|
       format.xml  {
@@ -174,7 +174,7 @@ class Api::StoriesController < ApplicationController
         #</Application>
 
         result = REXML::Document.new("<Application/>")
-        if(@bt_application..present?)
+        if(@bt_application.present?)
           result.root.attributes["id"] = @bt_application.id.to_s
           categoriesEl = result.root.add_element("StorySetCategories")
           @categories_sql =
