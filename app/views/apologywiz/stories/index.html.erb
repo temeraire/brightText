@@ -203,10 +203,12 @@ function showStories(){
 };
 
 $("#astep_1").click(function() {
-  formSubmitted = false;
-  $('#story_category').val('');
-  $('#story_name').val('');
-  showStories();
+  if(formSubmitted===true){
+    formSubmitted = false;
+    $('#story_category').val('');
+    $('#story_name').val('');  
+    showStories();
+  }
   $(this).tab('show');
 });
 
