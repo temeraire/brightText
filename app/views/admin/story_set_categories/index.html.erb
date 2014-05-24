@@ -1,6 +1,6 @@
 <script>
-  $(function(){
-    $("#main-table").tablesorter();
+  $(function () {
+    $('.footable').footable();
   });
   
   function onFilterSelect()
@@ -61,14 +61,14 @@
   <br/>
   <div class="row">
     <div class="col-md-10  col-md-offset-1">
-      <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
-        <thead class="tablesorter-header">
-          <tr class="tablesorter-headerRow">
-            <th data-sort="int">Order</th>
-            <th data-sort="string">Name</th>
-            <th data-sort="string">Description</th>
-            <th data-sort="int" ><%= session[:style].set_alias.pluralize.titleize %></th>
-            <th data-defaultsort='disabled' class="sorter-false">Actions</th>
+      <table class="footable" data-filter="#filter" data-page-size="3">  
+        <thead>
+          <tr>
+            <th data-type="numeric" data-sort-initial="true" class="footable-first-column footable-sortable">Order<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Description<span class="footable-sort-indicator"></span></th>
+            <th data-type="numeric"class="footable-sortable"><%= session[:style].set_alias.pluralize.titleize %><span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -96,6 +96,11 @@
             </tr>
           <% end %>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+          </tr>
+	</tfoot>
       </table>
     </div>
   </div>

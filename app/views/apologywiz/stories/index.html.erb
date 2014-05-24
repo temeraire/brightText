@@ -66,13 +66,13 @@ function updateToneSlider1(gradients, value){
   }
 }
 
-$(document).ready(function() {
-  $(function(){
-    $("#main-table").tablesorter();
+$(document).ready(function() {  
+  $(function () {
+    $('.footable').footable();
   });
 
   $(function() {
-    $("#main-table").on('click','a.clickapology', function(event){
+    $(".footable").on('click','a.clickapology', function(event){
         event.preventDefault();
         var index = $(this).attr("id");
         var story = stories[index];
@@ -194,8 +194,9 @@ function showStories(){
                       "<td><a id='" + i +"' class='clickapology' href='#'>" + apology["name"] + "</a></td>" +
                     "</tr>";
           });
-          $("#main-table tbody").html("");
-          $("#main-table tbody").append(rows);
+          $(".footable tbody").html("");
+          $(".footable tbody").append(rows);
+          $('.footable').trigger('footable_redraw')
        }
      }
    });

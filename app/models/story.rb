@@ -1,6 +1,8 @@
 class Story < ActiveRecord::Base
 
   belongs_to :story_set
+  has_many :story_authors
+  has_many :authors, class_name: 'User', through: :story_authors, :source => :user
 
   scoped_search :on => :name
   scoped_search :on => :description

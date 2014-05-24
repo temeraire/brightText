@@ -15,5 +15,5 @@
 //= require turbolinks
 //= require bootstrap
 //= require jquery-sortable
-//= require jquery.tablesorter.min
 //= require jquery.json-2.4
+//= require footable.all.min

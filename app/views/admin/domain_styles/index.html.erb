@@ -1,6 +1,6 @@
 <script>
-  $(function(){
-    $("#main-table").tablesorter();
+  $(function () {
+    $('.footable').footable();
   });
 </script>
 <div class="container">
@@ -16,17 +16,17 @@
   </div>
   <br/>
   <div class="row">
-    <div class="col-md-10  col-md-offset-1">
-      <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
-        <thead class="tablesorter-header">
-          <tr class="tablesorter-headerRow">
-            <th data-sort="string">Domain</th>
-            <th data-sort="string">Style</th>
-            <th data-sort="string">App button</th>
-            <th data-sort="string">Groups button</th>
-            <th data-sort="string">Sets button</th>
-            <th data-sort="string">Stories button</th>
-            <th data-defaultsort='disabled' class="sorter-false">Actions</th>
+    <div class="col-md-10  col-md-offset-1">      
+      <table class="footable" data-filter="#filter" data-page-size="3">  
+        <thead>
+          <tr>
+            <th data-type="alpha" data-sort-initial="true" class="footable-first-column footable-sortable">Domain<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Style<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">App button<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Groups button<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Sets button<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Stories button<span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -46,6 +46,11 @@
             </tr>
           <% end %>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+          </tr>
+	</tfoot>
       </table>
     </div>
   </div>
