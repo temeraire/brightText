@@ -63,6 +63,7 @@ class Admin::StoriesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stories }
+      format.json { render :json => @stories}
     end
   end
 

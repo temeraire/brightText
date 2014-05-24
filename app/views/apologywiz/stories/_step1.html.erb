@@ -2,6 +2,7 @@
   <div class="jumbotron">
     <div class="container">
         <div class="col-md-6">
+          <h3>New Apology</h3>
           <%= form_for([:apologywiz, @story], :html => { :role => "form", :class=>"form"}, :validate => true) do |f| %>
           <div class="form-group">
             <label class="control-label">Name <font size="3">(will display on your device)</font></label>
@@ -13,12 +14,32 @@
           </div>
           <% end %>
         </div>
-      <div class="col-md-6">
-        <h3>My Apologies</h3>
-        <div class="col-md-12" style="overflow: scroll; height: 200px">
-          <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
-            <tbody>
+      <div class="col-md-6">        
+        <div class="col-md-offset-1 col-md-11">
+          <h3>My Apologies</h3>
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="filter">Search:</label>
+              <div class="col-md-6">
+                <input type="text" class="form-control" id="filter">
+              </div>            
+            </div>
+          </form>
+        </div>
+        <div class="col-md-offset-1 col-md-11">
+          <table class="footable" data-filter="#filter" data-page-size="3">        
+            <thead>
+              <tr>
+                <th data-type="alpha" data-sort-initial="true" class="footable-first-column footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+              </tr>
+            </thead>
+            <tbody>              
             </tbody>
+            <tfoot>
+              <tr>
+                <td style="text-align: center"><div class="pagination pagination-centered"></div></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <script>
-  $(function(){
-    $("#main-table").tablesorter();
+  $(function () {
+    $('.footable').footable();
   });
 
   function onFilterSetSelect()
@@ -74,28 +74,37 @@
   <br/>
   <div class="row">
     <div class="col-md-10  col-md-offset-1">
-      <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
-        <thead class="tablesorter-header">
-          <tr class="tablesorter-headerRow">
-            <th data-sort="int">Order</th>
-            <th data-sort="string">Name</th>
-            <th data-sort="string">Summary</th>
-            <th data-sort="string">Public</th>
-            <th data-sort="string">Author</th>
-            <th data-defaultsort='disabled' class="sorter-false">Actions</th>
+      <table class="footable" data-filter="#filter" data-page-size="3">  
+        <thead>
+          <tr>
+            <th data-type="numeric" data-sort-initial="true" class="footable-first-column footable-sortable">Order<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Summary<span class="footable-sort-indicator"></span></th>
+            <th data-type="boolean"class="footable-sortable">Public<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Author<span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Actions</th>
           </tr>
         </thead>
         <tbody>
           <%
           @stories.each do |story|
-            user = User.where(:id=>story.user_id).first
+            authors = nil
+            story.authors.each do |author|
+              if author.email.present?
+                  if authors.nil?
+                    authors = author.email
+                  else
+                    authors = authors + "," + author.email 
+                  end
+              end
+            end
           %>
             <tr>
               <td><%= story.rank %></td>
               <td><%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story) %></td>
-              <td><%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story) %></td>
+              <td><%= link_to story.description.blank? ? "" : highlight(story.description[0..29].gsub(/\s\w+\s*$/,'...'), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story) %></td>
               <td><%= check_box :story, :public, {:checked => story.public?, :disabled => true}%></td>
-              <td><%= user.email unless user.nil?%></td>
+              <td><%= authors %></td>
 
               <td>
                 <span><%= link_to 'Clone', clone_admin_story_path(story)%> | </span>
@@ -104,6 +113,11 @@
             </tr>
           <% end %>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+          </tr>
+	</tfoot>
       </table>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <script>
-  $(function(){
-  $("#main-table").tablesorter();
-});
+  $(function () {
+    $('.footable').footable();
+  });
 </script>
 <div class="container">
   <div class="row">
@@ -17,14 +17,14 @@
   <br/>
   <div class="row">
     <div class="col-md-10  col-md-offset-1">
-      <table id="main-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
-        <thead class="tablesorter-header">
-          <tr class="tablesorter-headerRow">
-            <th data-sort="string" >Name</th>
-            <th data-defaultsort='disabled'>Enabled</th>
-            <th data-defaultsort='disabled'>Privileged</th>
-            <th data-defaultsort='disabled'>Self-Created</th>
-            <th data-defaultsort='disabled' class="sorter-false">Actions</th>
+      <table class="footable" data-filter="#filter" data-page-size="3">  
+        <thead>
+          <tr>
+            <th data-type="alpha" data-sort-initial="true" class="footable-first-column footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Enabled</th>
+            <th data-sort-ignore='true'>Privileged</th>
+            <th data-sort-ignore='true'>Self-Created</th>
+            <th data-sort-ignore='true'>Actions</th>
           </tr>
         </thead>
         <%if @domains.length > 0
@@ -44,6 +44,11 @@
                 </td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+              </tr>
+            </tfoot>
           <% end
           end %>
         </table>

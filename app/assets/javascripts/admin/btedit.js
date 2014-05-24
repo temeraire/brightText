@@ -1441,8 +1441,9 @@ var _modelFactory = new ObjectFactory();
 
             colors = ["#ffffff", "#ff9999", "#99ff99", "#9999ff", "#ffff99", "#ff99ff", "#99ffff"];
 
-            var dialog = $("#choiceset-editor").modal({
-                keyboard: true
+            var dialog = $("#choiceset-editor").dialog({
+                keyboard: true,
+                backdrop: false
             });
 
             $("#mode-edit").click(self._renderEditUI);

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084752) do
+ActiveRecord::Schema.define(version: 920130109084753) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -104,29 +104,14 @@ ActiveRecord::Schema.define(version: 920130109084752) do
 
   add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree
 
-  create_table "stories_1", force: true do |t|
-    t.string   "name"
-    t.string   "description"
-    t.text     "descriptor",   limit: 16777215
-    t.integer  "rank"
-    t.integer  "domain_id"
-    t.integer  "user_id"
-    t.integer  "story_set_id"
+  create_table "story_authors", id: false, force: true do |t|
+    t.integer  "story_id",   null: false
+    t.integer  "user_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "stories_2", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "name"
-    t.string   "description",  limit: 1024
-    t.integer  "domain_id"
-    t.integer  "user_id"
-    t.integer  "story_set_id"
-    t.text     "descriptor",   limit: 16777215
-    t.integer  "rank"
-  end
+  add_index "story_authors", ["story_id", "user_id"], name: "index_story_authors_on_story_id_and_user_id", using: :btree
 
   create_table "story_set_categories", force: true do |t|
     t.string   "name"
