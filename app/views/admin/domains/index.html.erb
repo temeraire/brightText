@@ -27,11 +27,12 @@
             <th data-sort-ignore='true'>Actions</th>
           </tr>
         </thead>
+        <tbody>
+
         <%if @domains.length > 0
           @domains.each do |domain|
             domainStyle = DomainStyle.find_by_domain_id domain.id
           %>
-            <tbody
               <tr>
                 <td><%= domain.nickname %></td>
                 <td><%= domain.enabled %></td>
@@ -43,14 +44,15 @@
                   <span><%= link_to 'Delete', admin_domain_path(domain), data: {confirm: 'Are you sure?', :method => :delete} %></span>
                 </td>
               </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="5" style="text-align: center"><div class="pagination pagination-centered"></div></td>
-              </tr>
-            </tfoot>
           <% end
           end %>
+              
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
   </div>

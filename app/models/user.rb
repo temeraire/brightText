@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  
+  enum user_type: [ :customer, :moderator, :admin ]
   belongs_to :domain
   has_one :group, autosave: true
   has_many :groups, through: :group_members

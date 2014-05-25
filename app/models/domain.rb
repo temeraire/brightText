@@ -63,7 +63,6 @@ class Domain < ActiveRecord::Base
     return nil if domain.nil?
     logger.info( " comparing " + Domain.encrypt(p, domain.salt) )
     logger.info( " with " + domain.pass )
-
     logger.info( "generated pass: " + domain.pass)
     return domain if Domain.encrypt(p, domain.salt) == domain.pass
     nil
