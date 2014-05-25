@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084753) do
+ActiveRecord::Schema.define(version: 920130109084754) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -137,6 +137,10 @@ ActiveRecord::Schema.define(version: 920130109084753) do
 
   add_index "story_sets", ["bright_text_application_id"], name: "index_story_sets_on_bright_text_application_id", using: :btree
 
+  create_table "user_types", force: true do |t|
+    t.string "name"
+  end
+
   create_table "users", force: true do |t|
     t.string   "name"
     t.integer  "domain_id"
@@ -155,6 +159,7 @@ ActiveRecord::Schema.define(version: 920130109084753) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.integer  "user_type",                          default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

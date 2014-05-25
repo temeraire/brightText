@@ -10,16 +10,14 @@ BtWeb::Application.routes.draw do
     resources :app_submissions
     resources :domain_styles
     resources :password_resets
-    resources :users
     resources :stories
     resource :session, only: [:new, :create, :destroy]
 
     #match 'stories/:id' => 'stories#destroy', :via => :delete
-
-    root to: "sessions#new"
-
-    match "/login", :to => "sessions#new", :via => :get
-    match "/logout", :to => "sessions#destroy", :via => :get
+    post '/users/authenticate' => 'users#authenticate'
+    get '/login' => 'users#new_session', as: :login
+    get '/logout' => 'users#destroy_session', as: :logout
+    root to: "users#new_session"
 
     #match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
     #match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
@@ -88,13 +86,10 @@ BtWeb::Application.routes.draw do
     get '/login' => 'users#new_session', as: :login
     get '/register' => 'users#new', as: :register
     get '/logout' => 'users#destroy_session', as: :logout
-
-    resources :stories
-
-    match 'stories/:id' => 'stories#update', :via=> [:get, :post]
-
     root to: "users#new_session"
-
+    
+    resources :stories
+    match 'stories/:id' => 'stories#update', :via=> [:get, :post]
     match 'proxy/:id/story'   => 'bt_proxy#story', :via=> [:get, :post]
     match 'proxy/:id/related' => 'bt_proxy#related', :via=> [:get, :post]
     match 'story/save'        => 'bt_proxy#save', :via=> [:get, :post]

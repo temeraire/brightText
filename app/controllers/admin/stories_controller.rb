@@ -116,10 +116,11 @@ class Admin::StoriesController < ApplicationController
   # POST /stories.xml
   def create
     @story = Story.new(params[:story])
-    #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
-    @story.domain_id = session[:domain].id
     @story.rank = 0
+    @story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id]) unless @story.story_set_id.nil?
+    @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
+    #@story.user_id = session[:user_id]
 
     respond_to do |format|
       if @story.save
