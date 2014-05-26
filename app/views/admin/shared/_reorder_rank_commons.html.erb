@@ -1,19 +1,22 @@
 <script>
 // Sortable rows
 $(function () {
-$('.sorted_table').sortable({
-  containerSelector: 'table',
-  itemPath: '> tbody',
-  itemSelector: 'tr',
-  placeholder: '<tr class="placeholder"/>'
-})})
+  $('.sorted_table').sortable({
+    containerSelector: 'table',
+    itemPath: '> tbody',
+    itemSelector: 'tr',
+    placeholder: '<tr class="placeholder"/>'
+  });
+});
 
-function update_order() {
+$(function() {
+  $('#update_order_btn').click(function() {
         $(".rank_cell input:hidden").each(function(i, v) {
                 $(this).val(i + 1);
         });
         $("#reorder_form").submit();
-}
+  });
+});
 </script>
 
 <style>

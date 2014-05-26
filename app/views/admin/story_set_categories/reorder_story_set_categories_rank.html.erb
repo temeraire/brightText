@@ -1,5 +1,5 @@
 <%= render :partial => "admin/shared/reorder_rank_commons"%>
-<% breadcrumb :bright_text_application, @application%>
+<% breadcrumb :root, @application%>
 <div class="row">
   <div class="col-md-2 col-md-offset-1">
     <h3><%=session[:style].group_alias.pluralize.titleize%> List</h3>
@@ -38,7 +38,7 @@
           <%= link_to 'Back', admin_story_set_categories_path,  {:class => "btn btn-default"}   %>
         </div>
         <div class="col-md-2">
-          <%= link_to_function "Update Order", "update_order(); return false;", class: "btn btn-primary"%>
+          <%= link_to "Update Order", "#", {class: "btn btn-primary", id:"update_order_btn"}%>
           </div>
         </div>
       <% end %>
