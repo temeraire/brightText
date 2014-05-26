@@ -56,6 +56,11 @@
               <button class="btn btn-primary" disabled="disabled"><%= 'Reorder ' + session[:style].set_alias.pluralize.titleize %></button>
             <% end %>
         </div>
+        <span class="pull-right">
+          <div class="form-group">
+            <input type="text" id="filter" class="form-control" name="filter" value="" placeholder="Enter text to filter"/>
+          </div>
+        </span>
         <% end %>
       </form>
     </div>

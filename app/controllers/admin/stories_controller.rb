@@ -71,7 +71,9 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1.xml
   def show
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.domain_id == session[:domain].id
+    if !@story.public?
+      raise ' not owner ' unless @story.user_id == session[:user_id].id
+    end
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @story }
@@ -109,7 +111,9 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1/edit
   def edit
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.domain_id == session[:domain].id
+    if !@story.public?
+      raise ' not owner ' unless @story.user_id == session[:user_id].id
+    end
   end
 
   # POST /stories
@@ -121,6 +125,7 @@ class Admin::StoriesController < ApplicationController
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
     @story.user_id = session[:user_id]
+    @story.story_authors.build().user_id = session[:user_id]
 
     respond_to do |format|
       if @story.save
@@ -144,7 +149,14 @@ class Admin::StoriesController < ApplicationController
   # PUT /stories/1.xml
   def update
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.domain_id == session[:domain].id
+    if !@story.public?
+      raise ' not owner ' unless @story.user_id == session[:user_id].id
+    end
+    
+    @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
+    if(@story_author.nil?)
+      @story.story_authors.build().user_id = session[:user_id]      
+    end
     respond_to do |format|
       if @story.update_attributes(params[:story])
         format.html { redirect_to @story, notice: 'Story was successfully created.' }
@@ -165,7 +177,7 @@ class Admin::StoriesController < ApplicationController
   # DELETE /stories/1.xml
   def destroy
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.domain_id == session[:domain].id
+    raise ' not owner ' unless @story.user_id == session[:user_id].id
     @story.destroy
 
     respond_to do |format|
