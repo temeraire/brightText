@@ -18,7 +18,8 @@ class Apologywiz::StoriesController < ApologywizController
       "AND (stories.user_id = ? " +
       "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
       "WHERE group_members.email = ? ) " +
-      "OR stories.public = TRUE)";
+      "OR stories.public = TRUE) " + 
+      "ORDER BY story_set_categories.created_at ASC";
     @stories = Story.find_by_sql [stories_sql, @application.id, @user.id, @user.email ]
     #@stories = ActiveRecord::Base.connection.execute [stories_sql, @application.id, @user.id, @user.email ]
 
@@ -34,7 +35,7 @@ class Apologywiz::StoriesController < ApologywizController
   def show
     @story = Story.find(params[:id])
     if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
+      raise ' not owner ' unless @story.user_id == session[:user_id]
     end
     respond_to do |format|
       format.html # show.html.erb
@@ -72,7 +73,7 @@ class Apologywiz::StoriesController < ApologywizController
   def edit
     @story = Story.find(params[:id])
     if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
+      raise ' not owner ' unless @story.user_id == session[:user_id]
     end
   end
 
@@ -110,7 +111,7 @@ class Apologywiz::StoriesController < ApologywizController
   def update
     @story = Story.find(params[:id])
     if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
+      raise ' not owner ' unless @story.user_id == session[:user_id]
     end
     
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
@@ -137,7 +138,7 @@ class Apologywiz::StoriesController < ApologywizController
   # DELETE /stories/1.xml
   def destroy
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.user_id == session[:user_id].id
+    raise ' not owner ' unless @story.user_id == session[:user_id]
     @story.destroy
 
     respond_to do |format|

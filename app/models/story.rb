@@ -17,8 +17,8 @@ class Story < ActiveRecord::Base
 
 
   def category
-    unless story_set.blank?
-      story_set.story_set_category.name
+    if story_set.present?
+      story_set.story_set_category.name            
     end
     ''
   end

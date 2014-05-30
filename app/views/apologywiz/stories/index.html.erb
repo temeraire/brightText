@@ -60,7 +60,7 @@ function updateToneSlider1(gradients, value){
   var toneIndex = Math.round(value % gradients.length);
   if (gradients.length > 1) {
     console.log(toneIndex);
-    if(gradients[ toneIndex ]!=undefined)
+    if(gradients[ toneIndex ]!= undefined)
       $("#gradient1").html(gradients[ toneIndex ].name);
     //$("#tone-control1").show();
   }
@@ -196,7 +196,11 @@ function showStories(){
           });
           $(".footable tbody").html("");
           $(".footable tbody").append(rows);
-          $('.footable').trigger('footable_redraw')
+          $('.footable').trigger('footable_redraw');
+          
+          if (stories.length > 0)
+            $('#story_category').val(stories[stories.length-1]["name"])
+            
        }
      }
    });
