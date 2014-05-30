@@ -4,6 +4,7 @@ BtWeb::Application.routes.draw do
     match "/user_stories", :to => "stories#get_user_stories", :via => :post
     match "/user_app_stories", :to => "stories#get_user_application_stories", :via => :post
     match "/app_public_stories", :to => "stories#get_application_public_stories", :via => :post
+    match "/app_purchase", :to => "bright_text_applications#set_app_purchase", :via => :post
   end
 
   namespace :admin do
