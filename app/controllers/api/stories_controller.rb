@@ -1,6 +1,6 @@
 require 'rexml/document'
 
-class Api::StoriesController < ApplicationController
+class Api::StoriesController < ActionController::Base
 
   def get_user_stories
     @user_name = params[:user_name]
