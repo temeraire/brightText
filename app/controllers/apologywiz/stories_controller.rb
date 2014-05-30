@@ -18,7 +18,8 @@ class Apologywiz::StoriesController < ApologywizController
       "AND (stories.user_id = ? " +
       "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
       "WHERE group_members.email = ? ) " +
-      "OR stories.public = TRUE)";
+      "OR stories.public = TRUE) " + 
+      "ORDER BY story_set_categories.created_at ASC";
     @stories = Story.find_by_sql [stories_sql, @application.id, @user.id, @user.email ]
     #@stories = ActiveRecord::Base.connection.execute [stories_sql, @application.id, @user.id, @user.email ]
 
