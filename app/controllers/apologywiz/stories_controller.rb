@@ -34,7 +34,7 @@ class Apologywiz::StoriesController < ApologywizController
   def show
     @story = Story.find(params[:id])
     if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
+      raise ' not owner ' unless @story.user_id == session[:user_id]
     end
     respond_to do |format|
       format.html # show.html.erb
@@ -72,7 +72,7 @@ class Apologywiz::StoriesController < ApologywizController
   def edit
     @story = Story.find(params[:id])
     if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
+      raise ' not owner ' unless @story.user_id == session[:user_id]
     end
   end
 
@@ -110,7 +110,7 @@ class Apologywiz::StoriesController < ApologywizController
   def update
     @story = Story.find(params[:id])
     if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
+      raise ' not owner ' unless @story.user_id == session[:user_id]
     end
     
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
@@ -137,7 +137,7 @@ class Apologywiz::StoriesController < ApologywizController
   # DELETE /stories/1.xml
   def destroy
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.user_id == session[:user_id].id
+    raise ' not owner ' unless @story.user_id == session[:user_id]
     @story.destroy
 
     respond_to do |format|

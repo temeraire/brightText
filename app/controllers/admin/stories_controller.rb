@@ -55,9 +55,18 @@ class Admin::StoriesController < ApplicationController
     end
 
     if not params[:q].blank?
-      @stories = Story.where("stories.domain_id" => session[:domain].id);
-      @stories = @stories.search_for params[:q]
-      @highlighted_phreses = params[:q].split()
+      @stories_sql =
+                "SELECT DISTINCT stories.* FROM stories " +
+                "INNER JOIN story_authors ON stories.id = story_authors.story_id " +
+                "INNER JOIN users on story_authors.user_id = users.id " +
+                "WHERE (stories.name like ? OR stories.description like ? OR users.email like ? OR users.name like ? OR users.lastname like ?) " + 
+                "AND stories.domain_id = ?";
+      like_phrase = "%" + params[:q] + "%";
+      @stories = Story.find_by_sql [@stories_sql,like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
+              
+#      @stories = Story.where("stories.domain_id" => session[:domain].id);
+#      @stories = @stories.search_for params[:q]
+#      @highlighted_phreses = params[:q].split()
     end
 
     respond_to do |format|
@@ -71,9 +80,6 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1.xml
   def show
     @story = Story.find(params[:id])
-    if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
-    end
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @story }
@@ -111,9 +117,6 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1/edit
   def edit
     @story = Story.find(params[:id])
-    if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
-    end
   end
 
   # POST /stories
@@ -148,11 +151,7 @@ class Admin::StoriesController < ApplicationController
   # PUT /stories/1
   # PUT /stories/1.xml
   def update
-    @story = Story.find(params[:id])
-    if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id].id
-    end
-    
+    @story = Story.find(params[:id])    
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
     if(@story_author.nil?)
       @story.story_authors.build().user_id = session[:user_id]      
@@ -177,9 +176,8 @@ class Admin::StoriesController < ApplicationController
   # DELETE /stories/1.xml
   def destroy
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.user_id == session[:user_id].id
     @story.destroy
-
+    
     respond_to do |format|
       format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
