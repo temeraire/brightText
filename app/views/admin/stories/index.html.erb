@@ -1,6 +1,7 @@
 <script>
   $(function () {
     $('.footable').footable();
+    $('.footable tbody').show();
   });
 
   function onFilterSetSelect()
@@ -74,7 +75,7 @@
   <br/>
   <div class="row">
     <div class="col-md-10  col-md-offset-1">
-      <table class="footable" data-filter="#q" data-page-size="<%= PAGE_SIZE %>">  
+      <table class="footable" data-filter="#q" data-page-size="<%= PAGE_SIZE %> "data-limit-navigation="5" >  
         <thead>
           <tr>
             <th data-type="numeric" data-sort-initial="true" class="footable-first-column footable-sortable">Order<span class="footable-sort-indicator"></span></th>
@@ -85,7 +86,7 @@
             <th data-sort-ignore='true'>Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="display: none">
           <%
           @stories.each do |story|
             authors = nil
