@@ -4,9 +4,13 @@ class Apologywiz::PasswordResetsController < ApologywizController
   end
 
   def create
-    user = User.find_by_email params[:email]
-    user.send_password_reset if user
-    redirect_to apologywiz_login_path, notice: "Email sent with password reset instructions."
+    @user = User.find_by_email params[:email]
+    @user.send_password_reset if @user
+    
+    respond_to do |format|
+      format.js
+    end
+    #redirect_to apologywiz_login_path, notice: "Email sent with password reset instructions."
   end
 
   def edit

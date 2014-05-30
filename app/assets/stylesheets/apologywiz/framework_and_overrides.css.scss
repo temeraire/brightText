@@ -36,6 +36,22 @@ img {
     font-weight: 200;
 }
 
+.wait-popup-bg{
+    position:fixed;    
+    padding:2px;
+    height:36px;
+    width:36px;
+    top: 50%;
+    left: 50%;
+    margin-top: -18px;
+    margin-left: -18px;
+    background:#FFFFFF;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+
 /* Side notes for calling out things
 -------------------------------------------------- */
 

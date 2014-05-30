@@ -1,20 +1,58 @@
+<script>
+  $(function(){ 
+
+    $("#reset_form")
+      .bind("ajax:beforeSend", function(){
+          // Things to do before sending
+                  $("#spinner").show();
+      })
+      .bind("ajax:complete", function(){
+          // Things to do after the ajax is sent
+                  $("#spinner").hide();
+      });
+          //set client_side_validation for selection list
+     $("#redirect").on('click',function(){
+          window.location.href = '/apologywiz';
+     });
+  });
+</script>
 <div class="col-md-4 col-md-offset-4">
   <h3>Reset Password</h3>
 
-  <%= form_tag apologywiz_password_resets_path, html: { role: "form", class: "form"}, method: :post do %>
+  <%= form_tag apologywiz_password_resets_path, {:role => "form", :class => "form", :id => "reset_form", :remote => true, :method => :post} do %>
         <div class="form-group">
         <%= label_tag :email, params[:email], class: 'control-label' %>
         <%= text_field_tag :email, params[:email], class: 'form-control' %>
+        <%#= hidden_field_tag 'format', 'javascript' %>
       </div>
 
-    <div class="row">
-  <div class="col-md-2">
-    <%= link_to 'Back', new_apologywiz_user_path,  {:class => "btn btn-default"}   %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= link_to 'Back', new_apologywiz_user_path,  {:class => "btn btn-default"}   %>
+    </div>
+    <div class="col-md-6">
+      <span class="pull-right">
+        <%= submit_tag "Reset Password", class: "btn btn-primary" %>        
+      </span>     
+    </div>
   </div>
-  <div class="col-md-2">
-    <%= submit_tag "Reset Password", class: "btn btn-primary" %>
-  </div>
-</div>
   <% end %>
 
+</div>
+
+<div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p id="dialog-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="redirect" type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="spinner"  class="wait-popup-bg" style="display:none;">
+  <img src="/images/apologywiz/ajax-loader.gif"/>
 </div>
