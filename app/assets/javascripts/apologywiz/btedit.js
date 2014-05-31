@@ -1437,13 +1437,38 @@ var _modelFactory = new ObjectFactory();
                     "</div>" +
                     "</div>"
             );
-            $('body').append(editor);
+            //$('body').append(editor);
+            
+            var title = 
+		'<div class="radio-inline"><label><input type="radio" name="optionsRadios" id="mode-new" value="option1" checked>New</label></div>' +
+		'<div class="radio-inline"><label><input type="radio" name="optionsRadios" id="mode-edit" value="option2" checked>Edit</label></div>' +
+		'<div class="radio-inline"><label><input type="radio" name="optionsRadios" id="mode-assign" value="option3" checked>Assign</label></div>' +
+		'<h4 id="choiceset-editor-title"></h4>' +
+                '<div id="choice-set-editor-body"></div>' +
+                '<div id="choice-set-editor-footer"></div>';
+                
+                
+            var dialog =  $.Zebra_Dialog(title, {                    
+                    'type': false,
+                    'buttons' : false,
+                    'modal': false,
+                    'draggable' : true,
+                    'position': ['center', 'top+120'],
+//                    'buttons':  [
+//                        {caption: 'Create', callback: function() { alert('"Create" was clicked'); return false; }}
+//                    ],
+                    'onClose':  function() {
+                            options.onClose();
+                    }
+
+            });
 
             colors = ["#ffffff", "#ff9999", "#99ff99", "#9999ff", "#ffff99", "#ff99ff", "#99ffff"];
 
-            var dialog = $("#choiceset-editor").modal({
-                keyboard: true
-            });
+//            var dialog = $("#choiceset-editor").dialog({
+//                keyboard: true,
+//                backdrop: false
+//            });
 
             $("#mode-edit").click(self._renderEditUI);
             $("#mode-assign").click(self._renderAssignUI);
@@ -1462,10 +1487,10 @@ var _modelFactory = new ObjectFactory();
                 $("#mode-new").click();
             }
 
-            dialog.on('hidden.bs.modal', function (e) {
-                $("#choiceset-editor").remove();
-                options.onClose();
-            });
+//            dialog.on('hidden.bs.modal', function (e) {
+//                $("#choiceset-editor").remove();
+//                options.onClose();
+//            });
         };
 
         self._renderNewUI = function() {
@@ -1482,9 +1507,9 @@ var _modelFactory = new ObjectFactory();
                 "<button id='save-new-choiceset' class='btn btn-primary' type='button'>Create</button>"
             );
             $("#choice-set-editor-body").append(csName);
-            $(".modal-footer").append(csBtn);
-            $(".modal-footer").on('click','#save-new-choiceset',function() {
-                $('.modal-footer').hide();
+            $("#choice-set-editor-footer").append(csBtn);
+            $("#choice-set-editor-footer").on('click','#save-new-choiceset',function() {
+                $('#choice-set-editor-footer').hide();
                 self._finishCreateChoiceSet($("#choiceset-name")[0].value);
             });
         };
