@@ -86,6 +86,7 @@ $(document).ready(function() {
           _bt1.renderData(JSON.parse(story["descriptor"]));
         $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
         $("#astep_2").tab('show');
+        $('#story_category').val(story["name"]);
     });
   });
 
@@ -199,7 +200,7 @@ function showStories(){
           $('.footable').trigger('footable_redraw');
           
           if (stories.length > 0)
-            $('#story_category').val(stories[stories.length-1]["name"])
+            $('#story_category').val(stories[0]["name"]);
             
        }
      }
@@ -209,7 +210,7 @@ function showStories(){
 $("#astep_1").click(function() {
   if(formSubmitted===true){
     formSubmitted = false;
-    $('#story_category').val('');
+    //$('#story_category').val('');
     $('#story_name').val('');  
     showStories();
   }
