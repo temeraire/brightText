@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.1'
+gem 'rails', '4.1.0'
 
 # DB session store
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'

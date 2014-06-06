@@ -34,7 +34,7 @@ class Api::StoriesController < ActionController::Base
         @user.email = @user_name;
         @user.password = @password
         @user.domain_id = @bt_application.domain_id
-
+        @user.customer!
         @user.group = Group.new
         @user.group.name = "Apologies"
 
@@ -62,10 +62,7 @@ class Api::StoriesController < ActionController::Base
               @story.bright_text_application_id = @bt_application.id
               @story.domain_id = @bt_application.domain_id
               @story.user_id = @user.id
-
-
               @story.save
-
             end
           end
         end

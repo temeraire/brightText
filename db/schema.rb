@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084754) do
+ActiveRecord::Schema.define(version: 920130109084755) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -138,27 +138,39 @@ ActiveRecord::Schema.define(version: 920130109084754) do
   add_index "story_sets", ["bright_text_application_id"], name: "index_story_sets_on_bright_text_application_id", using: :btree
 
   create_table "users", force: true do |t|
+    t.string   "email"
     t.string   "name"
+    t.string   "lastname"
+    t.integer  "user_type",                          default: 0
     t.integer  "domain_id"
     t.string   "password_salt"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "email"
     t.string   "password_hash"
-    t.string   "lastname"
     t.string   "encrypted_password",     limit: 128, default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",                      default: 0
     t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
+    t.datetime "last_sign_in_at"
     t.string   "last_sign_in_ip"
-    t.integer  "user_type",                          default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "user_apps", id: false, force: true do |t|
+    t.integer  "user_id",                    null: false
+    t.integer  "bright_text_application_id", null: false
+    t.string   "version"
+    t.integer  "platform"
+    t.boolean  "paid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_apps", ["user_id", "bright_text_application_id", "platform"], name: "index_user_apps_on_user_id_and_app_id_and_platform", unique: true, using: :btree
 
 end
