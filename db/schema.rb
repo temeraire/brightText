@@ -137,10 +137,6 @@ ActiveRecord::Schema.define(version: 920130109084754) do
 
   add_index "story_sets", ["bright_text_application_id"], name: "index_story_sets_on_bright_text_application_id", using: :btree
 
-  create_table "user_types", force: true do |t|
-    t.string "name"
-  end
-
   create_table "users", force: true do |t|
     t.string   "name"
     t.integer  "domain_id"
