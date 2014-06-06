@@ -43,6 +43,7 @@ class Apologywiz::UsersController < ApologywizController
     @user = User.new(params[:user])
     @user.group = Group.new
     @user.group.name = "Apologies"
+    @user.customer!
 
     respond_to do |format|
       if @user.save
@@ -92,8 +93,15 @@ class Apologywiz::UsersController < ApologywizController
 
   def authenticate
     if (@user = User.authenticate params[:user][:email], params[:user][:password])
-      log_in! @user
-      redirect_to apologywiz_stories_path, notice: "Logged in!"
+      @user_apps = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>BrightTextApplication.find_by_name("ApologyWiz").id)
+      if @user_apps.present?
+        log_in! @user
+        redirect_to apologywiz_stories_path, notice: "Logged in!"
+      else
+        #redirect_to 'http://apologywiz.com'   
+        flash.now[:error] = 'In order to register and log in, you must have the paid version of Apology Wiz! You can find it here:'
+        render 'unpaid.html.erb', :layout=>true
+      end
     else
       @user = User.new
       flash.now[:error] = "Email or password is invalid"
