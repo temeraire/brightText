@@ -68,11 +68,12 @@ function updateToneSlider1(gradients, value){
 
 $(document).ready(function() {  
   $(function () {
-    $('.footable').footable();
+    $('#apologies').footable();
+    $('#groups-table').footable();
   });
 
   $(function() {
-    $(".footable").on('click','a.clickapology', function(event){
+    $("#apologies").on('click','a.clickapology', function(event){
         event.preventDefault();
         var index = $(this).attr("id");
         var story = stories[index];
@@ -111,6 +112,28 @@ $(document).ready(function() {
            });
       });
    });
+   
+  $(function() {
+    $("#apologies").on('click','a.remove_story', function(event){
+        event.preventDefault();
+        var index = $(this).attr("id");
+         $.ajax({
+            type: "GET",
+            url: "/apologywiz/stories/"+index+"/delete",
+            dataType: "json",
+            data: "",
+            success: function(data) {
+              if(data["success"] === "true") {
+                $('#dialog-message').replaceWith('<p id=\"dialog-message\">Apology is removed successfully</p>');
+                $('#dialog').modal({
+                  keyboard: true
+                });
+                showStories();
+              }
+            }
+         });
+    });
+  });
 });
 
 $(document).ready(function() {
@@ -173,6 +196,7 @@ function showMembers(){
           });
           $("#groups-table tbody").html("");
           $("#groups-table tbody").append(rows);
+          $('#groups-table').trigger('footable_redraw');
        }
      }
    });
@@ -193,11 +217,12 @@ function showStories(){
             console.log(apology);
             rows += "<tr>" +
                       "<td><a id='" + i +"' class='clickapology' href='#'>" + apology["name"] + "</a></td>" +
+                      "<td><a id='" + apology["id"] +"' class='remove_story' href='#'>Remove</a></td>" +
                     "</tr>";
           });
-          $(".footable tbody").html("");
-          $(".footable tbody").append(rows);
-          $('.footable').trigger('footable_redraw');
+          $("#apologies tbody").html("");
+          $("#apologies tbody").append(rows);
+          $('#apologies').trigger('footable_redraw');
           
           if (stories.length > 0)
             $('#story_category').val(stories[0]["name"]);

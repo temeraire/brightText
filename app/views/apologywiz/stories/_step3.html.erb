@@ -15,11 +15,32 @@
         </div>
       <div class="col-md-6">
         <h4>Shared With:</h4>
-        <div class="col-md-12" style="overflow: scroll; height: 200px">
-          <table id="groups-table" class="table table-bordered table-striped tablesorter tablesorter-bootstrap" >
+        <div class="col-md-offset-1 col-md-11">
+          <form class="form-horizontal" role="form">
+            <span class="pull-right">
+            <div class="form-group">
+              <div class="col-md-12">
+                <input type="text" class="form-control" id="filter" placeholder="Enter text to filter">
+              </div>            
+            </div>
+            </span>
+          </form>
+        </div>
+        <div class="col-md-12">
+          <table id="groups-table" class="footable" data-filter="#filter" data-page-size="3" data-limit-navigation="5"> 
+            <thead>
+              <tr>
+                <th data-type="alpha" data-sort-initial="false" class="footable-first-column footable-sortable">Email<span class="footable-sort-indicator"></span></th>
+                <th data-sort-ignore='true'>Actions</th>
+              </tr>
+            </thead>
             <tbody>
-
             </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
