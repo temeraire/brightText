@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.1'
+gem 'rails', '4.1.0'
 
 # DB session store
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
@@ -62,5 +62,14 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+gem 'user-agent'
 
-gem "gretel"
+gem 'gretel'
+
+gem 'tzinfo'
+
+gem 'typhoeus'
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+# gem 'tzinfo-data', platforms: [:mingw, :mswin]
+
