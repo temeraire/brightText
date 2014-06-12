@@ -74,7 +74,7 @@ $(document).ready(function() {
   });
 
   $(function() {
-    $("#apologies").on('click','a.clickapology', function(event){
+    $("#apologies").on('click','a.edit_apology', function(event){
         event.preventDefault();
         var index = $(this).attr("id");
         var story = stories[index];
@@ -93,25 +93,48 @@ $(document).ready(function() {
   });
 
   $(function() {
-      $("#groups-table").on('click','a.clickmember', function(event){
+      $("#groups-table").on('click','a.remove_member', function(event){
           event.preventDefault();
           var index = $(this).attr("id");
-          var email = $(this).attr("data-email");
-           $.ajax({
-              type: "DELETE",
-              url: "/apologywiz/group_members/"+index,
-              dataType: "json",
-              data: "",
-              success: function(data) {
-                if(data["success"] === "true") {
-                  $('#dialog-message').replaceWith('<p id=\"dialog-message\">\"' + email + '\" is removed successfully</p>');
-                  $('#dialog').modal({
-                    keyboard: true
-                  });
-                  showMembers();
+          var email = $(this).attr("data-email");          
+        
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_DEFAULT,
+            title: 'Confirmation!',
+            message: '<p>Remove email \''+email+'\'?',
+            buttons: [
+              {
+                id: 'btn-delete',
+                label: 'Delete',
+                cssClass: 'btn-danger',
+                action: function(dialog){
+                    var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                    $button.disable();
+                    $button.spin();
+                    dialog.setClosable(false);
+                    $.ajax({
+                      type: "DELETE",
+                      url: "/apologywiz/group_members/"+index,
+                      dataType: "json",
+                      data: "",
+                      success: function(data) {
+                        if(data["success"] === "true") {
+                          $button.stopSpin();
+                          dialog.setMessage('<p>\'' + email +'\' is removed successfully!</p>');
+                          dialog.setClosable(true);
+                          showMembers();
+                        }
+                      }
+                    });
+                }
+              }, {
+                label: 'Close',
+                action: function(dialogItself){
+                    dialogItself.close();
                 }
               }
-           });
+            ]
+        });
       });
    });
    
@@ -120,21 +143,45 @@ $(document).ready(function() {
         event.preventDefault();
         var index = $(this).attr("id");
         var apology_name = $(this).attr("data-apology");
-         $.ajax({
-            type: "GET",
-            url: "/apologywiz/stories/"+index+"/delete",
-            dataType: "json",
-            data: "",
-            success: function(data) {
-              if(data["success"] === "true") {
-                $('#dialog-message').replaceWith('<p id=\"dialog-message\">\"' + apology_name +'\" is removed successfully</p>');
-                $('#dialog').modal({
-                  keyboard: true
-                });
-                showStories();
+        
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_DEFAULT,
+            title: 'Confirmation!',
+            message: '<p>Delete apology named \''+apology_name+'\'?',
+            buttons: [
+              {
+                id: 'btn-delete',
+                label: 'Delete',
+                cssClass: 'btn-danger',
+                action: function(dialog){
+                    var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                    $button.disable();
+                    $button.spin();
+                    dialog.setClosable(false);
+                    $.ajax({
+                      type: "GET",
+                      url: "/apologywiz/stories/"+index+"/delete",
+                      dataType: "json",
+                      data: "",
+                      success: function(data) {
+                        if(data["success"] === "true") {
+                          $button.stopSpin();
+                          dialog.setMessage('<p>\'' + apology_name +'\' is removed successfully!</p>');
+                          dialog.setClosable(true);
+                          showStories();
+                        }
+                      }
+                    });
+                }
+              }, {
+                label: 'Close',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
               }
-            }
-         });
+            ]
+        });
+         
     });
   });
 });
@@ -194,7 +241,7 @@ function showMembers(){
             console.log(member);
             rows += "<tr>" +
                       "<td>" + member["email"] + "</td>" +
-                      "<td><a id='" + member["id"] +"' data-email='" + member["email"] + "'class='clickmember' href='#'>Remove</a></td>" +
+                      "<td><a id='" + member["id"] +"' data-email='" + member["email"] + "'class='remove_member' href='#'>Remove</a></td>" +
                     "</tr>";
           });
           $("#groups-table tbody").html("");
@@ -218,10 +265,17 @@ function showStories(){
           var rows = "";
           $.each(stories, function (i, apology) {
             console.log(apology);
-            rows += "<tr>" +
-                      "<td><a id='" + i +"' class='clickapology' href='#'>" + apology["name"] + "</a></td>" +
-                      "<td><a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Remove</a></td>" +
-                    "</tr>";
+            if(apology["user_id"]===1){
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              "<td><a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Remove</a></td>" +
+              "</tr>";
+            }else{              
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              "<td></td>" +
+              "</tr>";
+            }
           });
           $("#apologies tbody").html("");
           $("#apologies tbody").append(rows);
