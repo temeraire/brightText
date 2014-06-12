@@ -11,7 +11,7 @@ class Apologywiz::StoriesController < ApologywizController
     @application = find_application
 
     stories_sql =
-      "SELECT stories.id as id, story_set_categories.name as name, stories.descriptor as descriptor  FROM stories " + 
+      "SELECT stories.id as id, story_set_categories.name as name, stories.descriptor as descriptor, CASE WHEN stories.user_id = ? THEN 1 ELSE 0 END AS user_id FROM stories " + 
       "INNER JOIN story_sets ON stories.story_set_id = story_sets.id "+
       "INNER JOIN story_set_categories ON story_sets.category_id = story_set_categories.id " +
       "WHERE stories.bright_text_application_id = ? " +
@@ -20,7 +20,7 @@ class Apologywiz::StoriesController < ApologywizController
       "WHERE group_members.email = ? ) " +
       "OR stories.public = TRUE) " + 
       "ORDER BY story_set_categories.created_at ASC";
-    @stories = Story.find_by_sql [stories_sql, @application.id, @user.id, @user.email ]
+    @stories = Story.find_by_sql [stories_sql, @user.id, @application.id, @user.id, @user.email ]
     #@stories = ActiveRecord::Base.connection.execute [stories_sql, @application.id, @user.id, @user.email ]
 
     respond_to do |format|
