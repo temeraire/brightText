@@ -67,76 +67,186 @@ function updateToneSlider1(gradients, value){
   }
 }
 
+function showMembers(){
+   $.ajax({
+     type: "get",
+     url: "/apologywiz/group_members",
+     dataType: "json",
+     data: "",
+     success: function(data) {
+       if(data["success"] === "true") {
+          members = data["group_members"];
+          console.log(members);
+          var rows = "";
+          $.each(members, function (i, member) {
+            console.log(member);
+            rows += "<tr>" +
+                      "<td>" + member["email"] + "</td>" +
+                      "<td><a id='" + member["id"] +"' data-email='" + member["email"] + "'class='remove_member' href='#'>Remove</a></td>" +
+                    "</tr>";
+          });
+          $("#groups-table tbody").html("");
+          $("#groups-table tbody").append(rows);
+          $('#groups-table').trigger('footable_redraw');
+       }
+     }
+   });
+}
+
+function showStories(){
+   $.ajax({
+     type: "get",
+     url: "/apologywiz/stories",
+     dataType: "json",
+     data: "",
+     success: function(data) {
+       if(data["success"] === "true") {
+          stories = data["stories"];
+          console.log(stories);
+          var rows = "";
+          $.each(stories, function (i, apology) {
+            console.log(apology);
+            if(apology["user_id"]===1){
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              "<td><a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Remove</a></td>" +
+              "</tr>";
+            }else{              
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              "<td></td>" +
+              "</tr>";
+            }
+          });
+          $("#apologies tbody").html("");
+          $("#apologies tbody").append(rows);
+          $('#apologies').trigger('footable_redraw');
+          
+          if (stories.length > 0)
+            $('#story_category').val(stories[0]["name"]);
+            
+       }
+     }
+   });
+}
+
 $(document).ready(function() {  
   $(function () {
     $('#apologies').footable();
     $('#groups-table').footable();
   });
-
-  $(function() {
-    $("#apologies").on('click','a.clickapology', function(event){
-        event.preventDefault();
-        var index = $(this).attr("id");
-        var story = stories[index];
-        $("#story_id").val(story["id"]);
-        $("#category_name").html("");
-        $("#name").html(story["name"]);
-        $("#bt_one").html("");
-        $("#fieldDescriptor").val("");
-        $("#fieldSummary").val("");
-        if(story["descriptor"]!=="")
-          _bt1.renderData(JSON.parse(story["descriptor"]));
-        $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
-        $("#astep_2").tab('show');
-        $('#story_category').val(story["name"]);
-    });
+  
+  $("#btn_back_to_step_1").on('click', function(event){
+    event.preventDefault();
+    $("#astep_1").click();    
+  }); 
+  
+  $("#btn_back_to_step_2").on('click', function(event){
+    $("#astep_2").click();    
+  });
+ 
+  $("#apologies").on('click','a.edit_apology', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story = stories[index];
+    $("#story_id").val(story["id"]);
+    $("#category_name").html("");
+    $("#name").html(story["name"]);
+    $("#bt_one").html("");
+    $("#fieldDescriptor").val("");
+    $("#fieldSummary").val("");
+    if(story["descriptor"]!=="")
+      _bt1.renderData(JSON.parse(story["descriptor"]));
+    $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
+    $("#astep_2").tab('show');
+    $('#story_category').val(story["name"]);
   });
 
-  $(function() {
-      $("#groups-table").on('click','a.clickmember', function(event){
-          event.preventDefault();
-          var index = $(this).attr("id");
-          var email = $(this).attr("data-email");
-           $.ajax({
-              type: "DELETE",
-              url: "/apologywiz/group_members/"+index,
-              dataType: "json",
-              data: "",
-              success: function(data) {
-                if(data["success"] === "true") {
-                  $('#dialog-message').replaceWith('<p id=\"dialog-message\">\"' + email + '\" is removed successfully</p>');
-                  $('#dialog').modal({
-                    keyboard: true
-                  });
-                  showMembers();
+  $("#groups-table").on('click','a.remove_member', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var email = $(this).attr("data-email");          
+
+    BootstrapDialog.show({
+      type: BootstrapDialog.TYPE_DEFAULT,
+      title: 'Confirmation!',
+      message: '<p>Remove email \''+email+'\'?',
+      buttons: [{
+          id: 'btn-delete',
+          label: 'Delete',
+          cssClass: 'btn-danger',
+          action: function(dialog){
+              var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+              $button.disable();
+              $button.spin();
+              dialog.setClosable(false);
+              $.ajax({
+                type: "DELETE",
+                url: "/apologywiz/group_members/"+index,
+                dataType: "json",
+                data: "",
+                success: function(data) {
+                  if(data["success"] === "true") {
+                    $button.stopSpin();
+                    dialog.setMessage('<p>\'' + email +'\' is removed successfully!</p>');
+                    dialog.setClosable(true);
+                    showMembers();
+                  }
                 }
-              }
-           });
-      });
-   });
-   
-  $(function() {
-    $("#apologies").on('click','a.remove_story', function(event){
-        event.preventDefault();
-        var index = $(this).attr("id");
-        var apology_name = $(this).attr("data-apology");
-         $.ajax({
-            type: "GET",
-            url: "/apologywiz/stories/"+index+"/delete",
-            dataType: "json",
-            data: "",
-            success: function(data) {
-              if(data["success"] === "true") {
-                $('#dialog-message').replaceWith('<p id=\"dialog-message\">\"' + apology_name +'\" is removed successfully</p>');
-                $('#dialog').modal({
-                  keyboard: true
-                });
-                showStories();
-              }
-            }
-         });
+              });
+          }
+        }, {
+          label: 'Close',
+          action: function(dialogItself){
+              dialogItself.close();
+          }
+        }]
     });
   });
+
+  $("#apologies").on('click','a.remove_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var apology_name = $(this).attr("data-apology");
+
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Delete apology named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-delete',
+      label: 'Delete',
+      cssClass: 'btn-danger',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/apologywiz/stories/"+index+"/delete",
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is removed successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
 });
 
 $(document).ready(function() {
@@ -177,64 +287,6 @@ $(document).ready(function() {
     showStories();
   });
 
-
-
-function showMembers(){
-   $.ajax({
-     type: "get",
-     url: "/apologywiz/group_members",
-     dataType: "json",
-     data: "",
-     success: function(data) {
-       if(data["success"] === "true") {
-          members = data["group_members"];
-          console.log(members);
-          var rows = "";
-          $.each(members, function (i, member) {
-            console.log(member);
-            rows += "<tr>" +
-                      "<td>" + member["email"] + "</td>" +
-                      "<td><a id='" + member["id"] +"' data-email='" + member["email"] + "'class='clickmember' href='#'>Remove</a></td>" +
-                    "</tr>";
-          });
-          $("#groups-table tbody").html("");
-          $("#groups-table tbody").append(rows);
-          $('#groups-table').trigger('footable_redraw');
-       }
-     }
-   });
-};
-
-function showStories(){
-   $.ajax({
-     type: "get",
-     url: "/apologywiz/stories",
-     dataType: "json",
-     data: "",
-     success: function(data) {
-       if(data["success"] === "true") {
-          stories = data["stories"];
-          console.log(stories);
-          var rows = "";
-          $.each(stories, function (i, apology) {
-            console.log(apology);
-            rows += "<tr>" +
-                      "<td><a id='" + i +"' class='clickapology' href='#'>" + apology["name"] + "</a></td>" +
-                      "<td><a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Remove</a></td>" +
-                    "</tr>";
-          });
-          $("#apologies tbody").html("");
-          $("#apologies tbody").append(rows);
-          $('#apologies').trigger('footable_redraw');
-          
-          if (stories.length > 0)
-            $('#story_category').val(stories[0]["name"]);
-            
-       }
-     }
-   });
-};
-
 $("#astep_1").click(function() {
   if(formSubmitted===true){
     formSubmitted = false;
@@ -246,59 +298,68 @@ $("#astep_1").click(function() {
 });
 
 $("#astep_2").click(function() {
-if(formSubmitted===false){
-  var title = $("#story_category").val();
-  if(title===''){
-    $('#dialog-message').replaceWith('<p id=\"dialog-message\">Name can\'t be blank</p>');
-    $('#dialog').modal({
-      keyboard: true
-    });
-    $("#astep_1").click();
-    $("#story_category").focus();
-  }else{
-    //var subtitle = $("#story_name").val();
-    if(false){ //if(subtitle===''){
-      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
+  if(formSubmitted===false){
+    var title = $("#story_category").val();
+    if(title===''){
+      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Name can\'t be blank</p>');
       $('#dialog').modal({
         keyboard: true
       });
       $("#astep_1").click();
-      $("#story_name").focus();
+      $("#story_category").focus();
     }else{
-      $.ajax({
-        type: "post",
-        url: "/apologywiz/stories",
-        dataType: "json",
-        data: $("#new_story").serialize(),
-        success: function(data) {
-          formSubmitted = true;
-          if(data["id"] !== "") {
-            $("#story_id").val(data["id"]);
-            $("#category_name").text($("#story_category").val());
-            $("#name").text($("#story_name").val());
-            $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+data["id"]);
-            $('#dialog-message').replaceWith('<p id=\"dialog-message\">Apology was saved successfully</p>');
-            $('#dialog').modal({
-              keyboard: true
-            });
-          }
-          else if(data["name"]){
-            message = data["name"];
-            $("#story_name").parent().addClass('field_with_errors');
-            $("#story_name + .message").remove();
-            $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); $("a[href='.step1']").click();
-          }
+      var found = false;
+      for (var i = 0; i < stories.length; i++) {
+        if(stories[i].name===title){
+          found = true;
+          break;
         }
-      });
+      }
+      if(found){ //if(subtitle===''){
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">You\'ve already got an apology named \'' + title + '\'. Please give this one a new name.</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+        $("#astep_1").click();
+        $("#story_name").focus();
+      }else{
+        $.ajax({
+          type: "post",
+          url: "/apologywiz/stories",
+          dataType: "json",
+          data: $("#new_story").serialize(),
+          success: function(data) {
+            formSubmitted = true;
+            if(data["id"] !== "") {
+              $("#story_id").val(data["id"]);
+              $("#category_name").text($("#story_category").val());
+              $("#name").text($("#story_name").val());
+              $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+data["id"]);
+              $('#dialog-message').replaceWith('<p id=\"dialog-message\">New Apology named \'' + title + '\' is now ready to be created.</p>');
+              $('#dialog').modal({
+                keyboard: true
+              });
+            }
+            else if(data["name"]){
+              message = data["name"];
+              $("#story_name").parent().addClass('field_with_errors');
+              $("#story_name + .message").remove();
+              $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); 
+              $("a[href='.step1']").click();
+            }
+          }
+        });
 
-      $("#bt_one").html("");
-      $("#fieldDescriptor").val("");
-      $("#fieldSummary").val("");
-      $(this).tab('show');
+        $("#bt_one").html("");
+        $("#fieldDescriptor").val("");
+        $("#fieldSummary").val("");
+        $(this).tab('show');
 
+      }
     }
+  }else{
+    $(this).tab('show');
   }
-}
 });
 
 $("#astep_3").click(function() {
