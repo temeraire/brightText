@@ -15,6 +15,8 @@ BtWeb::Application.routes.draw do
     resource :session, only: [:new, :create, :destroy]
 
     #match 'stories/:id' => 'stories#destroy', :via => :delete
+    post '/upload' => 'stories#upload', as: :upload
+    get '/import' => 'stories#import', as: :import
     post '/users/authenticate' => 'users#authenticate'
     get '/login' => 'users#new_session', as: :login
     get '/logout' => 'users#destroy_session', as: :logout

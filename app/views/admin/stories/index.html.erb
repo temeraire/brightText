@@ -2,6 +2,22 @@
   $(function () {
     $('.footable').footable();
     $('.footable tbody').show();
+    
+    $("#btn-import").on('click',function(){      
+      BootstrapDialog.show({
+        type: BootstrapDialog.TYPE_DEFAULT,
+        title: 'Upload Stories XML',
+        message: $('<div></div>').load('/admin/import'),
+        buttons: [
+          {
+            label: 'Close',
+            action: function(dialogItself){
+                dialogItself.close();
+            }
+          }]
+      });
+      
+    });
   });
 
   function onFilterSetSelect()
@@ -14,7 +30,12 @@
 <% breadcrumb :story_set, @story_set%>
 <div class="container">
   <div class="row">
-    <div class="col-md-2 col-md-offset-9">
+    <div class="col-md-2 col-md-offset-8">
+      <span class="pull-right">
+        <button id="btn-import" type="button" class="btn btn-success">Import Stories</button> 
+      </span>
+    </div>
+    <div class="col-md-1">
       <span class="pull-right">
         <%= link_to 'New ' + session[:style].story_alias.titleize, new_admin_story_path(:filter=>@filter), {:class => "btn btn-success"}%>
       </span>
