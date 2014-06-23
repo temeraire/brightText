@@ -1,3 +1,5 @@
+require 'rexml/document'
+
 class Admin::StoriesController < ApplicationController
   protect_from_forgery :except => [:index]
   before_filter :login_required
@@ -232,6 +234,66 @@ class Admin::StoriesController < ApplicationController
     #p params.to_yaml
     @stories = Story.update(params[:stories].keys, params[:stories].values)
     redirect_to admin_stories_path(:filter => params[:filter])
+  end
+  
+  def upload
+    uploaded_io = params[:stories_file]
+    
+    File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    
+    doc = REXML::Document.new File.new(Rails.root.join('public', 'uploads', uploaded_io.original_filename))
+    root = doc.root
+    app_id = root.attributes["id"]
+    app = BrightTextApplication.find(app_id);
+    
+    doc.elements.each("Application/StorySetCategories/StoryCategory") do |element| 
+      puts element.attributes["id"] + " " + element.attributes["name"]  
+      category = StorySetCategory.new
+      category.name = element.attributes["name"]
+      category.application_id = app.id
+      category.domain_id = app.domain_id
+      category.user_id = session[:user_id]
+      category.save
+      
+      element.elements.each("StorySets/StorySet") do |element| 
+        puts element.attributes["id"] + " " + element.attributes["name"]
+        story_set = StorySet.new
+        story_set.name = element.attributes["name"]
+        story_set.user_id = session[:user_id]
+        story_set.domain_id = session[:domain].id
+        story_set.bright_text_application_id = app.id
+        story_set.category_id = category.id
+        story_set.save
+        
+        element.elements.each("Stories/Story") do |element| 
+          story = Story.new
+          story.name = element.elements["MetaData/Title"].text
+          story.user_id = session[:user_id]
+          story.domain_id = session[:domain].id
+          story.bright_text_application_id = app.id
+          story.descriptor = Story.xml_to_json(element)
+          story.story_set_id = story_set.id
+          story.story_authors.build().user_id = session[:user_id]
+          story.save 
+        end
+      end      
+    end
+    
+    respond_to do |format|
+      if File.exist?(Rails.root.join('public', 'uploads', uploaded_io.original_filename))        
+        format.xml  { render :xml => uploaded_io.original_filename, :status => :updated }
+        format.json { render json: uploaded_io.original_filename, status: :created}
+      else        
+        format.json{ render :json=> {:success => "false"} }        
+        format.xml  { render :xml => uploaded_io.original_filename, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  def import
+    render :partial => "import"
   end
 
   private

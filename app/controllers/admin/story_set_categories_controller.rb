@@ -69,7 +69,8 @@ class Admin::StorySetCategoriesController < ApplicationController
   def create
     @story_set_category = StorySetCategory.new(params[:story_set_category])
     @story_set_category.domain_id = session[:domain].id
-
+    @story_set_category.user_id = session[:user_id]
+    
     respond_to do |format|
       if @story_set_category.save
         clone_story_sets(params[:story_sets], @story_set_category.id) unless params[:story_sets].blank?

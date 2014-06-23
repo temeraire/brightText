@@ -21,3 +21,6 @@
 //= require footable.all.min
 //= require zebra_dialog
 //= require jquery-ui-1.10.4.custom
+//= require bootstrap-dialog.min
+//= require jquery.fileupload
+//= require jquery.iframe-transport

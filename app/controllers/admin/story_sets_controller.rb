@@ -25,7 +25,7 @@ class Admin::StorySetsController < ApplicationController
     if @filter == "__unassigned"
       @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
     else
-      if @category.application_id.nil?
+      if @category.present? && @category.application_id.nil?
         @story_sets = StorySet.joins(:story_set_category).where(
                       {"story_sets.domain_id" => session[:domain].id}.merge(
                            @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
@@ -93,6 +93,8 @@ class Admin::StorySetsController < ApplicationController
   def create
     @story_set = StorySet.new(params[:story_set])
     @story_set.domain_id = session[:domain].id
+    @story_set.user_id = session[:user_id]
+    @story_set.bright_text_application_id = session[:br_application_id]
     #debugger
     respond_to do |format|
       if @story_set.save

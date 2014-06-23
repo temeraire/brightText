@@ -170,7 +170,7 @@ class Story < ActiveRecord::Base
     element.add( flowElement )
   end
 
-  def populateContainerData( currentElement )
+  def self.populateContainerData( currentElement )
 
     data = []
     currentElement.each do | child |
@@ -309,6 +309,88 @@ class Story < ActiveRecord::Base
         story.save
       end
     end
+  end
+  
+  def self.xml_to_json( root )
+    
+    story = {}
+    data = [];
+    
+    story["meta"] = meta = {}
+    
+    story["meta"]["id"]         = root.attributes["id"];
+    
+    if root.attributes["templateID"] != nil   # only non-null in clone stories
+      story["meta"]["templateId"] = root.attributes["templateID"];
+    end
+    
+    meta["authorId"  ]  = root.get_elements("MetaData/Author")[0].attributes["id"] unless root.get_elements("MetaData/Author"       ).count == 0;
+    meta["authorName"]  = root.get_elements("MetaData/Author/Name")[0].text        unless root.get_elements("MetaData/Author/Name"  ).count == 0;
+    meta["title"     ]  = root.get_elements("MetaData/Title")[0].text              unless root.get_elements("MetaData/Title"        ).count == 0;
+    meta["created"   ]  = root.get_elements("MetaData/Date/Created")[0].text       unless root.get_elements("MetaData/Date/Created" ).count == 0;
+    meta["modified"  ]  = root.get_elements("MetaData/Date/Modified")[0].text      unless root.get_elements("MetaData/Date/Modified").count == 0;
+    
+    
+    contentElement = root.get_elements( "Content" )[0];
+    
+    contentElement.elements.each do |element|
+      if element.name == "P"
+        child = { "container" => populateContainerData( element ) }   
+      end
+      data << child if child
+    end
+    if data.count == 0   # content element is the data
+      data << { "container" => populateContainerData( contentElement ) } 
+    end
+    
+    
+    piles = {}
+    root.get_elements( "PileContainer/Pile").each do | pileElement |
+      pile = {}
+      pileElements = {}
+      pile["id"] = pileElement.attributes["id"]
+      pile["elements"] = pileElements
+      pileElement.get_elements( "PileElement" ).each do | pileElementElement |
+        pileChoice = {}
+        pileChoice["id"] = pileElementElement.attributes["id"]
+        if pileElementElement.get_elements("Content")[0] == nil
+          puts "error: pile element with ID: " + pileElementElement.attributes["id"] + " has no content"
+        else
+          pileChoice["text"] = pileElementElement.get_elements("Content")[0].text
+        end
+        pileChoiceFilter = []
+        pileElementElement.get_elements("AllowedChoiceSets/ChoiceSetRef").each do | choiceSetRef |
+          pileChoiceFilter << choiceSetRef.attributes["choiceSet"].to_s   
+        end
+        pileChoice["choiceSetIds"] = pileChoiceFilter
+        pileElements[ pileChoice["id"] ] = pileChoice
+      end
+      piles[ pile["id"] ] = pile
+    end
+    
+    storyDimensions = []
+    root.get_elements( "StoryDimensionContainer/StoryDimension").each do | dimensionElement |
+      storyDimension = {}
+      choiceSets = []
+      storyDimension["name"] = dimensionElement.attributes["name"];
+      storyDimension["id"]   = dimensionElement.attributes["id"];
+      dimensionElement.get_elements("ChoiceSet").each do | choiceSetElement |
+        choiceSet = {}
+        choiceSet["name"] = choiceSetElement.attributes["name"]
+        choiceSet["id"]   = choiceSetElement.attributes["id"]
+        choiceSets << choiceSet
+      end
+      storyDimension["choiceSets"] = choiceSets
+      storyDimensions << storyDimension  
+
+    end    
+    
+    story["story"] = data
+    story["piles"] = piles
+    story["storyDimensions"] = storyDimensions
+    
+    result = story.to_json  
+    return result;
   end
 
 end
