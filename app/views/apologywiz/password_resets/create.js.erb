@@ -1,3 +1,4 @@
+<% if @user.present? %>
 <% if @user.errors.count == 0 %>
   $('#dialog-message').replaceWith('<p id=\"dialog-message\">Your reset password link has been sent to you. Please check your email.</p>');
   $('#dialog').modal({
@@ -5,6 +6,12 @@
   });
 <% else %>
   $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while resetting the password. Please try again later</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% end %>
+<% else %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Your email address is not registered</p>');
   $('#dialog').modal({
     keyboard: true
   });
