@@ -142,7 +142,7 @@ GEM
     user-agent (1.0.0)
 
 PLATFORMS
-  x86-mingw32
+  ruby
 
 DEPENDENCIES
   activerecord-session_store!
