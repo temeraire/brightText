@@ -6,10 +6,10 @@
 development:
   adapter: mysql2
   encoding: utf8
-  database: bt_master_dev
+  database: bt_web_dev
   pool: 5
   username: root
-  password: root123
+  password: root#123
   host: localhost
 
 # Warning: The database defined as "test" will be erased and
@@ -18,17 +18,17 @@ development:
 test:
   adapter: mysql2
   encoding: utf8
-  database: bt_master_test
+  database: bt_web_test
   pool: 5
   username: root
-  password: root123
+  password: root#123
   host: localhost
 
 production:
   adapter: mysql2
   encoding: utf8
-  database: bt_master_prod
+  database: bt_web_prod
   pool: 5
   username: root
-  password: root123
+  password: root#123
   host: localhost
