@@ -1,7 +1,18 @@
+<script>
+  $(function(){ 
+    $("#add_group_form")
+      .bind("ajax:beforeSend", function(){
+        $("#spinner").show();
+      })
+      .bind("ajax:complete", function(){          
+        $("#spinner").hide();
+      });
+  });
+</script>
 <div class="tab-pane" id="step_3">
   <div class="jumbotron">
     <div class="container">
-    <%= form_for([:apologywiz, @group_member], :remote=>true, :html => { :role => "form", :class=>"form"}, :validate => true) do |f| %>
+    <%= form_for([:apologywiz, @group_member], :remote=>true, :html => { :role => "form", :class=>"form", :id => "add_group_form"}, :validate => true) do |f| %>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
@@ -47,4 +58,8 @@
     <% end %>
     </div>
   </div>
+</div>
+
+<div id="spinner"  class="wait-popup-bg" style="display:none;">
+  <img src="/images/apologywiz/ajax-loader.gif"/>
 </div>

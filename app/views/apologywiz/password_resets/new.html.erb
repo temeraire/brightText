@@ -3,14 +3,12 @@
 
     $("#reset_form")
       .bind("ajax:beforeSend", function(){
-          // Things to do before sending
-                  $("#spinner").show();
+        $("#spinner").show();
       })
-      .bind("ajax:complete", function(){
-          // Things to do after the ajax is sent
-                  $("#spinner").hide();
+      .bind("ajax:complete", function(){          
+        $("#spinner").hide();
       });
-          //set client_side_validation for selection list
+          
      $("#redirect").on('click',function(){
           window.location.href = '/apologywiz';
      });
