@@ -1,5 +1,5 @@
 class SurveyMailer < ActionMailer::Base
-  default :from => "pavel@brighttext.com"
+  default :from => "no_reply@brighttext.com"
   
   
   def survey_result_email( survey, quantitativeResult, qualitativeResult, meta )

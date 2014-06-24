@@ -55,7 +55,9 @@ class Apologywiz::GroupMembersController < ApologywizController
     @group_member.user_id = @user.id if !@user.nil?
     @owner = User.find(session[:user_id])
     @group_member.group_id = @owner.group.id
-
+    
+    SharingMailer.invitation(@owner.email, @group_member.email).deliver
+self
     respond_to do |format|
       if @group_member.save
         format.html { redirect_to('/apologywiz/stories#step_3') }
