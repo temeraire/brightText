@@ -30,7 +30,7 @@ class Story < ActiveRecord::Base
 
   def set_rank
     if self.rank.blank? || self.rank == 0 || self.story_set_id_changed?
-      self.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", self.story_set_id]).to_i
+      self.rank = 1 + Story.where(:story_set_id => self.story_set_id).maximum(:rank).to_i
     end
   end
 

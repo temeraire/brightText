@@ -17,3 +17,4 @@
 //= require jquery-sortable
 //= require jquery.json-2.4
 //= require footable.all.min
+//= require ./confirm.js

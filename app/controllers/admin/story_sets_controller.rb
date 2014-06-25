@@ -145,7 +145,7 @@ class Admin::StorySetsController < ApplicationController
 
   def clone
     @stories_set_original = StorySet.find(params[:id])
-    @story_set = @stories_set_original.clone
+    @story_set = @stories_set_original.dup
     number_similar_named_storysets = StorySet.count(:conditions => ["category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%"])
     @story_set.name = @story_set.name + "-" + (number_similar_named_storysets + 1).to_s
     @stories = @stories_set_original.stories

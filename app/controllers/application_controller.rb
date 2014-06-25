@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
 
   def clone_stories(story_ids, story_set_id)
     story_ids.each do |id|
-      story = Story.find(id).clone
+      story = Story.find(id).dup
       story.story_set_id = story_set_id
       story.save
     end
@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     #debugger
     story_set_ids.each do |story_set_id|
       story_set_original = StorySet.find(story_set_id)
-      story_set = story_set_original.clone
+      story_set = story_set_original.dup
       story_set.category_id = category_id
       #debugger
       if story_set.save
@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
   def clone_categories(category_ids, application_id)
     category_ids.each do |category_id|
       category_original = StorySetCategory.find(category_id)
-      category = category_original.clone
+      category = category_original.dup
       category.application_id = application_id
       if category.save
         #debugger

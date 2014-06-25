@@ -24,3 +24,4 @@
 //= require bootstrap-dialog.min
 //= require jquery.fileupload
 //= require jquery.iframe-transport
+//= require ./confirm.js

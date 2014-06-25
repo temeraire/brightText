@@ -3,8 +3,7 @@
     $('.footable').footable();
   });
   
-  function onFilterSelect()
-  {
+  function onFilterSelect(){
     var selector = $("#filterSelector")[0];
     document.location.href = "/admin/story_set_categories?filter=" + selector.options[ selector.selectedIndex ].value;
   }

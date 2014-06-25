@@ -108,7 +108,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/XX/clone
   def clone
     @sourceStory = Story.find(params[:id])
-    @story = @sourceStory.clone
+    @story = @sourceStory.dup
     number_of_similar_named_stories = Story.count(:conditions => ["story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%"])
     @story.name = @story.name + "-" + (number_of_similar_named_stories + 1).to_s
     respond_to do |format|
@@ -125,8 +125,6 @@ class Admin::StoriesController < ApplicationController
   # POST /stories.xml
   def create
     @story = Story.new(params[:story])
-    @story.rank = 0
-    @story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id]) unless @story.story_set_id.nil?
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
     @story.user_id = session[:user_id]
@@ -153,7 +151,7 @@ class Admin::StoriesController < ApplicationController
   # PUT /stories/1
   # PUT /stories/1.xml
   def update
-    @story = Story.find(params[:id])    
+    @story = Story.find(params[:id])
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
     if(@story_author.nil?)
       @story.story_authors.build().user_id = session[:user_id]      

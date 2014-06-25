@@ -20,7 +20,7 @@
           <% @categories.each do |category| %>
           <div id="categories" class="checkbox">
               <label for="<%=category.id%>">
-                <%= check_box_tag category.id, category.id, true %><%=category.name%>
+                <%= check_box_tag "categories[]", category.id, true %><%=category.name%>
               </label>
           </div>
       <% end %>
