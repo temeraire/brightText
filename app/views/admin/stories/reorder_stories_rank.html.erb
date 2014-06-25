@@ -22,14 +22,14 @@
           <% @stories.each do |story| %>
             <tr>
               <td><%= story.name %></td>
-              <td>
-                <%= truncate(story.description, :length => 120) %>
+              <td><%= truncate(story.description, :length => 120) %></td>
+              <td><%= story.set %></td>
+              <td class="rank_cell">
                 <%= fields_for "stories[]",  story do |f| %>
                   <% f.hidden_field :rank %>
                 <% end %>
+                <%= story.rank %>
               </td>
-              <td><%= story.set %></td>
-              <td><%= story.rank %></td>
 
             </tr>
           <% end %>

@@ -22,14 +22,14 @@ DIV.harnesscontainer{
 
 DIV.viewportcontainer{
   width:480px;
-  height:140px;
+  height:130px;
   margin:5px;
   padding:5px;
   float:left;
 }
 
 DIV.btEditor{
-  height:150px;
+  height:140px;
   padding:10px;
 }
 
@@ -119,21 +119,26 @@ DIV.btEditor{
       <label for="strories" class="control-label"><%= session[:style].set_alias.titleize %></label>
       <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id ), :id, :name, @story.story_set_id), {},{:class => "form-control"}%>
   </div>
-  <div class="checkbox">
-      <%= f.label :public%>
-      <%= f.check_box :public%>
+
+  <div class="form-group">
+    <div class="col-md-10">
+     <div class="checkbox">
+        <%= f.label :public%>
+        <%= f.check_box :public%>
+    </div>     
+    </div>
   </div>
 
   <%#= hidden_field_tag 'format', 'json' %>
   <div class="row">
     <!--   WAND WAND WAND WAND WAND  -->
-    <div id="main_container" class="col-md-12" style="height:290px">
+    <div id="main_container" class="col-md-12" style="height:260px">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h3 class="panel-title">Editor</h3>
         </div>
         <div class="panel-body">
-          <div id="controls1" style="height:50px">
+          <div id="controls1" style="height:40px">
             <div class="col-md-3">
               <span class="pull-left">
                 <button id="edit_choicesets" class="btn btn-primary">Choicesets</button>

@@ -20,13 +20,14 @@
         <tbody>
           <% @story_sets.each do |story_set| %>
             <tr>
-              <td><%= story_set.name %>
-                <%= fields_for "story_sets[]",  story_set do |f| %>
-                  <% f.hidden_field :rank %>
-                <% end %>
-              </td>
+              <td><%= story_set.name %></td>
               <td><%= story_set.category %></td>
-              <td class="rank_cell"><%= story_set.rank %></td>
+              <td class="rank_cell">
+              <%= fields_for "story_sets[]",  story_set do |f| %>
+                <% f.hidden_field :rank %>
+              <% end %>
+              <%= story_set.rank %>
+              </td>
             </tr>
           <% end %>
         </tbody>
