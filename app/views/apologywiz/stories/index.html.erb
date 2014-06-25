@@ -247,6 +247,10 @@ $(document).ready(function() {
     });
   });
   
+  $('#dialog').on('shown.bs.modal', function (e) {
+    $('#dialog').find('button').focus();  
+  });
+  
 });
 
 $(document).ready(function() {
@@ -375,5 +379,7 @@ $("#astep_3").click(function() {
         });
     };
 })();
+
+
 
 </script>
