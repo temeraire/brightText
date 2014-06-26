@@ -40,11 +40,35 @@ DIV.btEditor{
   var _bt1;
   var _s1;
 
-  function updateToneSlider1(gradients, value){
-    var toneIndex = Math.round(value % gradients.length);
-    if (gradients.length > 1) {
-      console.log(toneIndex);
-      $("#gradient1").html(gradients[ toneIndex ].name);
+  function updateToneSlider1( gradients, value ){
+    var toneIndex = 0;
+    for ( var i = 0; i < gradients.length; i++ ){
+      if ( gradients[i].id === value ){
+            toneIndex = i;
+            break;
+      }
+    }
+    $("#tone-control1").hide( );
+    $( "#slider1" ).slider({
+      value: toneIndex,
+      min: 0,
+      max: gradients.length - 1,
+      range: false,
+      step: 0.001,
+      tooltip: "hide"
+    });
+
+    $("#slider1").on('slide', function(slideEvt) {
+            var toneGradients = gradients;
+            var s1 = Math.floor(slideEvt.value);
+            if ( _s1 !== s1 ){ // allow smooth moving of the tone selector
+              _s1 = s1;
+              $( "#gradient1" ).html( gradients[ s1 ].name );
+              _bt1.handleToneSelection( gradients[ s1 ].id );
+            }
+      });
+    if ( gradients.length > 1) {
+      $( "#gradient1" ).html( gradients[ toneIndex ].name );
       $("#tone-control1").show();
     }
   }
@@ -64,20 +88,7 @@ DIV.btEditor{
     $("#instant_rewrite1").on( "click", function(event){
           event.preventDefault();
           _bt1.rewrite();
-    });
-
-    $("#tone-control1").hide( );
-    $("#slider1").slider({
-      value: 1,
-      min: 1,
-      max: 10,
-      step: 0.01,
-      tooltip: "hide"
-    });
-
-    $("#slider1").on('slide', function(slideEvt) {
-      _bt1.handleToneSelection(slideEvt.value);
-    });
+    });    
 
     $("#edit_choicesets").on( "click", function(event){
           event.preventDefault();
@@ -136,13 +147,13 @@ DIV.btEditor{
   <%#= hidden_field_tag 'format', 'json' %>
   <div class="row">
     <!--   WAND WAND WAND WAND WAND  -->
-    <div id="main_container" class="col-md-12" style="height:260px">
+    <div id="main_container" class="col-md-12" style="height:270px">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h3 class="panel-title">Editor</h3>
         </div>
         <div class="panel-body">
-          <div id="controls1" style="height:40px">
+          <div id="controls1" style="height:50px">
             <div class="col-md-3">
               <span class="pull-left">
                 <button id="edit_choicesets" class="btn btn-primary">Choicesets</button>
