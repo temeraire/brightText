@@ -87,6 +87,10 @@ DIV.btEditor{
 <%if @story.descriptor.present?%>
       _bt1.renderData(<%=raw @story.descriptor %>);
 <%end%>
+  
+    $('#dialog').on('shown.bs.modal', function (e) {
+      $('#dialog').find('button').focus();  
+    });
   });
 
 (function() {
