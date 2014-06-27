@@ -35,7 +35,10 @@
         <%= link_to "Already Registered?", apologywiz_login_path,  {:class => "btn btn-default"}   %>
       </div>
       <div class="col-md-6">
-        <%= f.submit :id => "save_user_btn", :value => "Submit", :class => "btn btn-primary" %>
+        <span class="pull-right">
+          <%= f.submit :id => "save_user_btn", :value => "Submit", :class => "btn btn-primary" %>
+        </span>
+        
       </div>
     </div>
 
