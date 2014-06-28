@@ -82,13 +82,15 @@ class Apologywiz::StoriesController < ApologywizController
   def create
     story_set = StorySet.new(name: "storyset#{StorySet.count + 1}")
     story_set.domain_id = session[:domain].id
+    story_set.bright_text_application_id = session[:br_application_id]
+    story_set.user_id = current_user.id
     @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
     @story.name = "Apology#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
-    #@story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id])
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
     @story.story_set.story_set_category.domain_id = session[:domain].id
     @story.story_set.story_set_category.application_id = session[:br_application_id]
+    @story.story_set.story_set_category.user_id = current_user.id
     @story.rank = 0
 
     respond_to do |format|
