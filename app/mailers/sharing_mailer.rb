@@ -8,6 +8,6 @@ class SharingMailer < ActionMailer::Base
   #
   def invitation(sender, email)    
     @sender = sender
-    mail :to => email, subject: "Inivitation"
+    mail :to => email, subject: "Invitation"
   end
 end
