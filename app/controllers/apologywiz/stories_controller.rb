@@ -11,7 +11,7 @@ class Apologywiz::StoriesController < ApologywizController
     @application = find_application
 
     stories_sql =
-      "SELECT stories.id as id, story_set_categories.name as name, stories.descriptor as descriptor, CASE WHEN stories.user_id = ? THEN 1 ELSE 0 END AS user_id FROM stories " + 
+      "SELECT stories.id as id, story_set_categories.id as category_id, concat(story_set_categories.name,'-',stories.name) as name, stories.descriptor as descriptor, CASE WHEN stories.user_id = ? THEN 1 ELSE 0 END AS user_id FROM stories " + 
       "INNER JOIN story_sets ON stories.story_set_id = story_sets.id "+
       "INNER JOIN story_set_categories ON story_sets.category_id = story_set_categories.id " +
       "WHERE stories.bright_text_application_id = ? " +
@@ -61,11 +61,11 @@ class Apologywiz::StoriesController < ApologywizController
   # GET /stories/XX/clone
   def clone
     @sourceStory = Story.find(params[:id])
-    @story = @sourceStory.clone
-    number_of_similar_named_stories = Story.count(:conditions => ["story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%"])
-    @story.name = @story.name + "-" + (number_of_similar_named_stories + 1).to_s
+    @story = @sourceStory.dup
+    number_of_similar_named_stories = Story.where("story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%").count('id')
+    @story.name = @story.name.partition("-")[0] + "-" + (number_of_similar_named_stories + 1).to_s
     respond_to do |format|
-        format.html { render :action => "new" }
+        format.html { render :action => "new" }        
     end
   end
 
@@ -80,14 +80,18 @@ class Apologywiz::StoriesController < ApologywizController
   # POST /stories
   # POST /stories.xml
   def create
+	#create story set
     story_set = StorySet.new(name: "storyset#{StorySet.count + 1}")
     story_set.domain_id = session[:domain].id
     story_set.bright_text_application_id = session[:br_application_id]
     story_set.user_id = current_user.id
-    @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
+    #create story
+	@story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
     @story.name = "Apology#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
+	@story.story_authors.build().user_id = session[:user_id]
+	#set category details
     @story.story_set.story_set_category.domain_id = session[:domain].id
     @story.story_set.story_set_category.application_id = session[:br_application_id]
     @story.story_set.story_set_category.user_id = current_user.id
@@ -146,6 +150,7 @@ class Apologywiz::StoriesController < ApologywizController
 
     respond_to do |format|
       format.html { redirect_to("/apologywiz/stories?filter=" + @story.story_set_id.to_s) }
+      format.json{ render :json=> {:success => "true"} }
       format.xml  { head :ok }
     end
   end

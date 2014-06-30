@@ -136,8 +136,8 @@ class Admin::StorySetCategoriesController < ApplicationController
   def clone
     @story_set_category_original = StorySetCategory.find(params[:id])
     @story_set_category = @story_set_category_original.dup
-    number_of_similar_named_storyset_categories = StorySetCategory.count(:conditions => ["name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id])
-    @story_set_category.name = @story_set_category.name + "-" + (number_of_similar_named_storyset_categories + 1).to_s
+    number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id).count('id')
+    @story_set_category.name = @story_set_category.name.partition("-")[0] + "-" + (number_of_similar_named_storyset_categories + 1).to_s
     @story_sets = @story_set_category_original.story_sets(:include => :stories)
     #debugger
     respond_to do |format|

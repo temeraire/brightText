@@ -29,9 +29,9 @@
 
 </style>
 <ul id="story_tabs" class="nav nav-tabs nav-justified">
-  <li class="active"><a id="astep_1" href="#step_1"><h4>Step 1</h4></a></li>
-  <li><a id="astep_2" href="#step_2"><h4>Step 2</h4></a></li>
-  <li><a id="astep_3" href="#step_3"><h4>Step 3</h4></a></li>
+  <li class="active"><a id="astep_1" href="#step_1"><h4>Create</h4></a></li>
+  <li><a id="astep_2" href="#step_2"><h4>Edit</h4></a></li>
+  <li><a id="astep_3" href="#step_3"><h4>Invite</h4></a></li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
@@ -133,12 +133,18 @@ function showStories(){
             if(apology["user_id"]===1){
               rows += "<tr>" +
               "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
-              "<td><a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Remove</a></td>" +
+              "<td>" + 
+              "<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" + 
+              " | " +
+              "<a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Delete</a>" + 
+              "</td>" +
               "</tr>";
             }else{              
               rows += "<tr>" +
               "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
-              "<td></td>" +
+              "<td>" + 
+              "<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +  
+              "</td>" +
               "</tr>";
             }
           });
@@ -255,6 +261,52 @@ $(document).ready(function() {
             if(data["success"] === "true") {
               $button.stopSpin();
               dialog.setMessage('<p>\'' + apology_name +'\' is removed successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
+  
+
+  $("#apologies").on('click','a.clone_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story_id = $(this).attr("data-apology-id");
+    var apology_name = $(this).attr("data-apology");
+
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Clone apology named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-clone',
+      label: 'Clone',
+      cssClass: 'btn-primary',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/apologywiz/story_set_categories/"+index+"/clone_silently?story_id="+story_id,
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is cloned successfully!</p>');
               dialog.setClosable(true);
               showStories();
             }

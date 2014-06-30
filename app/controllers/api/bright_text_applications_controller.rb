@@ -10,6 +10,7 @@ class Api::BrightTextApplicationsController < ActionController::Base
     @platform = request[:platform]
     @version = request[:version]
     
+    format = request[:format]
     data = request[:data]
     signature = request[:signature]    
     

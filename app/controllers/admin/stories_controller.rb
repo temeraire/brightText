@@ -109,8 +109,8 @@ class Admin::StoriesController < ApplicationController
   def clone
     @sourceStory = Story.find(params[:id])
     @story = @sourceStory.dup
-    number_of_similar_named_stories = Story.count(:conditions => ["story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%"])
-    @story.name = @story.name + "-" + (number_of_similar_named_stories + 1).to_s
+    number_of_similar_named_stories = Story.where("story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%").count('id')
+    @story.name = @story.name.partition("-")[0] + "-" + (number_of_similar_named_stories + 1).to_s
     respond_to do |format|
         format.html { render :action => "new" }
     end
