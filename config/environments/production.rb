@@ -79,5 +79,5 @@ BtWeb::Application.configure do
   config.log_formatter = ::Logger::Formatter.new
 
   # action mailer
-  config.action_mailer.default_url_options = { :host => "54.235.210.153" }
+  config.action_mailer.default_url_options = { :host => "app.brighttext.com" }
 end

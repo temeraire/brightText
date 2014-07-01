@@ -89,15 +89,15 @@ ActiveRecord::Schema.define(version: 920130109084755) do
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "stories", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "name"
-    t.text     "description",                limit: 16777215
-    t.text     "descriptor",                 limit: 16777215
-    t.integer  "rank"
+    t.string   "description",                limit: 1024
     t.integer  "domain_id"
     t.integer  "user_id"
     t.integer  "story_set_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.text     "descriptor",                 limit: 16777215
+    t.integer  "rank"
     t.integer  "bright_text_application_id"
     t.boolean  "public",                                      default: false
   end
@@ -150,24 +150,24 @@ ActiveRecord::Schema.define(version: 920130109084755) do
   add_index "user_apps", ["user_id", "bright_text_application_id", "platform"], name: "index_user_apps_on_user_id_and_app_id_and_platform", unique: true, using: :btree
 
   create_table "users", force: true do |t|
-    t.string   "email"
     t.string   "name"
-    t.string   "lastname"
-    t.integer  "user_type",                          default: 0
     t.integer  "domain_id"
     t.string   "password_salt"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "email"
     t.string   "password_hash"
+    t.string   "lastname"
     t.string   "encrypted_password",     limit: 128, default: "", null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",                      default: 0
     t.datetime "current_sign_in_at"
-    t.string   "current_sign_in_ip"
     t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "user_type",                          default: 0
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
