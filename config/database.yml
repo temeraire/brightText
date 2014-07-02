@@ -18,7 +18,7 @@ test:
 production:
   adapter: mysql2  # Rails 3.x uses the mysql2 adapter
   encoding: utf8
-  database: btweb
+  database: btext
   pool: 5
   username: contextit
   password: contextit

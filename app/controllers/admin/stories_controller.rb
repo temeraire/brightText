@@ -1,3 +1,5 @@
+require 'rexml/document'
+
 class Admin::StoriesController < ApplicationController
   protect_from_forgery :except => [:index]
   before_filter :login_required
@@ -106,9 +108,9 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/XX/clone
   def clone
     @sourceStory = Story.find(params[:id])
-    @story = @sourceStory.clone
-    number_of_similar_named_stories = Story.count(:conditions => ["story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%"])
-    @story.name = @story.name + "-" + (number_of_similar_named_stories + 1).to_s
+    @story = @sourceStory.dup
+    number_of_similar_named_stories = Story.where("story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%").count('id')
+    @story.name = @story.name.partition("-")[0] + "-" + (number_of_similar_named_stories + 1).to_s
     respond_to do |format|
         format.html { render :action => "new" }
     end
@@ -123,8 +125,6 @@ class Admin::StoriesController < ApplicationController
   # POST /stories.xml
   def create
     @story = Story.new(params[:story])
-    @story.rank = 0
-    @story.rank = 1 + Story.maximum(:rank, :conditions => ["story_set_id = ?", @story.story_set_id]) unless @story.story_set_id.nil?
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
     @story.user_id = session[:user_id]
@@ -151,7 +151,7 @@ class Admin::StoriesController < ApplicationController
   # PUT /stories/1
   # PUT /stories/1.xml
   def update
-    @story = Story.find(params[:id])    
+    @story = Story.find(params[:id])
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
     if(@story_author.nil?)
       @story.story_authors.build().user_id = session[:user_id]      
@@ -232,6 +232,66 @@ class Admin::StoriesController < ApplicationController
     #p params.to_yaml
     @stories = Story.update(params[:stories].keys, params[:stories].values)
     redirect_to admin_stories_path(:filter => params[:filter])
+  end
+  
+  def upload
+    uploaded_io = params[:stories_file]
+    
+    File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    
+    doc = REXML::Document.new File.new(Rails.root.join('public', 'uploads', uploaded_io.original_filename))
+    root = doc.root
+    app_id = root.attributes["id"]
+    app = BrightTextApplication.find(app_id);
+    
+    doc.elements.each("Application/StorySetCategories/StoryCategory") do |element| 
+      puts element.attributes["id"] + " " + element.attributes["name"]  
+      category = StorySetCategory.new
+      category.name = element.attributes["name"]
+      category.application_id = app.id
+      category.domain_id = app.domain_id
+      category.user_id = session[:user_id]
+      category.save
+      
+      element.elements.each("StorySets/StorySet") do |element| 
+        puts element.attributes["id"] + " " + element.attributes["name"]
+        story_set = StorySet.new
+        story_set.name = element.attributes["name"]
+        story_set.user_id = session[:user_id]
+        story_set.domain_id = session[:domain].id
+        story_set.bright_text_application_id = app.id
+        story_set.category_id = category.id
+        story_set.save
+        
+        element.elements.each("Stories/Story") do |element| 
+          story = Story.new
+          story.name = element.elements["MetaData/Title"].text
+          story.user_id = session[:user_id]
+          story.domain_id = session[:domain].id
+          story.bright_text_application_id = app.id
+          story.descriptor = Story.xml_to_json(element)
+          story.story_set_id = story_set.id
+          story.story_authors.build().user_id = session[:user_id]
+          story.save 
+        end
+      end      
+    end
+    
+    respond_to do |format|
+      if File.exist?(Rails.root.join('public', 'uploads', uploaded_io.original_filename))        
+        format.xml  { render :xml => uploaded_io.original_filename, :status => :updated }
+        format.json { render json: uploaded_io.original_filename, status: :created}
+      else        
+        format.json{ render :json=> {:success => "false"} }        
+        format.xml  { render :xml => uploaded_io.original_filename, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  def import
+    render :partial => "import"
   end
 
   private

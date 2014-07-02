@@ -1,10 +1,10 @@
 BtWeb::Application.routes.draw do
 
   namespace :api do
-    match "/user_stories", :to => "stories#get_user_stories", :via => :post
-    match "/user_app_stories", :to => "stories#get_user_application_stories", :via => :post
-    match "/app_public_stories", :to => "stories#get_application_public_stories", :via => :post
-    match "/app_purchase", :to => "bright_text_applications#set_app_purchase", :via => :post
+    post "/user_stories" => "stories#get_user_stories"
+    post "/user_app_stories" => "stories#get_user_application_stories"
+    post "/app_public_stories" => "stories#get_application_public_stories"
+    post "/app_purchase" => "bright_text_applications#set_app_purchase", :defaults => { :format => 'json' }
   end
 
   namespace :admin do
@@ -15,6 +15,8 @@ BtWeb::Application.routes.draw do
     resource :session, only: [:new, :create, :destroy]
 
     #match 'stories/:id' => 'stories#destroy', :via => :delete
+    post '/upload' => 'stories#upload', as: :upload
+    get '/import' => 'stories#import', as: :import
     post '/users/authenticate' => 'users#authenticate'
     get '/login' => 'users#new_session', as: :login
     get '/logout' => 'users#destroy_session', as: :logout
@@ -133,6 +135,7 @@ BtWeb::Application.routes.draw do
     resources :story_set_categories do
       member do
         get :clone
+        get :clone_silently
       end
       collection do
         post :update_story_set_categories_rank

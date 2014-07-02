@@ -4,7 +4,7 @@ class ApologywizController < ActionController::Base
   #    puts response.body
   #  }
   def login_required
-    if session[:domain].present? && session[:user_id].present?
+    if session[:domain].present? && session[:user_id].present?      
       return true
     end
     flash[:warning]='Please login to continue'
@@ -37,18 +37,32 @@ class ApologywizController < ActionController::Base
 
   def clone_stories(story_ids, story_set_id)
     story_ids.each do |id|
-      story = Story.find(id).clone
+      story = Story.find(id).dup
+      story.domain_id = session[:domain].id
+      story.user_id = session[:user_id]
+      story.public = false
       story.story_set_id = story_set_id
       story.save
     end
+  end
+  
+  def clone_story(story_id, story_set_id)
+    story = Story.find(story_id).dup
+    story.domain_id = session[:domain].id
+    story.user_id = session[:user_id]
+    story.public = false
+    story.story_set_id = story_set_id
+    story.save
   end
 
   def clone_story_sets(story_set_ids, category_id)
     #debugger
     story_set_ids.each do |story_set_id|
       story_set_original = StorySet.find(story_set_id)
-      story_set = story_set_original.clone
+      story_set = story_set_original.dup
       story_set.category_id = category_id
+      story_set.domain_id = session[:domain].id
+      story_set.user_id = session[:user_id]
       #debugger
       if story_set.save
         story_ids = story_set_original.stories.select(:id)
@@ -56,11 +70,25 @@ class ApologywizController < ActionController::Base
       end
     end
   end
+  
+    def clone_story_set(story_id, story_set_id, category_id)
+    #debugger
+    story_set_original = StorySet.find(story_set_id)
+    story_set = story_set_original.dup
+    story_set.category_id = category_id
+    story_set.domain_id = session[:domain].id
+    story_set.user_id = session[:user_id]
+    #debugger
+    if story_set.save      
+      clone_story(story_id, story_set.id)
+    end
+
+  end
 
   def clone_categories(category_ids, application_id)
     category_ids.each do |category_id|
       category_original = StorySetCategory.find(category_id)
-      category = category_original.clone
+      category = category_original.dup
       category.application_id = application_id
       if category.save
         #debugger

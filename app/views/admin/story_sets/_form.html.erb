@@ -35,11 +35,11 @@
   </div>
   <% unless @stories.blank? %>
         <div class="form-group">
-                <label for="categories" class="control-label">Select Stories to clone</label>
+                <label for="stories" class="control-label">Select Stories to clone</label>
 	  	<% @stories.each do |story| %>
-                <div id="categories" class="checkbox">
+                <div id="stories" class="checkbox">
                     <label for="<%=story.id%>">
-                      <%= check_box_tag "story[]", story.id, true %><%= story.name %>
+                      <%= check_box_tag "stories[]", story.id, true %><%= story.name %>
                     </label>
                 </div>
 	    <% end %>

@@ -29,9 +29,9 @@
 
 </style>
 <ul id="story_tabs" class="nav nav-tabs nav-justified">
-  <li class="active"><a id="astep_1" href="#step_1"><h4>Step 1</h4></a></li>
-  <li><a id="astep_2" href="#step_2"><h4>Step 2</h4></a></li>
-  <li><a id="astep_3" href="#step_3"><h4>Step 3</h4></a></li>
+  <li class="active"><a id="astep_1" href="#step_1"><h4>Create</h4></a></li>
+  <li><a id="astep_2" href="#step_2"><h4>Edit</h4></a></li>
+  <li><a id="astep_3" href="#step_3"><h4>Invite</h4></a></li>
 </ul>
 <!-- Tab panes -->
 <div class="tab-content">
@@ -53,19 +53,43 @@
 </div>
 <script>
 var _bt1;
+var _s1;
 var stories;
 var members;
 var formSubmitted = false;
 
-function updateToneSlider1(gradients, value){
-  var toneIndex = Math.round(value % gradients.length);
-  if (gradients.length > 1) {
-    console.log(toneIndex);
-    if(gradients[ toneIndex ]!= undefined)
-      $("#gradient1").html(gradients[ toneIndex ].name);
-    //$("#tone-control1").show();
+  function updateToneSlider1( gradients, value ){
+    var toneIndex = 0;
+    for ( var i = 0; i < gradients.length; i++ ){
+      if ( gradients[i].id === value ){
+            toneIndex = i;
+            break;
+      }
+    }
+    $("#tone-control1").hide( );
+    $( "#slider1" ).slider({
+      value: toneIndex,
+      min: 0,
+      max: gradients.length - 1,
+      range: false,
+      step: 0.001,
+      tooltip: "hide"
+    });
+
+    $("#slider1").on('slide', function(slideEvt) {
+            var toneGradients = gradients;
+            var s1 = Math.floor(slideEvt.value);
+            if ( _s1 !== s1 ){ // allow smooth moving of the tone selector
+              _s1 = s1;
+              $( "#gradient1" ).html( gradients[ s1 ].name );
+              _bt1.handleToneSelection( gradients[ s1 ].id );
+            }
+      });
+    if ( gradients.length > 1) {
+      $( "#gradient1" ).html( gradients[ toneIndex ].name );
+      $("#tone-control1").show();
+    }
   }
-}
 
 function showMembers(){
    $.ajax({
@@ -109,12 +133,18 @@ function showStories(){
             if(apology["user_id"]===1){
               rows += "<tr>" +
               "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
-              "<td><a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Remove</a></td>" +
+              "<td>" + 
+              "<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" + 
+              " | " +
+              "<a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Delete</a>" + 
+              "</td>" +
               "</tr>";
             }else{              
               rows += "<tr>" +
               "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
-              "<td></td>" +
+              "<td>" + 
+              "<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +  
+              "</td>" +
               "</tr>";
             }
           });
@@ -247,6 +277,56 @@ $(document).ready(function() {
     });
   });
   
+  
+
+  $("#apologies").on('click','a.clone_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story_id = $(this).attr("data-apology-id");
+    var apology_name = $(this).attr("data-apology");
+
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Clone apology named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-clone',
+      label: 'Clone',
+      cssClass: 'btn-primary',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/apologywiz/story_set_categories/"+index+"/clone_silently?story_id="+story_id,
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is cloned successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
+  $('#dialog').on('shown.bs.modal', function (e) {
+    $('#dialog').find('button').focus();  
+  });
+  
 });
 
 $(document).ready(function() {
@@ -259,19 +339,6 @@ $(document).ready(function() {
       rawData[0].value = $.toJSON(_bt1.toData());
       textData[0].value = _bt1.toString();
       updateToneSlider1(_bt1.toneGradients(), _bt1.selectedTone());
-    });
-
-    //$("#tone-control1").hide( );
-    $("#slider1").slider({
-      value: 1,
-      min: 1,
-      max: 10,
-      step: 0.01,
-      tooltip : "hide"
-    });
-
-    $("#slider1").on('slide', function(slideEvt) {
-      _bt1.handleToneSelection(slideEvt.value);
     });
 
     $("#edit_choicesets").on( "click", function(event){
@@ -375,5 +442,7 @@ $("#astep_3").click(function() {
         });
     };
 })();
+
+
 
 </script>

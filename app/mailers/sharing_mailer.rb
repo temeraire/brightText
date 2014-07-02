@@ -1,4 +1,4 @@
-class UserMailer < ActionMailer::Base
+class SharingMailer < ActionMailer::Base
   default :from => "no_reply@brighttext.com"
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -6,8 +6,8 @@ class UserMailer < ActionMailer::Base
   #
   #   en.user_mailer.password_reset.subject
   #
-  def password_reset(user)
-    @user = user
-    mail :to => user.email, subject: "Password Reset"
+  def invitation(sender, email)    
+    @sender = sender
+    mail :to => email, subject: "Invitation"
   end
 end

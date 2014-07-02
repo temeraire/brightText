@@ -25,7 +25,7 @@ class Apologywiz::StorySetsController < ApologywizController
     if @filter == "__unassigned"
       @story_sets = StorySet.where("domain_id = ? AND category_id is NULL",session[:domain].id).order(:name)
     else
-      if @category.application_id.blank?
+      if @category.present? && @category.application_id.blank?
         @story_sets = StorySet.joins(:story_set_category).where(
                       {"story_sets.domain_id" => session[:domain].id}.merge(
                            @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
@@ -92,6 +92,8 @@ class Apologywiz::StorySetsController < ApologywizController
   def create
     @story_set = StorySet.new(params[:story_set])
     @story_set.domain_id = session[:domain].id
+    @story_set.user_id = session[:user_id]
+    @story_set.bright_text_application_id = session[:br_application_id]
     #debugger
     respond_to do |format|
       if @story_set.save
@@ -142,9 +144,9 @@ class Apologywiz::StorySetsController < ApologywizController
 
   def clone
     @stories_set_original = StorySet.find(params[:id])
-    @story_set = @stories_set_original.clone
-    number_similar_named_storysets = StorySet.count(:conditions => ["category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%"])
-    @story_set.name = @story_set.name + "-" + (number_similar_named_storysets + 1).to_s
+    @story_set = @stories_set_original.dup
+    number_similar_named_storysets = StorySet.where("category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%").count('id');
+    @story_set.name = @story_set.name.partition("-")[0] + "-" + (number_similar_named_storysets + 1).to_s
     @stories = @stories_set_original.stories
     #debugger
     respond_to do |format|

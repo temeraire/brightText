@@ -6,6 +6,10 @@ body {
     font-size: 14px;
 }
 
+table.sorted_table{
+    tr{cursor:move;}
+}
+
 // make all images responsive by default
 img {
   @extend .img-responsive;

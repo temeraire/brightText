@@ -1,7 +1,7 @@
 class StorySet < ActiveRecord::Base
   has_many :stories, :dependent => :destroy
   belongs_to :story_set_category, :foreign_key => :category_id
-  attr_accessible :name, :category_id
+  attr_accessible :name, :category_id, :rank
   before_save :set_rank
 
   validates :name,
@@ -17,7 +17,7 @@ class StorySet < ActiveRecord::Base
 
   def set_rank
     if self.rank.blank? || self.rank == 0 || self.category_id_changed?
-      self.rank = 1 + StorySet.maximum(:rank, :conditions => ["category_id = ?", self.category_id]).to_i
+      self.rank = 1 + StorySet.where(:category_id => self.category_id).maximum(:rank).to_i
     end
   end
 

@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_one :group, autosave: true
   has_many :groups, through: :group_members
   attr_accessor :password
-  attr_accessible :name,:lastname, :email, :password, :password_confirmation
+  attr_accessible :name,:lastname, :email, :password, :password_confirmation, :user_type
 
   before_save :encrypt_password, :set_domain
 

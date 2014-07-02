@@ -187,7 +187,7 @@ class Apologywiz::BrightTextApplicationsController < ApologywizController
 
   def clone
     @bt_application_original = BrightTextApplication.find(params[:id])
-    @bt_application = @bt_application_original.clone
+    @bt_application = @bt_application_original.dup
     number_of_similar_name_applications = BrightTextApplication.count(:conditions => ["name like ?", @bt_application_original.name + "%"])
     @bt_application.name = @bt_application.name + "-" + (number_of_similar_name_applications + 1).to_s
     @categories = @bt_application_original.story_set_categories(:include => :stories)

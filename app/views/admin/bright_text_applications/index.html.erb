@@ -6,13 +6,13 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-2 col-md-offset-9">
+    <div class="col-md-3 col-md-offset-1">
+      <h3><%=session[:style].app_alias.pluralize.titleize%> List</h3>
+    </div>
+    <div class="col-md-2 col-md-offset-5">
       <span class="pull-right">
         <%= link_to 'New ' + session[:style].app_alias.titleize, new_admin_bright_text_application_path, {:class => "btn btn-success"}%>
         </span>
-    </div>
-    <div class="col-md-4 col-md-offset-1">
-      <h3><%=session[:style].app_alias.pluralize.titleize%> List</h3>
     </div>
   </div>
   <br/>

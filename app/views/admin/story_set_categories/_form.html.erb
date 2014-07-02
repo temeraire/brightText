@@ -6,8 +6,6 @@
 		$("#story_set_category_name").isValid(settings.validators);
    });
   });
-
-
 </script>
 
 <%= form_for([:admin, @story_set_category],:validate=>true, :html => { :role => "form", :class=>"form"} ) do |f| %>
@@ -34,9 +32,9 @@
   </div>
   <% unless @story_sets.blank? %>
         <div class="form-group">
-                <label for="categories" class="control-label">Select Story Sets to clone</label>
+                <label for="story_sets" class="control-label">Select Story Sets to clone</label>
 	  	<% @story_sets.each do |story_set| %>
-                <div id="categories" class="checkbox">
+                <div id="story_sets" class="checkbox">
                     <label for="<%=story_set.id%>">
                       <%= check_box_tag "story_sets[]", story_set.id, true %><%= story_set.name %>
                     </label>
