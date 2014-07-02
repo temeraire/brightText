@@ -43,8 +43,8 @@ class Story < ActiveRecord::Base
 
     dummy = Story.new
     dummy.name = "Replace me!"
-    dummy.description = "Go to www.apologywiz.com/create and create your personal stuff, which will then appear here!"
-    dummy.descriptor = "{\"story\":[{\"container\":[\"Go to www.apologywiz.com/create and create your personal stuff, which will then appear here!\"]},{\"container\":[]}],\"piles\":{},\"storyDimensions\":[],\"meta\":{}}"
+    dummy.description = "Go to www.apologywiz.com/create and create your personal stuff, which will then appear here! Note: this should be done from a computer, not a mobile device, as these devices restrict what we can do with highlighted text."
+    dummy.descriptor = "{\"story\":[{\"container\":[\"Go to www.apologywiz.com/create and create your personal stuff, which will then appear here!\"]},{\"container\":[]},{\"container\":\Note: this should be done from a computer, not a mobile device, as these devices restrict what we can do with highlighted text.\"]},{\"container\":[]}],\"piles\":{},\"storyDimensions\":[],\"meta\":{}}"
     dummy.rank = 1
 
     return dummy
