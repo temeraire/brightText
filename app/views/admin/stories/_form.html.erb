@@ -127,21 +127,17 @@ DIV.btEditor{
     </div>
   <% end %>
   <div class="form-group">
-      <%= f.label :name, :class=>'control-label' %>
-      <%= f.text_field :name, :class=>'form-control' %>
+    <%= f.label :name, :class=>'control-label' %>
+    <%= f.text_field :name, :class=>'form-control' %>
   </div>
   <div class="form-group">
-      <label for="strories" class="control-label"><%= session[:style].set_alias.titleize %></label>
-      <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id ), :id, :name, @story.story_set_id), {},{:class => "form-control"}%>
+    <label for="strories" class="control-label"><%= session[:style].set_alias.titleize %></label>
+    <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id ), :id, :name, @story.story_set_id), {},{:class => "form-control"}%>
   </div>
 
-  <div class="form-group">
-    <div class="col-md-10">
-     <div class="checkbox">
-        <%= f.label :public%>
-        <%= f.check_box :public%>
-    </div>     
-    </div>
+  <div class="form-group">   
+    <%= f.label :public, :class=>'control-label' %>
+    <%= f.check_box :public%> 
   </div>
 
   <%#= hidden_field_tag 'format', 'json' %>
