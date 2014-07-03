@@ -39,8 +39,11 @@ class Api::BrightTextApplicationsController < ActionController::Base
             render :json=> { :success => "true"} 
           else
             puts "data is NOT verified"
-            render :json=> { :success => "false"}      
+            render :json=> { :success => "false", :message=>"Purchase data is not valid!"}      
           end
+        else
+          render :json=> { :success => "false", :message=>"Username/password does not match!"} 
+          
         end        
       }
     end
