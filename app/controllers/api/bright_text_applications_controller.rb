@@ -12,13 +12,59 @@ class Api::BrightTextApplicationsController < ActionController::Base
     
     format = request[:format]
     data = request[:data]
-    signature = request[:signature]    
+    signature = request[:signature]   
+    
+    forgot_password = false
+    if (@user = User.authenticate @user_name, @password)
+      @bt_application = BrightTextApplication.find(@application_id)
+    else
+      @bt_application = BrightTextApplication.find(@application_id)
+      @user = User.find_by_email(@user_name);
+      if(@user.blank?)
+        @user = User.new
+        @user.email = @user_name;
+        @user.password = @password
+        @user.domain_id = @bt_application.domain_id
+        @user.customer!
+        @user.group = Group.new
+        @user.group.name = "Apologies"
+
+        if @user.save
+          GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
+
+          @category = StorySetCategory.dummy_story_set_category
+
+          @category.application_id = @bt_application.id
+          @category.domain_id = @bt_application.domain_id
+          @category.user_id = @user.id
+
+          if @category.save
+            @story_set = StorySet.dummy_story_set
+            @story_set.category_id = @category.id
+
+            @story_set.bright_text_application_id = @bt_application.id
+            @story_set.domain_id = @bt_application.domain_id
+            @story_set.user_id = @user.id
+
+            if @story_set.save
+              @story = Story.dummy_story
+              @story.story_set_id = @story_set.id
+
+              @story.bright_text_application_id = @bt_application.id
+              @story.domain_id = @bt_application.domain_id
+              @story.user_id = @user.id
+              @story.save
+            end
+          end
+        else
+          forgot_password = true;
+        end
+      end
+    end
     
     respond_to do |format|
       format.json {  
-        verified = false
-        if (@user = User.authenticate @user_name, @password)    
-          
+        verified = false        
           @user_app = UserApp.new
           @user_app.user_id = @user.id
           @user_app.bright_text_application_id = @application_id
@@ -35,16 +81,16 @@ class Api::BrightTextApplicationsController < ActionController::Base
           @user_app.save
 
           if verified
-            puts "data is verified"
-            render :json=> { :success => "true"} 
+             if forgot_password   
+                puts "data is verified"
+                render :json=> { :success => "true", :message=>"Upgraded but password is not correct!"} 
+             else
+                render :json=> { :success => "true", :message=>"Upgraded successfully!"} 
+             end
           else
             puts "data is NOT verified"
             render :json=> { :success => "false", :message=>"Purchase data is not valid!"}      
-          end
-        else
-          render :json=> { :success => "false", :message=>"Username/password does not match!"} 
-          
-        end        
+          end     
       }
     end
   end
