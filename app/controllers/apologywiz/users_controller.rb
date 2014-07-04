@@ -99,7 +99,7 @@ class Apologywiz::UsersController < ApologywizController
         redirect_to apologywiz_stories_path, notice: "Logged in!"
       else
         #redirect_to 'http://apologywiz.com'   
-        flash.now[:error] = 'In order to register and log in, you must have the paid version of Apology Wiz! You can find it here:'
+        flash.now[:error] = 'In order to log in and create personal content, you must have the paid version of Apology Wiz! You can find it here:'
         render 'unpaid.html.erb', :layout=>true
       end
     else

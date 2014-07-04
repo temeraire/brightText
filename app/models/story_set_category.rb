@@ -17,7 +17,7 @@ class StorySetCategory < ActiveRecord::Base
 
   def set_rank
     if self.rank.blank? || self.rank == 0 || self.application_id_changed?
-      self.rank = 1 + StorySetCategory.where(:application_id => self.application_id).maximum(:rank).to_i
+      self.rank = 1 + StorySetCategory.where(:user_id => self.user_id).maximum(:rank).to_i
     end
   end
 

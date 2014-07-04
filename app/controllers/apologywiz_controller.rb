@@ -42,6 +42,7 @@ class ApologywizController < ActionController::Base
       story.user_id = session[:user_id]
       story.public = false
       story.story_set_id = story_set_id
+      story.story_authors.build().user_id = session[:user_id]
       story.save
     end
   end
@@ -52,6 +53,7 @@ class ApologywizController < ActionController::Base
     story.user_id = session[:user_id]
     story.public = false
     story.story_set_id = story_set_id
+    story.story_authors.build().user_id = session[:user_id]
     story.save
   end
 

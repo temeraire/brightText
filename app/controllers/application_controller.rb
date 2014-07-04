@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
     story_ids.each do |id|
       story = Story.find(id).dup
       story.story_set_id = story_set_id
+      story.story_authors.build().user_id = session[:user_id]
       story.save
     end
   end
