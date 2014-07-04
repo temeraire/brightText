@@ -10,4 +10,10 @@ class SharingMailer < ActionMailer::Base
     @sender = sender
     mail :to => email, subject: "Invitation"
   end
+  
+  def invitation_registered(sender, receiver)    
+    @sender = sender
+    @receiver = receiver
+    mail :to => receiver.email, subject: "Invitation"
+  end
 end
