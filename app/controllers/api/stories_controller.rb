@@ -41,8 +41,6 @@ class Api::StoriesController < ActionController::Base
         if @user.save
           GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         end
-      else
-        GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
       end
     end
 

@@ -29,4 +29,37 @@ class Api::UsersController < ActionController::Base
       }
     end
   end
+  
+  def register_user
+    
+    @user_name = request[:user_name]
+    @password = request[:password]
+    @application_id = request[:application_id]
+    
+    @bt_application = BrightTextApplication.find(@application_id)
+    @user = User.find_by_email(@user_name);      
+      
+    respond_to do |format|
+      format.json {   
+        if(@user.blank?)
+          @user = User.new
+          @user.email = @user_name;
+          @user.password = @password
+          @user.domain_id = @bt_application.domain_id
+          @user.customer!
+          @user.group = Group.new
+          @user.group.name = "Apologies"
+
+          if @user.save
+            GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
+            render :json=> { :success => "true", :message=>"User is registered successfully!!"} 
+          else          
+            render :json=> { :success => "false", :message=>"Error is registering the user!"}      
+          end 
+        else
+          render :json=> { :success => "false", :message=>"User is already registered!"}           
+        end
+      }
+    end
+  end
 end
