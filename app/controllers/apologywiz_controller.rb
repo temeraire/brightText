@@ -91,6 +91,7 @@ class ApologywizController < ActionController::Base
     category_ids.each do |category_id|
       category_original = StorySetCategory.find(category_id)
       category = category_original.dup
+      category.user_id = session[:user_id]
       category.application_id = application_id
       if category.save
         #debugger

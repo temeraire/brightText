@@ -146,11 +146,11 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def clone_silently
     @story_set_category_original = StorySetCategory.find(params[:id])
     @story_set_category = @story_set_category_original.dup
-    number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id).count('id')
-    @story_set_category.name = @story_set_category.name.partition("-")[0] + "-" + (number_of_similar_named_storyset_categories + 1).to_s
     @story_set_category.domain_id = session[:domain].id
     @story_set_category.user_id = session[:user_id]
-    
+    number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND user_id = ?", @story_set_category_original.name + "%", @story_set_category.user_id).count('id')
+    @story_set_category.name = @story_set_category.name.partition("-")[0] + "-" + (number_of_similar_named_storyset_categories + 1).to_s
+
     story = Story.find(params[:story_id])
     #story_set_ids = @story_set_category_original.story_sets.select(:id)
     

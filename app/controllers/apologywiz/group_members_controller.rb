@@ -52,11 +52,15 @@ class Apologywiz::GroupMembersController < ApologywizController
     @group_member = GroupMember.new(params[:group_member])
 
     @user = User.find_by_email(@group_member.email)
-    @group_member.user_id = @user.id if !@user.nil?
+    @group_member.user_id = @user.id if @user.present?
     @owner = User.find(session[:user_id])
     @group_member.group_id = @owner.group.id
+    if @user.present?
+      SharingMailer.invitation_registered(@owner, @user).deliver
+    else
+      SharingMailer.invitation(@owner.email, @group_member.email).deliver
+    end
     
-    SharingMailer.invitation(@owner.email, @group_member.email).deliver
 self
     respond_to do |format|
       if @group_member.save
