@@ -24,7 +24,7 @@ class Apologywiz::StoriesController < ApologywizController
     @application = find_application
 
     stories_sql =
-      "SELECT stories.id as id, story_set_categories.id as category_id, concat(story_set_categories.name,'-',stories.name) as name, stories.descriptor as descriptor, CASE WHEN stories.user_id = ? THEN 1 ELSE 0 END AS user_id FROM stories " + 
+      "SELECT stories.id as id, story_set_categories.id as category_id, concat(story_set_categories.name,'-',stories.name) as name, stories.public as public, stories.descriptor as descriptor, CASE WHEN stories.user_id = ? THEN 1 ELSE 0 END AS user_id FROM stories " + 
       "INNER JOIN story_sets ON stories.story_set_id = story_sets.id "+
       "INNER JOIN story_set_categories ON story_sets.category_id = story_set_categories.id " +
       "WHERE stories.bright_text_application_id = ? " +
