@@ -439,7 +439,7 @@ var BrightTextEditor = function(divId, editable) {
         return pileEls.length > 0 ? pileEls[ index ].text : "[NO MATCH IN TONE]";
     };
 
-    this._createChangepointFromSelection = function() {
+    this._createChangepointFromSelection = function(event, element) {
         var selection = this._getSelectedText();
         //alert("selected text: " + selection );
 
@@ -519,7 +519,7 @@ var BrightTextEditor = function(divId, editable) {
         if (self._btChangeCallback)
             self._btChangeCallback();
 
-        self._cpEdit(cp[0]);
+        self._cpEdit(event, cp[0]);
     };
 
     this._cpToPlainText = function(el) {
@@ -540,14 +540,14 @@ var BrightTextEditor = function(divId, editable) {
 
     };
 
-    this._cpEdit = function(el){
+    this._cpEdit = function(event, el){
         var changepoint = this._changePoints[ el["dataIndex"] ];
         var pile = this._getPileFor(changepoint);
 
         var options = [];
 
-        $.pileEditor(pile, options, _modelFactory, self);
-    }
+        $.pileEditor(event, pile, options, _modelFactory, self);
+    };
 
     this._cpSelect = function(event) {
         var el = event.target;
@@ -686,14 +686,14 @@ var BrightTextEditor = function(divId, editable) {
                 selector: "SPAN.plainText",
                 choices: [{
                         label: "Create Changepoint",
-                        action: function(element) {
+                        action: function(event, element) {
                             //alert(" convert to BT ");
-                            self._createChangepointFromSelection();
+                            self._createChangepointFromSelection(event, element);
                         }
                     },
                     {
                         label: "About...",
-                        action: function(element) {
+                        action: function(event, element) {
                             alert("BrightText Wand 1.0");
                         }
                     }]
@@ -702,7 +702,7 @@ var BrightTextEditor = function(divId, editable) {
                 selector: "DIV.btContent",
                 choices: [{
                         label: "About...",
-                        action: function(element) {
+                        action: function(event, element) {
                             alert("BrightText Wand 1.0");
                         }
                     }]
@@ -711,23 +711,23 @@ var BrightTextEditor = function(divId, editable) {
                 selector: "SPAN.changePoint",
                 choices: [{
                         label: "Edit Changepoint",
-                        action: function(element) {
-                            self._cpEdit(element);
+                        action: function(event, element) {
+                            self._cpEdit(event, element);
                         }
                     }, {
                         label: "Delete Changepoint",
-                        action: function(element) {
+                        action: function(event, element) {
                             self._cpDelete(element);
                         }
                     }, {
                         label: "Convert to Plain Text",
-                        action: function(element) {
+                        action: function(event, element) {
                             self._cpToPlainText(element);
                         }
                     },
                     {
                         label: "About...",
-                        action: function(element) {
+                        action: function(event, element) {
                             alert("BrightText Wand 1.0");
                         }
                     }]
@@ -870,6 +870,18 @@ var _modelFactory = new ObjectFactory();
 
     function showmenu(event, choices, filter) {
         event.stopPropagation();
+        e = event || window.event;
+        var posx = 0;
+        var posy = 0;
+
+        if (e.clientX || e.clientY) 	{
+            posx = e.clientX;
+            posy = e.clientY;
+        }
+        else if (e.pageX || e.pageY){
+            posx = e.pageX;
+            posy = e.pageY;
+        }
         resetMenu();
         $(document.body).mousedown(function(event) {
             if ($(event.target).hasClass("largeChoiceMenu")) {
@@ -922,8 +934,8 @@ var _modelFactory = new ObjectFactory();
             'cH': $(container).height()
         };
         $(container).css({
-            'left': ((event.clientX + size.cW) > size.width ? (event.clientX - size.cW) : event.clientX),
-            'top': ((event.clientY + size.cH) > size.height && event.clientY > size.cH ? (event.clientY + size.sT - size.cH) : event.clientY + size.sT)
+            'left': ((posx + size.cW) > size.width ? (posx - size.cW) : posx),
+            'top': ((posy + size.cH) > size.height && posy > size.cH ? (posy + size.sT - size.cH) : posy + size.sT)
 
         }).show();
         $(container).addClass('contextContainer');
@@ -987,6 +999,18 @@ var _modelFactory = new ObjectFactory();
 
         this._showmenu = function(event, choices) {
             event.stopPropagation();
+            e = event || window.event;
+            var posx = 0;
+            var posy = 0;
+
+            if (e.clientX || e.clientY) 	{
+                posx = e.clientX;
+                posy = e.clientY;
+            }
+            else if (e.pageX || e.pageY){
+                posx = e.pageX;
+                posy = e.pageY;
+            }
             self._resetMenu();
             $(document.body).mousedown(function( ) {
                 self._resetMenu();
@@ -1010,8 +1034,8 @@ var _modelFactory = new ObjectFactory();
                 'cH': $(container).height()
             };
             $(container).css({
-                'left': ((event.clientX + size.cW) > size.width ? (event.clientX - size.cW) : event.clientX),
-                'top': ((event.clientY + size.cH) > size.height && event.clientY > size.cH ? (event.clientY + size.sT - size.cH) : event.clientY + size.sT)
+                'left': ((posx + size.cW) > size.width ? (posx - size.cW) : posx),
+                'top': ((posy + size.cH) > size.height && posy > size.cH ? (posy + size.sT - size.cH) : posy + size.sT)
 
             }).show();
             $(container).addClass('contextContainer');
@@ -1088,10 +1112,10 @@ var _modelFactory = new ObjectFactory();
     var submenu;
     var btedit;
 
-    $.pileEditor = function(pile, options, modelFactory, btEditor) {
+    $.pileEditor = function(event, pile, options, modelFactory, btEditor) {
         choices = options;
         btedit = btEditor;
-        showEditor(pile, options, modelFactory);
+        showEditor(event, pile, options, modelFactory);
     };
 
     //defaults
@@ -1107,8 +1131,19 @@ var _modelFactory = new ObjectFactory();
         $(container).hide().attr('id', 'pileEditor').css('position', 'absolute').appendTo(document.body);
     });
 
-    function showEditor(pile, options, factory) {
-        //event.stopPropagation();
+    function showEditor(event, pile, options, factory) {
+        e = event || window.event;
+        var posx = 0;
+	var posy = 0;
+	
+	if (e.clientX || e.clientY) 	{
+            posx = e.clientX;
+            posy = e.clientY;
+	}
+        else if (e.pageX || e.pageY){
+            posx = e.pageX;
+            posy = e.pageY;
+	}
         modelFactory = factory;
         resetMenu();
         $(document.body).mousedown(function(event) {
@@ -1135,8 +1170,8 @@ var _modelFactory = new ObjectFactory();
             'cH': $(container).height()
         };
         $(container).css({
-            'left': ((event.clientX + size.cW) > size.width ? (event.clientX - size.cW) : event.clientX),
-            'top': ((event.clientY + size.cH) > size.height && event.clientY > size.cH ? (event.clientY + size.sT - size.cH) : event.clientY + size.sT)
+            'left': ((posx + size.cW) > size.width ? (posx - size.cW) : posx),
+            'top': ((posy + size.cH) > size.height && posy > size.cH ? (posy + size.sT - size.cH) : posy + size.sT)
 
         }).show();
 
