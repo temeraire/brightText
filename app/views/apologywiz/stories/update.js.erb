@@ -4,8 +4,15 @@
     keyboard: true
   });
 
-<% else %>
-  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while updating Apology</p>');
+<% 
+  else 
+    if @story.errors.get(:user_id).present?
+      message = @story.errors.get(:user_id)[0]
+    else
+      message = "An error occurred while updating Apology"      
+    end
+%>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\"><%=message%></p>');
   $('#dialog').modal({
     keyboard: true
   });

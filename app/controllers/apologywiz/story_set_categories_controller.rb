@@ -68,6 +68,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     @story_set_category = StorySetCategory.new(params[:story_set_category])
     @story_set_category.domain_id = session[:domain].id
     @story_set_category.user_id = session[:user_id]
+    @story_set_category.application_id = session[:br_application_id]
 
     respond_to do |format|
       if @story_set_category.save

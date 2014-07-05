@@ -1,6 +1,19 @@
 class Apologywiz::StoriesController < ApologywizController
   protect_from_forgery :except => [:index]
   before_filter :login_required
+  
+  
+  class NotOwner < StandardError
+  end
+  
+  rescue_from NotOwner, with: :not_owner
+  
+  def not_owner(exception)
+    puts "Exception: #{exception.message}", current_user, request.remote_ip
+    respond_to do |format|             
+        format.js
+    end
+  end
 
   # GET /stories
   # GET /stories.xml
@@ -34,9 +47,13 @@ class Apologywiz::StoriesController < ApologywizController
   # GET /stories/1.xml
   def show
     @story = Story.find(params[:id])
-    if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id]
+    if !@story.public? || !@story.shared_with_me(session[:user_id])
+      if @story.user_id != session[:user_id]        
+        @story.errors.add(:user_id,"Sorry! You are not creator of this Apology")
+        raise NotOwner
+      end
     end
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @story }
@@ -72,8 +89,11 @@ class Apologywiz::StoriesController < ApologywizController
   # GET /stories/1/edit
   def edit
     @story = Story.find(params[:id])
-    if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id]
+    if !@story.public? || !@story.shared_with_me(session[:user_id])
+      if @story.user_id != session[:user_id]        
+        @story.errors.add(:user_id,"Sorry! You are not creator of this Apology")
+        raise NotOwner
+      end
     end
   end
 
@@ -86,12 +106,13 @@ class Apologywiz::StoriesController < ApologywizController
     story_set.bright_text_application_id = session[:br_application_id]
     story_set.user_id = current_user.id
     #create story
-	@story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
+    @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
     @story.name = "Apology#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
-	@story.story_authors.build().user_id = session[:user_id]
-	#set category details
+    @story.user_id = session[:user_id]
+    @story.story_authors.build().user_id = session[:user_id]
+    #set category details
     @story.story_set.story_set_category.domain_id = session[:domain].id
     @story.story_set.story_set_category.application_id = session[:br_application_id]
     @story.story_set.story_set_category.user_id = current_user.id
@@ -117,8 +138,11 @@ class Apologywiz::StoriesController < ApologywizController
   # PUT /stories/1.xml
   def update
     @story = Story.find(params[:id])
-    if !@story.public?
-      raise ' not owner ' unless @story.user_id == session[:user_id]
+    if !@story.shared_with_me(session[:user_id])
+      if @story.user_id != session[:user_id]        
+        @story.errors.add(:user_id,"Sorry! You are not creator of this Apology")
+        raise NotOwner
+      end
     end
     
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
@@ -145,7 +169,10 @@ class Apologywiz::StoriesController < ApologywizController
   # DELETE /stories/1.xml
   def destroy
     @story = Story.find(params[:id])
-    raise ' not owner ' unless @story.user_id == session[:user_id]
+    if @story.user_id != session[:user_id]        
+      @story.errors.add(:user_id,"Sorry! You are not creator of this Apology")
+      raise NotOwner
+    end
     @story.destroy
 
     respond_to do |format|

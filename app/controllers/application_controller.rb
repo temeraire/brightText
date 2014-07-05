@@ -64,5 +64,5 @@ class ApplicationController < ActionController::Base
         clone_story_sets(story_set_ids, category.id)
       end
     end
-  end
+  end 
 end
