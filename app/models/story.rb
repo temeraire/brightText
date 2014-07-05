@@ -38,6 +38,18 @@ class Story < ActiveRecord::Base
     setObj = StorySet.find_by_sql [ "select * from story_sets where id = ?", story_set_id ]
     return setObj[0].name unless setObj == nil || setObj.count < 1
   end
+  
+  def shared_with_me(user_id)
+    owner = User.find(self.user_id)
+    group = Group.find_by_user_id(owner.id)
+    if group.present?
+      group_member = GroupMember.where(:group_id=>group.id,:user_id=>user_id).first
+      if group_member.present?
+        return true
+      end    
+    end    
+    return false    
+  end
 
   def self.dummy_story()
 

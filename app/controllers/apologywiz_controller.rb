@@ -2,7 +2,7 @@ class ApologywizController < ActionController::Base
   #protect_from_forgery
   #  after_filter{
   #    puts response.body
-  #  }
+  #  } 
   def login_required
     if session[:domain].present? && session[:user_id].present?      
       return true
@@ -37,13 +37,7 @@ class ApologywizController < ActionController::Base
 
   def clone_stories(story_ids, story_set_id)
     story_ids.each do |id|
-      story = Story.find(id).dup
-      story.domain_id = session[:domain].id
-      story.user_id = session[:user_id]
-      story.public = false
-      story.story_set_id = story_set_id
-      story.story_authors.build().user_id = session[:user_id]
-      story.save
+      clone_story(id, story_set_id)
     end
   end
   
@@ -51,6 +45,7 @@ class ApologywizController < ActionController::Base
     story = Story.find(story_id).dup
     story.domain_id = session[:domain].id
     story.user_id = session[:user_id]
+    story.bright_text_application_id = session[:br_application_id]
     story.public = false
     story.story_set_id = story_set_id
     story.story_authors.build().user_id = session[:user_id]
@@ -65,6 +60,7 @@ class ApologywizController < ActionController::Base
       story_set.category_id = category_id
       story_set.domain_id = session[:domain].id
       story_set.user_id = session[:user_id]
+      story_set.bright_text_application_id = session[:br_application_id]
       #debugger
       if story_set.save
         story_ids = story_set_original.stories.select(:id)
@@ -80,6 +76,7 @@ class ApologywizController < ActionController::Base
     story_set.category_id = category_id
     story_set.domain_id = session[:domain].id
     story_set.user_id = session[:user_id]
+    story_set.bright_text_application_id = session[:br_application_id]
     #debugger
     if story_set.save      
       clone_story(story_id, story_set.id)
@@ -91,6 +88,7 @@ class ApologywizController < ActionController::Base
     category_ids.each do |category_id|
       category_original = StorySetCategory.find(category_id)
       category = category_original.dup
+      category.domain_id = session[:domain].id
       category.user_id = session[:user_id]
       category.application_id = application_id
       if category.save
@@ -99,5 +97,6 @@ class ApologywizController < ActionController::Base
         clone_story_sets(story_set_ids, category.id)
       end
     end
-  end
+  end 
+  
 end
