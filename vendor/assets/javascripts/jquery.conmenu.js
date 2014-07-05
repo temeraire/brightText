@@ -50,7 +50,7 @@
           
           actionElement.mousedown( function(clickEvent){
             clickEvent.stopPropagation();
-            action( event.target );
+            action(event, event.target );
             resetMenu();
           });
           
