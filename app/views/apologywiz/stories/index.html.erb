@@ -190,6 +190,9 @@ $(document).ready(function() {
     $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
     $("#astep_2").tab('show');
     $('#story_category').val(story["name"]);
+    if(story["public"])
+      $('#story_public').prop("checked", true);
+      
   });
 
   $("#groups-table").on('click','a.remove_member', function(event){
