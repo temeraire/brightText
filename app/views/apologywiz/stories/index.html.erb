@@ -405,7 +405,7 @@ $("#astep_2").click(function() {
               $("#category_name").text($("#story_category").val());
               $("#name").text($("#story_name").val());
               $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+data["id"]);
-              $('#dialog-message').replaceWith('<p id=\"dialog-message\">Your new apology title \'' + title + '\' is created.</p>');
+              $('#dialog-message').replaceWith('<p id=\"dialog-message\">Your new apology \'' + title + '\' has been created.</p>');
               $('#dialog').modal({
                 keyboard: true
               });
