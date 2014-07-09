@@ -15,12 +15,16 @@ class Api::UsersController < ActionController::Base
           
           @user_app = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>application_id).first
           
-          if platform == "ios" && @user_app.ios?
-            render :json=> { :success => "true"}
-          elsif platform == "android" && @user_app.android?
-            render :json=> { :success => "true"}
+          if @user_app.present?
+            if platform == "ios" && @user_app.ios?
+              render :json=> { :success => "true"}
+            elsif platform == "android" && @user_app.android?
+              render :json=> { :success => "true"}
+            else
+              render :json=> { :success => "false", :message=>"You are not registered for this platform!"}      
+            end
           else
-            render :json=> { :success => "false", :message=>"You are not registered for this platform!"}      
+            render :json=> { :success => "false", :message=>"You are not registered for this platform!"}
           end
         else
           render :json=> { :success => "false", :message=>"Username/password does not match!"}      
