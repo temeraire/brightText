@@ -134,17 +134,17 @@ function showStories(){
               rows += "<tr>" +
               "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
               "<td>" + 
-              "<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" + 
-              " | " +
+              <%#*"<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +%> 
+              <%#*" | " +%>
               "<a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Delete</a>" + 
               "</td>" +
               "</tr>";
             }else{              
               rows += "<tr>" +
               "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
-              "<td>" + 
-              "<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +  
-              "</td>" +
+              <%#*"<td>" +%> 
+              <%#*"<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +%>  
+              <%#*"</td>" +%>
               "</tr>";
             }
           });
