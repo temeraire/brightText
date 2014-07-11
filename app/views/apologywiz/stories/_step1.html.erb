@@ -5,11 +5,11 @@
           <h3>New Apology</h3>
           <%= form_for([:apologywiz, @story], :html => { :role => "form", :class=>"form"}, :validate => true) do |f| %>
           <div class="form-group">
-            <label class="control-label">Name <font size="3">(will display on your device)</font></label>
+            <label class="control-label">Title <font size="3">(will display on your device)</font></label>
             <%= f.text_field :category, class: 'form-control', placeholder: "example: John's Apologies" %>
           </div>
           <div class="form-group">
-            <label class="control-label">Title <font size="3">(just for your reference -- displayed here only)</font></label>
+            <label class="control-label">Subtitle <font size="3">(optional -- displayed here only)</font></label>
             <%= f.text_field :name, class: 'form-control', placeholder: "example: Sorry I've been a creep" %>
           </div>
           <% end %>
@@ -17,15 +17,13 @@
       <div class="col-md-6">        
         <div class="col-md-offset-1 col-md-11">
           <h3>My Apologies <label class="control-label"><font size="3">(Click name to edit)</font></label></h3>
-          <form class="form-horizontal" role="form">
-            
-            <span class="pull-right">
-            <div class="form-group">
-              <div class="col-md-12">
-                <input type="text" class="form-control" id="filter" placeholder="Enter text to filter">
-              </div>            
-            </div>
-            </span>
+          <form class="form-horizontal" role="form">            
+              <div class="form-group">
+                <label class="col-md-offset-4 col-md-2 control-label" for="filter">Search</label>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" id="filter" placeholder="Enter text to filter">
+                </div>            
+              </div>
           </form>
         </div>
         <div class="col-md-offset-1 col-md-11">
