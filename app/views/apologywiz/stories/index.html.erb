@@ -373,7 +373,7 @@ $("#astep_2").click(function() {
   if(formSubmitted===false){
     var title = $("#story_category").val();
     if(title===''){
-      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Name can\'t be blank</p>');
+      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
       $('#dialog').modal({
         keyboard: true
       });
@@ -388,7 +388,7 @@ $("#astep_2").click(function() {
         }
       }
       if(found){ //if(subtitle===''){
-        $('#dialog-message').replaceWith('<p id=\"dialog-message\">You\'ve already got an apology named \'' + title + '\'. Please give this one a new name.</p>');
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">You\'ve already got an apology titled \'' + title + '\'. Please give this one a new title.</p>');
         $('#dialog').modal({
           keyboard: true
         });
@@ -447,7 +447,5 @@ $("#astep_3").click(function() {
         });
     };
 })();
-
-
 
 </script>
