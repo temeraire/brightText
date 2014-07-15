@@ -62,6 +62,7 @@ BtWeb::Application.routes.draw do
     end
 
     get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
+    get "/story_set_categories/:id/story_sets" => "story_set_categories#category_story_sets", :as => :category_story_sets, :format => :json
     resources :story_set_categories do
       member do
         get :clone
@@ -70,6 +71,7 @@ BtWeb::Application.routes.draw do
         post :update_story_set_categories_rank
       end
     end
+    
 
     resources :bright_text_applications do
       member do
