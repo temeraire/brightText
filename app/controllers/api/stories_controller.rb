@@ -75,7 +75,8 @@ class Api::StoriesController < ActionController::Base
             "AND (stories.user_id = ? " +
             "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
             "WHERE group_members.email = ? ) " +
-            "OR stories.public = TRUE)";
+            "OR stories.public = TRUE) " +
+            "ORDER BY  story_set_categories.rank";
           categoryObjects = StorySetCategory.find_by_sql [@categories_sql, @bt_application.id, @user.id, @user.email ]
 
           categoryObjects.each do | category |
@@ -91,7 +92,8 @@ class Api::StoriesController < ActionController::Base
               "AND (stories.user_id = ? " +
               "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
               "WHERE group_members.email = ? ) " +
-              "OR stories.public = TRUE)";
+              "OR stories.public = TRUE) " +
+              "ORDER BY  story_sets.rank";
             storySetObjects = StorySet.find_by_sql [ @story_set_sql, category.id, @bt_application.id, @user.id, @user.email ]
             storySetObjects.each do | storySet |
               storySetEl = storySetsEl.add_element("StorySet");
@@ -104,7 +106,8 @@ class Api::StoriesController < ActionController::Base
                 "AND (stories.user_id = ? " +
                 "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
                 "WHERE group_members.email = ? ) " +
-                "OR stories.public = TRUE)";
+                "OR stories.public = TRUE) " +
+                "ORDER BY  stories.rank";
               storyEntries = Story.find_by_sql [@stories_sql, storySet.id, @bt_application.id, @user.id, @user.email ]
               storyEntries.each do | storyEntry |
                 storyEl = storiesEl.add_element("Story")
@@ -154,7 +157,8 @@ class Api::StoriesController < ActionController::Base
             "INNER JOIN story_sets ON story_set_categories.id = story_sets.category_id " +
             "INNER JOIN stories ON story_sets.id= stories.story_set_id " +
             "WHERE story_set_categories.application_id = ? " +
-            "AND stories.public = TRUE";
+            "AND stories.public = TRUE " +
+            "ORDER BY  story_set_categories.rank";
           categoryObjects = StorySetCategory.find_by_sql [@categories_sql, @bt_application.id]
 
           categoryObjects.each do | category |
@@ -167,7 +171,8 @@ class Api::StoriesController < ActionController::Base
               "SELECT DISTINCT story_sets.* FROM story_sets " +
               "INNER JOIN stories ON story_sets.id= stories.story_set_id " +
               "WHERE  story_sets.category_id = ? AND stories.bright_text_application_id = ? " +
-              "AND stories.public = TRUE";
+              "AND stories.public = TRUE " +
+            "ORDER BY  story_sets.rank";
             storySetObjects = StorySet.find_by_sql [ @story_set_sql, category.id, @bt_application.id]
             storySetObjects.each do | storySet |
               storySetEl = storySetsEl.add_element("StorySet");
@@ -177,7 +182,8 @@ class Api::StoriesController < ActionController::Base
               @stories_sql =
                 "SELECT DISTINCT stories.* FROM stories " +
                 "WHERE stories.story_set_id = ? AND stories.bright_text_application_id = ? " +
-                "AND stories.public = TRUE";
+                "AND stories.public = TRUE " +
+                "ORDER BY  stories.rank";
               
               storyEntries = Story.find_by_sql [@stories_sql, storySet.id, @bt_application.id]
               storyEntries.each do | storyEntry |
