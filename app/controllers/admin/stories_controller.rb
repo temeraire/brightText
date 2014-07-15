@@ -61,10 +61,10 @@ class Admin::StoriesController < ApplicationController
                 "SELECT DISTINCT stories.* FROM stories " +
                 "INNER JOIN story_authors ON stories.id = story_authors.story_id " +
                 "INNER JOIN users on story_authors.user_id = users.id " +
-                "WHERE (stories.name like ? OR stories.description like ? OR users.email like ? OR users.name like ? OR users.lastname like ?) " + 
+                "WHERE (stories.name like ? OR stories.description like ? OR stories.descriptor like ? OR users.email like ? OR users.name like ? OR users.lastname like ?) " + 
                 "AND stories.domain_id = ?";
       like_phrase = "%" + params[:q] + "%";
-      @stories = Story.find_by_sql [@stories_sql,like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
+      @stories = Story.find_by_sql [@stories_sql, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
               
 #      @stories = Story.where("stories.domain_id" => session[:domain].id);
 #      @stories = @stories.search_for params[:q]
