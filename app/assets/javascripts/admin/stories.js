@@ -25,3 +25,4 @@
 //= require jquery.fileupload
 //= require jquery.iframe-transport
 //= require ./confirm.js
+//= require ./ddd.js

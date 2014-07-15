@@ -61,10 +61,10 @@ class Admin::StoriesController < ApplicationController
                 "SELECT DISTINCT stories.* FROM stories " +
                 "INNER JOIN story_authors ON stories.id = story_authors.story_id " +
                 "INNER JOIN users on story_authors.user_id = users.id " +
-                "WHERE (stories.name like ? OR stories.description like ? OR users.email like ? OR users.name like ? OR users.lastname like ?) " + 
+                "WHERE (stories.name like ? OR stories.description like ? OR stories.descriptor like ? OR users.email like ? OR users.name like ? OR users.lastname like ?) " + 
                 "AND stories.domain_id = ?";
       like_phrase = "%" + params[:q] + "%";
-      @stories = Story.find_by_sql [@stories_sql,like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
+      @stories = Story.find_by_sql [@stories_sql, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
               
 #      @stories = Story.where("stories.domain_id" => session[:domain].id);
 #      @stories = @stories.search_for params[:q]
@@ -112,7 +112,7 @@ class Admin::StoriesController < ApplicationController
     number_of_similar_named_stories = Story.where("story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%").count('id')
     @story.name = @story.name.partition("-")[0] + "-" + (number_of_similar_named_stories + 1).to_s
     respond_to do |format|
-        format.html { render :action => "new" }
+        format.html { render :action => "clone" }
     end
   end
 
@@ -163,10 +163,10 @@ class Admin::StoriesController < ApplicationController
         format.json { render json: @story, status: :updated, location: @story }
         format.js
       else
-        logger.debug "#{@story}"
-        format.json{ render :json=> {:success => "false"} }
+        logger.debug "#{@story}"        
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
+        format.json{ render :json=> {:success => "false"} }
         format.js
       end
     end
@@ -181,6 +181,25 @@ class Admin::StoriesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
+    end
+  end
+  
+    # DELETE /stories/1
+  # DELETE /stories/1.xml
+  def publish
+    public = params[:public]
+    @story = Story.find(params[:id])
+    
+    respond_to do |format|
+      if @story.update_attribute(:public, public)
+        format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
+        format.xml  { head :ok }
+        format.json { render json: @story, status: :updated}
+        format.js
+      else        
+        format.json{ render :json=> {:success => "false"} }
+        format.js
+      end
     end
   end
 
