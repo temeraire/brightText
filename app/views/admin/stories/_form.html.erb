@@ -131,8 +131,19 @@ DIV.btEditor{
     <%= f.text_field :name, :class=>'form-control' %>
   </div>
   <div class="form-group">
-    <label for="strories" class="control-label"><%= session[:style].set_alias.titleize %></label>
-    <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:domain_id => session[:domain].id ), :id, :name, @story.story_set_id), {},{:class => "form-control"}%>
+    <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
+    <%= select_tag :category_id, options_from_collection_for_select(StorySetCategory.where(:application_id => session[:br_application_id]), :id, :name, @story.story_set.present? ? @story.story_set.category_id : 1), {:class => "form-control"}%>
+  </div>
+
+  <div class="form-group">
+    <label for="story_sets" class="control-label"><%= session[:style].set_alias.titleize %></label>
+    <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:category_id => @story.story_set_id), :id, :name, 
+      @story.story_set_id), {},{:class => "form-control", 
+      "data-option-dependent" => true,
+      "data-option-observed" => "category_id",
+      "data-option-url" => "/admin/story_set_categories/:story_set_id:/story_sets.json",
+      "data-option-key-method" => :id,
+      "data-option-value-method" => :name}%>
   </div>
 
   <div class="form-group">   

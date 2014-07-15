@@ -144,4 +144,17 @@ class Admin::StorySetCategoriesController < ApplicationController
       format.html { render :action => "new" }
     end
   end
+  
+    
+  def category_story_sets
+    if params[:id].present?
+      @story_sets = StorySet.where(:category_id => params[:id])
+    else
+      @story_sets = []
+    end
+
+    respond_to do |format|
+      format.json { render :json => @story_sets }
+    end
+  end
 end
