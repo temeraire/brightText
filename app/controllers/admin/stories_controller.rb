@@ -163,10 +163,10 @@ class Admin::StoriesController < ApplicationController
         format.json { render json: @story, status: :updated, location: @story }
         format.js
       else
-        logger.debug "#{@story}"
-        format.json{ render :json=> {:success => "false"} }
+        logger.debug "#{@story}"        
         format.html { render :action => "edit" }
         format.xml  { render :xml => @story.errors, :status => :unprocessable_entity }
+        format.json{ render :json=> {:success => "false"} }
         format.js
       end
     end
@@ -181,6 +181,25 @@ class Admin::StoriesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
       format.xml  { head :ok }
+    end
+  end
+  
+    # DELETE /stories/1
+  # DELETE /stories/1.xml
+  def publish
+    public = params[:public]
+    @story = Story.find(params[:id])
+    
+    respond_to do |format|
+      if @story.update_attribute(:public, public)
+        format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
+        format.xml  { head :ok }
+        format.json { render json: @story, status: :updated}
+        format.js
+      else        
+        format.json{ render :json=> {:success => "false"} }
+        format.js
+      end
     end
   end
 

@@ -128,6 +128,7 @@
               <td><%= authors %></td>
 
               <td>
+                <span><%= link_to story.public? ? 'Make Private' : 'Make Public', publish_admin_story_path(story, :public=> story.public? ? 'false' : 'true')%> | </span>
                 <span><%= link_to 'Clone', clone_admin_story_path(story)%> | </span>
                 <span><%= link_to 'Delete', admin_story_path(story), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
               </td>

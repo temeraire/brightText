@@ -45,6 +45,7 @@ BtWeb::Application.routes.draw do
     resources :stories do
       member do
         get :clone
+        get :publish
       end
       collection do
         post :update_stories_rank
