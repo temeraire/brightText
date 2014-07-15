@@ -1,0 +1,7 @@
+<% breadcrumb :story_set, @story_set unless @story_set.nil?%>
+<div class="col-md-10 col-md-offset-1">
+  <h3><%=session[:style].story_alias.titleize%> Being Cloned</h3>
+  <%= render 'form' %>
+</div>
+
+

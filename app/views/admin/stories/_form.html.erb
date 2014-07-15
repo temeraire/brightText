@@ -137,8 +137,8 @@ DIV.btEditor{
 
   <div class="form-group">
     <label for="story_sets" class="control-label"><%= session[:style].set_alias.titleize %></label>
-    <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:category_id => @story.story_set_id), :id, :name, 
-      @story.story_set_id), {},{:class => "form-control", 
+    <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:category_id => @story.story_set.present? ? @story.story_set.category_id : 1), :id, :name, 
+      @story.story_set.present? ? @story.story_set_id : 1), {},{:class => "form-control", 
       "data-option-dependent" => true,
       "data-option-observed" => "category_id",
       "data-option-url" => "/admin/story_set_categories/:story_set_id:/story_sets.json",
