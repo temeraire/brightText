@@ -7,6 +7,7 @@ class Admin::StorySetCategoriesController < ApplicationController
   # GET /story_categories.xml
   def index
     @filter  = request[:filter]
+    @page = params[:page]
     @applications = BrightTextApplication.where(:domain_id => session[:domain].id).order(:name)
     if !(@filter == "__none" || @filter == "__unassigned")
       @application = @applications.find_by_id @filter
@@ -61,6 +62,8 @@ class Admin::StorySetCategoriesController < ApplicationController
   # GET /story_categories/1/edit
   def edit
     @story_set_category = StorySetCategory.find(params[:id])
+    @page = params[:page]
+    session[:page]=@page
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
   end
 
@@ -90,7 +93,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s, :notice => session[:style].group_alias.titleize + ' was successfully updated.') }
+        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s + '&page=' + session[:page], :notice => session[:style].group_alias.titleize + ' was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

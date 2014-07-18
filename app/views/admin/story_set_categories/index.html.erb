@@ -1,6 +1,15 @@
 <script>
   $(function () {
-    $('.footable').footable();
+    $('.footable').footable().bind({		
+      'footable_paging' : function(e) {
+        $('a#edit_category').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+      }
+    });
+    
+    $('.footable-page a').filter('[data-page="<%=@page%>"]').trigger('click');
   });
   
   function onFilterSelect(){
@@ -95,7 +104,7 @@
               <td>
                 <span><%= link_to 'Clone', clone_admin_story_set_category_path(story_set_category) %> | </span>
                 <span><%= link_to 'Delete', admin_story_set_category_path(story_set_category), data:{:confirm => 'Are you sure?'}, :method => :delete %> | </span>
-                <span style="text-align: left;"><%= link_to 'Properties', edit_admin_story_set_category_path(story_set_category) %></span>
+                <span style="text-align: left;"><%= link_to 'Properties', edit_admin_story_set_category_path(story_set_category, :page=>'0'), :id=>'edit_category' %></span>
               </td>
             </tr>
           <% end %>

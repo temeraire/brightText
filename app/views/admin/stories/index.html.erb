@@ -2,11 +2,13 @@
   $(function () {
     $('.footable').footable().bind({		
       'footable_paging' : function(e) {
-        $('a#edit_story').each(function(){ 
-          this.href = "/admin/stories/1/edit?page=" + e.page;
+        $('a#edit_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
         });
       }
     });
+    
     $('.footable tbody').show();
     
     $('.footable-page a').filter('[data-page="<%=@page%>"]').trigger('click');
@@ -130,7 +132,7 @@
           %>
             <tr>
               <td><%= story.rank %></td>
-              <td><%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story, :page=>'0'), :id=>'edit_story' %></td>
+              <td><%= link_to story.name.blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story, :page=>'0'), :id=>'edit_story' %></td>
               <td><%= link_to story.description.blank? ? "" : highlight(story.description[0..29].gsub(/\s\w+\s*$/,'...'), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story, :page=>'0'), :id=>'edit_story' %></td>
               <td><%= check_box :story, :public, {:checked => story.public?, :disabled => true}%></td>
               <td><%= authors %></td>

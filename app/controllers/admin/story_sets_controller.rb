@@ -6,6 +6,7 @@ class Admin::StorySetsController < ApplicationController
   # GET /story_sets.xml
   def index
     @filter = request[:filter]
+    @page = params[:page]
     @category = StorySetCategory.find_by_id @filter
     if @category.blank?
       @application = find_application
@@ -85,6 +86,8 @@ class Admin::StorySetsController < ApplicationController
   # GET /story_sets/1/edit
   def edit
     @story_set = StorySet.find(params[:id])
+    @page = params[:page]
+    session[:page] = @page
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
   end
 
@@ -121,7 +124,7 @@ class Admin::StorySetsController < ApplicationController
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set.update_attributes(params[:story_set])
-        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s, :notice => session[:style].set_alias.titleize + ' was successfully updated.') }
+        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s + '&page=' + session[:page], :notice => session[:style].set_alias.titleize + ' was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
