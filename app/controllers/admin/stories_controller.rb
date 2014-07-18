@@ -8,6 +8,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories.xml
   def index
     @highlighted_phreses = params[:q]
+    @page = params[:page]
     @filter = request[:filter]
     session[:filter] = @filter
 
@@ -65,7 +66,6 @@ class Admin::StoriesController < ApplicationController
                 "AND stories.domain_id = ?";
       like_phrase = "%" + params[:q] + "%";
       @stories = Story.find_by_sql [@stories_sql, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
-              
 #      @stories = Story.where("stories.domain_id" => session[:domain].id);
 #      @stories = @stories.search_for params[:q]
 #      @highlighted_phreses = params[:q].split()
@@ -93,6 +93,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/new.xml
   def new
     @story = Story.new
+    @page = 0
 
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
@@ -119,6 +120,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1/edit
   def edit
     @story = Story.find(params[:id])
+    @page = params[:page]
   end
 
   # POST /stories

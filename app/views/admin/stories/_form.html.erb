@@ -188,7 +188,7 @@ DIV.btEditor{
 
   <div class="row">
     <div class="col-md-2">
-        <%= link_to 'Back', admin_stories_path(:filter=>session[:filter]),  {:class => "btn btn-default"}   %>
+        <%= link_to 'Back', admin_stories_path(:filter=>session[:filter], :page=>@page),  {:class => "btn btn-default"}   %>
     </div>
     <div class="col-md-10">
       <span class="pull-right">
