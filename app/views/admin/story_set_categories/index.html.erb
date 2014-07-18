@@ -7,7 +7,17 @@
           this.href = parts[0] + "=" + e.page;
         });
       }
-    });
+    });   
+    <%
+    if @page.present?
+      i = 0
+      num = @page.to_i / 5
+      while i < num  do
+        i+=1
+    %>
+      $('.footable-page-arrow a').filter('[data-page="limit-next"]').trigger('click');
+      <%end%>
+    <%end%>
     
     $('.footable-page a').filter('[data-page="<%=@page%>"]').trigger('click');
   });
