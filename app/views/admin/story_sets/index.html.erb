@@ -6,6 +6,14 @@
           var parts = this.href.split("=");
           this.href = parts[0] + "=" + e.page;
         });
+        $('a#delete_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#clone_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });        
       }
     });    
     <%
@@ -107,8 +115,8 @@
               <td><a href="/admin/stories?filter=<%= story_set.id %>"><%=story_set.name%></a></td>
               <td><a href="/admin/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>
               <td>
-                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set)%> | </span>
-                <span><%= link_to 'Delete', admin_story_set_path(story_set), data:{confirm: 'Are you sure?'}, :method => :delete %> | </span>
+                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set, :page=>'0'), :id=>'clone_story_set'%> | </span>
+                <span><%= link_to 'Delete', admin_story_set_path(story_set, :page=>'0'), data:{confirm: 'Are you sure?'}, :method => :delete, :id=>'delete_story_set' %> | </span>
                 <span><%= link_to 'Properties', edit_admin_story_set_path(story_set, :page=>'0'), :id=>'edit_story_set' %></span>
               </td>
             </tr>

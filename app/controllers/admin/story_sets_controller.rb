@@ -102,7 +102,7 @@ class Admin::StorySetsController < ApplicationController
     respond_to do |format|
       if @story_set.save
         clone_stories(params[:stories], @story_set.id) unless params[:stories].blank?
-        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s, :notice => session[:style].set_alias.titleize + ' was successfully created.' ) }
+        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s + "&page=" + session[:page].to_s, :notice => session[:style].set_alias.titleize + ' was successfully created.' ) }
         format.xml  { render :xml => @story_set, :status => :created, :location => @story_set }
       else
         format.html {
@@ -136,17 +136,20 @@ class Admin::StorySetsController < ApplicationController
   # DELETE /story_sets/1
   # DELETE /story_sets/1.xml
   def destroy
+    @page = params[:page]    
     @story_set = StorySet.find(params[:id])
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     @story_set.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_story_sets_path(:filter => @story_set.category_id.to_s) }
+      format.html { redirect_to admin_story_sets_path(:filter => @story_set.category_id.to_s, :page => @page) }
       format.xml  { head :ok }
     end
   end
 
-  def clone
+  def clone    
+    @page = params[:page]
+    session[:page]=@page
     @stories_set_original = StorySet.find(params[:id])
     @story_set = @stories_set_original.dup
     number_similar_named_storysets = StorySet.where("category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%").count('id');

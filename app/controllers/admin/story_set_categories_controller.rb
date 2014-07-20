@@ -77,7 +77,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     respond_to do |format|
       if @story_set_category.save
         clone_story_sets(params[:story_sets], @story_set_category.id) unless params[:story_sets].blank?
-        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s, :notice => session[:style].group_alias.titleize + ' was successfully created.') }
+        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s + "&page=" + session[:page].to_s, :notice => session[:style].group_alias.titleize + ' was successfully created.') }
         format.xml  { render :xml => @story_set_category, :status => :created, :location => @story_set_category }
       else
         format.html { render :action => "new" }
@@ -105,6 +105,7 @@ class Admin::StorySetCategoriesController < ApplicationController
   # DELETE /story_categories/1
   # DELETE /story_categories/1.xml
   def destroy
+    @page = params[:page]
     @story_set_category = StorySetCategory.find(params[:id])
     # @filter = @story_set_category.application_id.to_s
     # if ( @filter == nil || @filter == "0")
@@ -115,7 +116,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
+      format.html { redirect_to admin_story_set_categories_path(:filter => @story_set_category.application_id.to_s,  :page => @page) }
       format.xml  { head :ok }
     end
   end
@@ -137,6 +138,8 @@ class Admin::StorySetCategoriesController < ApplicationController
   end
 
   def clone
+    @page = params[:page]
+    session[:page]=@page
     @story_set_category_original = StorySetCategory.find(params[:id])
     @story_set_category = @story_set_category_original.dup
     number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id).count('id')

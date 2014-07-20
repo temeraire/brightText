@@ -5,6 +5,18 @@
         $('a#edit_story').each(function(){           
           var parts = this.href.split("=");
           this.href = parts[0] + "=" + e.page;
+        });        
+        $('a#publish_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page + "&public=" + parts[2];
+        });
+        $('a#clone_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#delete_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
         });
       }
     });
@@ -147,9 +159,9 @@
               <td><%= authors %></td>
 
               <td>
-                <span><%= link_to story.public? ? 'Make Private' : 'Make Public', publish_admin_story_path(story, :public=> story.public? ? 'false' : 'true')%> | </span>
-                <span><%= link_to 'Clone', clone_admin_story_path(story)%> | </span>
-                <span><%= link_to 'Delete', admin_story_path(story), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
+                <span><%= link_to story.public? ? 'Make Private' : 'Make Public', publish_admin_story_path(story, :public=> story.public? ? 'false' : 'true', :page=>'0'), :id=>'publish_story'%> | </span>
+                <span><%= link_to 'Clone', clone_admin_story_path(story, :page=>'0'), :id=>'clone_story'%> | </span>
+                <span><%= link_to 'Delete', admin_story_path(story, :page=>'0'), data:{confirm: 'Sure?'}, :method => :delete, :id=>'clone_story' %></span>
               </td>
             </tr>
           <% end %>
