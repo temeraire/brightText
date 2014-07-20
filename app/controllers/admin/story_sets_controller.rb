@@ -6,6 +6,7 @@ class Admin::StorySetsController < ApplicationController
   # GET /story_sets.xml
   def index
     @filter = request[:filter]
+    @page = params[:page]
     @category = StorySetCategory.find_by_id @filter
     if @category.blank?
       @application = find_application
@@ -85,6 +86,8 @@ class Admin::StorySetsController < ApplicationController
   # GET /story_sets/1/edit
   def edit
     @story_set = StorySet.find(params[:id])
+    @page = params[:page]
+    session[:page] = @page
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
   end
 
@@ -99,7 +102,7 @@ class Admin::StorySetsController < ApplicationController
     respond_to do |format|
       if @story_set.save
         clone_stories(params[:stories], @story_set.id) unless params[:stories].blank?
-        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s, :notice => session[:style].set_alias.titleize + ' was successfully created.' ) }
+        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s + "&page=" + session[:page].to_s, :notice => session[:style].set_alias.titleize + ' was successfully created.' ) }
         format.xml  { render :xml => @story_set, :status => :created, :location => @story_set }
       else
         format.html {
@@ -121,7 +124,7 @@ class Admin::StorySetsController < ApplicationController
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set.update_attributes(params[:story_set])
-        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s, :notice => session[:style].set_alias.titleize + ' was successfully updated.') }
+        format.html { redirect_to("/admin/story_sets?filter=" + @story_set.category_id.to_s + '&page=' + session[:page], :notice => session[:style].set_alias.titleize + ' was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -133,17 +136,20 @@ class Admin::StorySetsController < ApplicationController
   # DELETE /story_sets/1
   # DELETE /story_sets/1.xml
   def destroy
+    @page = params[:page]    
     @story_set = StorySet.find(params[:id])
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     @story_set.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_story_sets_path(:filter => @story_set.category_id.to_s) }
+      format.html { redirect_to admin_story_sets_path(:filter => @story_set.category_id.to_s, :page => @page) }
       format.xml  { head :ok }
     end
   end
 
-  def clone
+  def clone    
+    @page = params[:page]
+    session[:page]=@page
     @stories_set_original = StorySet.find(params[:id])
     @story_set = @stories_set_original.dup
     number_similar_named_storysets = StorySet.where("category_id = ? AND name like ?",@stories_set_original.category_id, @story_set.name + "%").count('id');

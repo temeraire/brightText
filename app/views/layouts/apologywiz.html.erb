@@ -19,7 +19,7 @@
                 current_user = User.find session[:user_id]
             %>            
               <span class="pull-right">
-                <a href="/apologywiz/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.nil? ? current_user.name : current_user.email%></font>
+                <a href="/apologywiz/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.present? ? current_user.name : current_user.email%></font>
               </span>
             <% end %>
           </div>

@@ -1,6 +1,33 @@
 <script>
   $(function () {
-    $('.footable').footable();
+    $('.footable').footable().bind({		
+      'footable_paging' : function(e) {
+        $('a#edit_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#delete_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#clone_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });        
+      }
+    });    
+    <%
+    if @page.present?
+      i = 0
+      num = @page.to_i / 5
+      while i < num  do
+        i+=1
+    %>
+      $('.footable-page-arrow a').filter('[data-page="limit-next"]').trigger('click');
+      <%end%>
+    <%end%>
+    
+    $('.footable-page a').filter('[data-page="<%=@page%>"]').trigger('click');
   });
   function onFilterSelect(){
     var selector = $("#filterSelector")[0];
@@ -88,9 +115,9 @@
               <td><a href="/admin/stories?filter=<%= story_set.id %>"><%=story_set.name%></a></td>
               <td><a href="/admin/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>
               <td>
-                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set)%> | </span>
-                <span><%= link_to 'Delete', admin_story_set_path(story_set), data:{confirm: 'Are you sure?'}, :method => :delete %> | </span>
-                <span><%= link_to 'Properties', edit_admin_story_set_path(story_set) %></span>
+                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set, :page=>'0'), :id=>'clone_story_set'%> | </span>
+                <span><%= link_to 'Delete', admin_story_set_path(story_set, :page=>'0'), data:{confirm: 'Are you sure?'}, :method => :delete, :id=>'delete_story_set' %> | </span>
+                <span><%= link_to 'Properties', edit_admin_story_set_path(story_set, :page=>'0'), :id=>'edit_story_set' %></span>
               </td>
             </tr>
           <% end %>

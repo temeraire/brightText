@@ -1,7 +1,38 @@
 <script>
   $(function () {
-    $('.footable').footable();
+    $('.footable').footable().bind({		
+      'footable_paging' : function(e) {
+        $('a#edit_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });        
+        $('a#publish_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page + "&public=" + parts[2];
+        });
+        $('a#clone_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#delete_story').each(function(){           
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+      }
+    });
+    
     $('.footable tbody').show();
+    <%
+    if @page.present?
+      i = 0
+      num = @page.to_i / 5
+      while i < num  do
+        i+=1
+      %>
+      $('.footable-page-arrow a').filter('[data-page="limit-next"]').trigger('click');
+      <%end%>
+    <%end%>
+    $('.footable-page a').filter('[data-page="<%=@page%>"]').trigger('click');
     
     $("#btn-import").on('click',function(){      
       BootstrapDialog.show({
@@ -122,15 +153,15 @@
           %>
             <tr>
               <td><%= story.rank %></td>
-              <td><%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story) %></td>
-              <td><%= link_to story.description.blank? ? "" : highlight(story.description[0..29].gsub(/\s\w+\s*$/,'...'), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story) %></td>
+              <td><%= link_to story.name.blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_admin_story_path(story, :page=>'0'), :id=>'edit_story' %></td>
+              <td><%= link_to story.description.blank? ? "" : highlight(story.description[0..29].gsub(/\s\w+\s*$/,'...'), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_admin_story_path(story, :page=>'0'), :id=>'edit_story' %></td>
               <td><%= check_box :story, :public, {:checked => story.public?, :disabled => true}%></td>
               <td><%= authors %></td>
 
               <td>
-                <span><%= link_to story.public? ? 'Make Private' : 'Make Public', publish_admin_story_path(story, :public=> story.public? ? 'false' : 'true')%> | </span>
-                <span><%= link_to 'Clone', clone_admin_story_path(story)%> | </span>
-                <span><%= link_to 'Delete', admin_story_path(story), data:{confirm: 'Are you sure?'}, :method => :delete %></span>
+                <span><%= link_to story.public? ? 'Make Private' : 'Make Public', publish_admin_story_path(story, :public=> story.public? ? 'false' : 'true', :page=>'0'), :id=>'publish_story'%> | </span>
+                <span><%= link_to 'Clone', clone_admin_story_path(story, :page=>'0'), :id=>'clone_story'%> | </span>
+                <span><%= link_to 'Delete', admin_story_path(story, :page=>'0'), data:{confirm: 'Sure?'}, :method => :delete, :id=>'clone_story' %></span>
               </td>
             </tr>
           <% end %>

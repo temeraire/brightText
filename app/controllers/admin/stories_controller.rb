@@ -8,6 +8,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories.xml
   def index
     @highlighted_phreses = params[:q]
+    @page = params[:page]
     @filter = request[:filter]
     session[:filter] = @filter
 
@@ -65,7 +66,6 @@ class Admin::StoriesController < ApplicationController
                 "AND stories.domain_id = ?";
       like_phrase = "%" + params[:q] + "%";
       @stories = Story.find_by_sql [@stories_sql, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, like_phrase, session[:domain].id ]
-              
 #      @stories = Story.where("stories.domain_id" => session[:domain].id);
 #      @stories = @stories.search_for params[:q]
 #      @highlighted_phreses = params[:q].split()
@@ -93,6 +93,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/new.xml
   def new
     @story = Story.new
+    @page = 0
 
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
@@ -107,6 +108,7 @@ class Admin::StoriesController < ApplicationController
 
   # GET /stories/XX/clone
   def clone
+    @page = params[:page]
     @sourceStory = Story.find(params[:id])
     @story = @sourceStory.dup
     number_of_similar_named_stories = Story.where("story_set_id = ? AND name like ?", @sourceStory.story_set_id, @sourceStory.name + "%").count('id')
@@ -119,6 +121,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1/edit
   def edit
     @story = Story.find(params[:id])
+    @page = params[:page]
   end
 
   # POST /stories
@@ -175,11 +178,12 @@ class Admin::StoriesController < ApplicationController
   # DELETE /stories/1
   # DELETE /stories/1.xml
   def destroy
+    @page = params[:page]
     @story = Story.find(params[:id])
-    @story.destroy
+    @story.destroy    
     
     respond_to do |format|
-      format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
+      format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s + "&page=" + @page.to_s) }
       format.xml  { head :ok }
     end
   end
@@ -187,12 +191,13 @@ class Admin::StoriesController < ApplicationController
     # DELETE /stories/1
   # DELETE /stories/1.xml
   def publish
+    @page = params[:page]
     public = params[:public]
     @story = Story.find(params[:id])
     
     respond_to do |format|
       if @story.update_attribute(:public, public)
-        format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s) }
+        format.html { redirect_to("/admin/stories?filter=" + @story.story_set_id.to_s + "&page=" + @page.to_s) }
         format.xml  { head :ok }
         format.json { render json: @story, status: :updated}
         format.js
