@@ -3,6 +3,7 @@ BtWeb::Application.routes.draw do
   namespace :api do
     post "/user_stories" => "stories#get_user_stories"
     post "/user_app_stories" => "stories#get_user_application_stories"
+    post "/user_private_stories" => "stories#get_user_private_stories"
     post "/app_public_stories" => "stories#get_application_public_stories"
     post "/app_purchase" => "bright_text_applications#set_app_purchase", :defaults => { :format => 'json' }
     post "/is_paid_user" => "users#is_paid_user", :defaults => { :format => 'json' }
