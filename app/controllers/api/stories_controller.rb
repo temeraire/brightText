@@ -114,7 +114,8 @@ class Api::StoriesController < ActionController::Base
               storyEntries.each do | storyEntry |
                 storyEl = storiesEl.add_element("Story")
                 storyEl.attributes["id"]   = storyEntry.id
-                storyEl.attributes["name"] = storyEntry.name
+                storyEl.attributes["name"] = storyEntry.name                
+                storyEl.attributes["scope"] = storyEntry.public? ? "0" : "1";
                 storyEntry.toXml( storyEl )
                 # puke out the xml-ified story data
               end
@@ -213,6 +214,7 @@ class Api::StoriesController < ActionController::Base
                 storyEl = storiesEl.add_element("Story")
                 storyEl.attributes["id"]   = storyEntry.id
                 storyEl.attributes["name"] = storyEntry.name
+                storyEl.attributes["scope"] = storyEntry.public? ? "0" : "1";
                 storyEntry.toXml( storyEl )
                 # puke out the xml-ified story data
               end
@@ -291,6 +293,7 @@ class Api::StoriesController < ActionController::Base
                 storyEl = storiesEl.add_element("Story")
                 storyEl.attributes["id"]   = storyEntry.id
                 storyEl.attributes["name"] = storyEntry.name
+                storyEl.attributes["scope"] = storyEntry.public? ? "0" : "1";
                 storyEntry.toXml( storyEl )
                 # puke out the xml-ified story data
               end
