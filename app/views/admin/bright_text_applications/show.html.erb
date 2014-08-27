@@ -1,10 +1,18 @@
-<p id="notice"><%= notice %></p>
+<% breadcrumb :root, @bt_application %>
+<div class="col-md-10 col-md-offset-1">
+  <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Name:</b>
-  <%= @bt_application.name %>
-</p>
+  <div class="form-group">
+    <label class="control-label" for="app_name">Name</label>
+    <p id="app_name" class="form-control-static"><%= @bt_application.name %></p>
+  </div>
 
-
-<%= link_to 'Edit', edit_admin_application_path(@bt_application) %> |
-<%= link_to 'Back', admin_bright_text_applications_path %>
+  <div class="row">
+    <div class="col-md-2">
+      <%= link_to 'Back', admin_bright_text_applications_path,  {:class => "btn btn-default"}   %>
+    </div>
+    <div class="col-md-2">
+      <%= link_to 'Edit', edit_admin_bright_text_application_path(@bt_application), {:class => "btn btn-primary"}  %>
+    </div>
+  </div>
+</div>

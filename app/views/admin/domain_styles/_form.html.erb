@@ -1,13 +1,4 @@
 <script>
-  $(function(){
-   $("#save_style_btn").button(); 
-   $("#back_btn").button().click( function(e){
-    e.preventDefault();
-    document.location.href="/domains"; 
-    return false;    
-   });
-  });
-  
   function onStyleSelect()
   {
     var selector =  $("#styleSelector")[0];
@@ -15,55 +6,63 @@
   }
 </script>
 
-<%= form_for([:admin, @domain_style]) do |f| %>
-  <% if @domain_style.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@domain_style.errors.count, "error") %> prohibited this domain_style from being saved:</h2>
+<%= form_for([:admin, @domain_style], :html => { :role => "form", :class=>"form"} ) do |f| %>
 
-      <ul>
-      <% @domain_style.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+  <% if @domain_style.errors.any? %>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@domain_style.errors.count, "error") %> prohibited this Domain Style from being saved:</b>
+        <% @domain_style.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
     </div>
   <% end %>
 
-  <div class="field form-field">
-    <div class="form-field-label">Color Theme:</div>
-    <div class="form-field-value">
-      <select onChange="onStyleSelect()" id="styleSelector">
-      <%
-        styles = ["White", "Blue", "Brown", "Eggplant", "Grey"]
-        (1..5).each do | c |
-          selected = ''
-          selected = 'selected' if @domain_style.style_id == c
-          %>
-            <option <%= selected %> value="<%= c %>"><%= styles[c - 1]%></option>
-          <% 
-         end
-       %>    
-      </select>
-      <%= f.hidden_field :style_id, :id => :styleId %>
+  <div class="form-group">
+    <label class="control-label" for="styleSelector">Color Theme</label>
+    <select id="styleSelector" class="form-control" onChange="onStyleSelect()">
+    <%
+      styles = ["Default", "Grey"]
+      (1..2).each do | c |
+        selected = ''
+        selected = 'selected' if @domain_style.style_id == c
+        %>
+          <option <%= selected %> value="<%= c %>"><%= styles[c - 1]%></option>
+        <%
+       end
+     %>
+    </select>
+    <%= f.hidden_field :style_id, :id => :styleId %>
+
+  </div>
+
+  <div class="form-group">
+    <label class="control-label" for="<%=:app_alias%>">Application Alias</label>
+    <%= f.text_field :app_alias, :class=>'form-control'  %>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label" for="<%=:group_alias%>">Group Alias</label>
+    <%= f.text_field :group_alias, :class=>'form-control'  %>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label" for="<%=:set_alias%>">Set Alias</label>
+    <%= f.text_field :set_alias, :class=>'form-control'  %>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label" for="<%=:story_alias%>">Story Alias</label>
+    <%= f.text_field :story_alias, :class=>'form-control'  %>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <%= link_to 'Back', admin_domain_styles_path,  {:class => "btn btn-default"}   %>
+    </div>
+    <div class="col-md-10">
+      <span class="pull-right">
+        <%= f.submit :id => "save_style_btn", :value => "Save", :class => "btn btn-primary" %>
+      </span>
     </div>
   </div>
-  <div class="field form-field">
-    <div class="form-field-label">App Term:</div>
-    <div class="form-field-value"><%= f.text_field :app_alias %></div>
-  </div>
-  <div class="field form-field">
-    <div class="form-field-label">Group Term:</div>
-    <div class="form-field-value"><%= f.text_field :group_alias %></div>
-  </div>
-  <div class="field form-field">
-    <div class="form-field-label">Set Term:</div>
-    <div class="form-field-value"><%= f.text_field :set_alias %></div>
-  </div>
-  <div class="field form-field">
-    <div class="form-field-label">Story Term:</div>
-    <div class="form-field-value"><%= f.text_field :story_alias %></div>
-  </div>
-  
-  <div class="actions" style="padding-top:250px">
-    <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_style_btn", :value => "Save" %>
-  </div>  
 <% end %>

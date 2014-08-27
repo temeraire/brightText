@@ -1,89 +1,133 @@
 <script>
-  $( function() {
-    $("#new_button").button().click( function(){
-       document.location.href='/admin/story_sets/new?filter=<%= @filter %>';
-    });
+  $(function () {
+    $('.footable').footable().bind({		
+      'footable_paging' : function(e) {
+        $('a#edit_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#delete_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });
+        $('a#clone_story_set').each(function(){ 
+          var parts = this.href.split("=");
+          this.href = parts[0] + "=" + e.page;
+        });        
+      }
+    });    
+    <%
+    if @page.present?
+      i = 0
+      num = @page.to_i / 5
+      while i < num  do
+        i+=1
+    %>
+      $('.footable-page-arrow a').filter('[data-page="limit-next"]').trigger('click');
+      <%end%>
+    <%end%>
+    
+    $('.footable-page a').filter('[data-page="<%=@page%>"]').trigger('click');
   });
-  
-  function onFilterSelect()
-  {
-    var selector =  $("#filterSelector")[0];
+  function onFilterSelect(){
+    var selector = $("#filterSelector")[0];
     document.location.href = "/admin/story_sets?filter=" + selector.options[ selector.selectedIndex ].value;
-  }  
+  }
 </script>
+<% breadcrumb :story_set_category, @category%>
+<div class="container">
+  <div class="row">
+    <div class="col-md-2 col-md-offset-1">
+      <h3><%=session[:style].set_alias.pluralize.titleize%> List</h3>
+    </div>
+    <div class="col-md-2 col-md-offset-6">
+      <span class="pull-right">
+        <%= link_to 'New ' + session[:style].set_alias.titleize, new_admin_story_set_path(:filter=>@filter), {:class => "btn btn-success"}%>
+      </span>
+    </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <form class="form-inline" role="form">
+        <div class="form-group">
+          <label for="filterSelector" class="control-label">Select <%= session[:style].group_alias.titleize %></label>
+          <select id="filterSelector" onChange="onFilterSelect();" class="form-control">
+              <%
+              selected = 'selected' if @filter.blank?
+            %>
+              <option <%= selected %> value="__none" >All<%= @application.blank? ? "" : " in " + @application.name %></option>
+              <%
+              selected = ''
+              selected = 'selected' if @filter == "__unassigned"
+            %>
+              <option <%= selected %> value="__unassigned">-- unassigned --</option>
+              <%
 
-<div style="height=60px; width:100px">&nbsp;</div>
-<button id="new_button" style="float:left">New <%= session[:style].set_alias.titleize %></button>
-<div class="toolbar" style="float:left; padding:5px 0px 0px 100px;">Show For <%= session[:style].group_alias.titleize %>:
-<select id="filterSelector" onChange="onFilterSelect()">
-<%
-  selected = 'selected' if @filter.blank?
-%>
- <option <%= selected %> value="__none" >All<%= @application.blank? ? "" : " in " + @application.name %></option>
-<%
-  selected = ''
-  selected = 'selected' if @filter == "__unassigned"
-%>
- <option <%= selected %> value="__unassigned">-- unassigned --</option>
-<%
-
-  @categories.each do | category |
-    selected = ''
-    selected = 'selected' if @filter == category.id.to_s    
-%>
-    <option value="<%=category.id%>" <%= selected %>><%= category.name %></option>
-<%
-  end if @categories
-%>
-</select>
-<% if(@filter != "__none" && !@category.blank?) %>
-	<button onclick="window.location.assign('<%= admin_reorder_story_sets_rank_path(@category) %>')">Reorder StorySets</button>
-<% else %>	
-	<button disabled="disabled" >Reorder StorySets</button>
-<% end %>
-<%
-  parentObj = StorySetCategory.find_by_id( @filter )
-  parentId = "__undefined"
-  parentId = parentObj.application_id.to_s unless parentObj == nil
-%>
-<!-- <a href="/admin/story_set_categories?filter=<%#= parentId %>">Back To <%#= session[:style].group_alias.titleize %></a> -->
+              @categories.each do | category |
+                selected = ''
+                selected = 'selected' if @filter == category.id.to_s
+              %>
+                <option value="<%=category.id%>" <%= selected %>><%= category.name %></option>
+              <%
+                end if @categories
+            %>
+          </select>
+        </div>
+        <% if @story_sets.size > 1 %>
+        <div class="form-group">
+            <% if(@filter != "__none" && !@category.blank?) %>
+                <%= link_to 'Reorder ' + session[:style].set_alias.pluralize.titleize, admin_reorder_story_sets_rank_path(@category),  {:class => "btn btn-primary"}   %>
+            <% else %>
+              <button class="btn btn-primary" disabled="disabled"><%= 'Reorder ' + session[:style].set_alias.pluralize.titleize %></button>
+            <% end %>
+        </div>
+        <span class="pull-right">
+          <div class="form-group">
+            <input type="text" id="filter" class="form-control" name="filter" value="" placeholder="Enter text to filter"/>
+          </div>
+        </span>
+        <% end %>
+      </form>
+    </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-md-10  col-md-offset-1">
+      <table class="footable" data-filter="#filter" data-page-size="<%= PAGE_SIZE %>" data-limit-navigation="5">  
+        <thead>
+          <tr>
+            <th data-type="numeric" data-sort-initial="true" class="footable-first-column footable-sortable">Order<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+            <th data-type="numeric" class="footable-sortable"><%= session[:style].story_alias.pluralize.titleize %><span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Actions</th>
+          </tr>
+        </thead>        
+        <tbody>
+          <% @story_sets.each do |story_set|
+            countQuery = StorySet.find_by_sql ["select count( id ) as count from stories where story_set_id = ?", story_set.id ]
+            count = countQuery[0].count
+            label = session[:style].story_alias
+            label = label.pluralize unless count == 1
+          %>
+            <tr>
+              <td><%= story_set.rank %></td>
+              <td><a href="/admin/stories?filter=<%= story_set.id %>"><%=story_set.name%></a></td>
+              <td><a href="/admin/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>
+              <td>
+                <span><%= link_to 'Clone', clone_admin_story_set_path(story_set, :page=>'0'), :id=>'clone_story_set'%> | </span>
+                <span><%= link_to 'Delete', admin_story_set_path(story_set, :page=>'0'), data:{confirm: 'Are you sure?'}, :method => :delete, :id=>'delete_story_set' %> | </span>
+                <span><%= link_to 'Properties', edit_admin_story_set_path(story_set, :page=>'0'), :id=>'edit_story_set' %></span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+          </tr>
+	</tfoot>
+      </table>
+    </div>
+  </div>
 </div>
-
-
-<div style="height:110px; width:100px">&nbsp;</div>
-
-
-<table class="sortable_header" >
-	<thead>  
-		<tr>
-		    <th style="width:55px" data-sort="int" ><b>Order</b></th>
-		    <th style="width:300px" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
-		    <th style="width:55px"></th>
-		    <th style="width:55px"></th> 
-                    <th style="width:150px"></th>
-		    <th data-sort="int" ><b><%= session[:style].story_alias.pluralize.titleize %></b></th>
-		    <th></th>
-		 </tr>
-	</thead>
-	<tbody>
-		<% @story_sets.each do |story_set|
-		  countQuery = StorySet.find_by_sql ["select count( id ) as count from stories where story_set_id = ?", story_set.id ]
-		  count = countQuery[0].count
-		  label = session[:style].story_alias
-		  label = label.pluralize unless count == 1
-		%>
-		  <tr class="info_row">
-		    <td style="width:50px"><%= story_set.rank %></td>  
-                    <td style="width:250px"><a href="/admin/stories?filter=<%= story_set.id %>"><%=story_set.name%></a></td>    
-		    <td style="text-align: left;"><%= link_to 'Clone', clone_admin_story_set_path(story_set)%></td>
-		    <td style="text-align: left;"><%= link_to 'Delete', admin_story_set_path(story_set), :confirm => 'Are you sure?', :method => :delete %></td>
-		    <td style="text-align: left;"><%= link_to 'Properties', edit_admin_story_set_path(story_set) %></td>
-                    <td><a href="/admin/stories?filter=<%= story_set.id %>"><%= count %> <%= label %> </a></td>  
-		    
-		  </tr>
-		<% end %>
-	</tbody>
-</table>
-
-
-

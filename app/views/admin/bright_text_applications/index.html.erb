@@ -1,43 +1,70 @@
 <script>
-  $( function() {
-    $("#new_button").button().click( function(){
-       document.location.href='/admin/bright_text_applications/new';
-    });
+  $(function () {
+    $('.footable').footable();
   });
 </script>
 
-<div style="height=60px; width:100px">&nbsp;</div>
-<button id="new_button" style="float:left">New <%= session[:style].app_alias.titleize %></button>
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 col-md-offset-1">
+      <h3><%=session[:style].app_alias.pluralize.titleize%> List</h3>
+    </div>
+    <div class="col-md-2 col-md-offset-5">
+      <span class="pull-right">
+        <%= link_to 'New ' + session[:style].app_alias.titleize, new_admin_bright_text_application_path, {:class => "btn btn-success"}%>
+        </span>
+    </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <form class="form-inline" role="form">
+        <span class="pull-right">
+          <div class="form-group">
+            <input type="text" id="filter" class="form-control" name="filter" value="" placeholder="Enter text to filter"/>
+          </div>
+        </span>
+      </form>
+    </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-md-10  col-md-offset-1">
+      <table class="footable" data-filter="#filter" data-page-size="<%= PAGE_SIZE %>" data-limit-navigation="5">  
+        <thead>
+          <tr>
+            <th data-type="numeric" data-sort-initial="true" class="footable-first-column footable-sortable">ID<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+            <th data-type="numeric" class="footable-sortable"><%= session[:style].group_alias.pluralize.titleize %><span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Actions</th>
+          </tr>
+        </thead>                
+        <tbody>
+          <% @bt_applications.each do |bt_application|
+            countQuery = StorySet.find_by_sql ["select count( id ) as count from story_set_categories where application_id = ?", bt_application.id ]
+            count = countQuery[0].count
+            label = session[:style].group_alias
+            label = label.pluralize unless count == 1
 
-<div style="height:110px; width:100px">&nbsp;</div>
-
-<table class="sortable_header" >
-	<thead>
-	  <tr>
-	    <th width="70" data-sort="int" ><b>ID</b></th>
-	    <th width="300" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
-	    <th width="55"></th>
-	    <th width="55"></th>
-            <th width="150"></th>
-	    <th data-sort="int" ><b><%= session[:style].group_alias.pluralize.titleize %></b></th>
-	  </tr>
-	</thead>
-	<tbody>
-		<% @bt_applications.each do |bt_application| 
-		  countQuery = StorySet.find_by_sql ["select count( id ) as count from story_set_categories where application_id = ?", bt_application.id ]
-		  count = countQuery[0].count
-		  label = session[:style].group_alias
-		  label = label.pluralize unless count == 1
-		
-		%>
-		  <tr class="info_row">
-		    <td><%= bt_application.id %></td>
-                    <td><a href="/admin/story_set_categories?filter=<%= bt_application.id %>"><%=bt_application.name%></a></td>
-		    <td style="text-align: left;"><%= link_to "Clone", clone_admin_bright_text_application_path(bt_application)%></td>
-		    <td style="text-align: left;"><%= link_to 'Delete', admin_bright_text_application_path(bt_application), :confirm => 'Are you sure?', :method => :delete %></td>
-                    <td style="text-align: left;"><%= link_to 'Properties', '/admin/bright_text_applications/' + bt_application.id.to_s + '/edit' %></td>
-		    <td><a href="/admin/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
-		  </tr>
-		<% end %>
-	</tbody>
-</table>
+          %>
+            <tr>
+              <td><%= bt_application.id %></td>
+              <td><a href="/admin/story_set_categories?filter=<%= bt_application.id %>"><%=bt_application.name%></a></td>
+              <td><a href="/admin/story_set_categories?filter=<%= bt_application.id %>"><%= count %> <%= label %> </a></td>
+              <td>
+                <span><%= link_to "Clone", clone_admin_bright_text_application_path(bt_application)%> | </span>
+                <span><%= link_to 'Delete', admin_bright_text_application_path(bt_application), data: {:confirm => 'Are you sure?'}, :method => :delete %> | </span>
+                <span><%= link_to 'Properties', '/admin/bright_text_applications/' + bt_application.id.to_s + '/edit' %></span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+          </tr>
+	</tfoot>
+      </table>
+    </div>
+  </div>
+</div>

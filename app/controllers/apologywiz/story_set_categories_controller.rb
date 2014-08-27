@@ -1,7 +1,8 @@
 require 'rexml/document'
 
 class Apologywiz::StorySetCategoriesController < ApologywizController
-  #before_filter :login_required
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
   # GET /story_categories
   # GET /story_categories.xml
   def index
@@ -46,7 +47,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def new
     @story_set_category = StorySetCategory.new
     filter = params[:filter]
-    if ( filter != nil && filter != "__unassigned" )
+    if ( filter.present? && filter != "__unassigned" )
     @story_set_category.application_id = filter.to_i
     end
     respond_to do |format|
@@ -66,11 +67,13 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def create
     @story_set_category = StorySetCategory.new(params[:story_set_category])
     @story_set_category.domain_id = session[:domain].id
+    @story_set_category.user_id = session[:user_id]
+    @story_set_category.application_id = session[:br_application_id]
 
     respond_to do |format|
       if @story_set_category.save
         clone_story_sets(params[:story_sets], @story_set_category.id) unless params[:story_sets].blank?
-        format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/aplogywiz/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { render :xml => @story_set_category, :status => :created, :location => @story_set_category }
       else
         format.html { render :action => "new" }
@@ -86,7 +89,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/apologywiz/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -100,7 +103,7 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def destroy
     @story_set_category = StorySetCategory.find(params[:id])
     # @filter = @story_set_category.application_id.to_s
-    # if ( @filter == nil || @filter == "0")
+    # if ( @filter.blank? || @filter == "0")
     # @filter = ""
     # end
 
@@ -108,14 +111,14 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
+      format.html { redirect_to apologywiz_story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
       format.xml  { head :ok }
     end
   end
 
   def reorder_story_set_categories_rank
     if( params[:application_id].blank? )
-      redirect_to story_set_categories_path
+      redirect_to apologywiz_story_set_categories_path
     elsif( params[:application_id] ==  "__unassigned")
       @story_set_categories = StorySetCategory.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -126,18 +129,39 @@ class Apologywiz::StorySetCategoriesController < ApologywizController
   def update_story_set_categories_rank
     #p params.to_yaml
     @story_set_categories = StorySetCategory.update(params[:story_set_categories].keys, params[:story_set_categories].values)
-    redirect_to story_set_categories_path(:filter => params[:filter])
+    redirect_to apologywiz_story_set_categories_path(:filter => params[:filter])
   end
 
   def clone
     @story_set_category_original = StorySetCategory.find(params[:id])
-    @story_set_category = @story_set_category_original.clone
-    number_of_similar_named_storyset_categories = StorySetCategory.count(:conditions => ["name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id])
-    @story_set_category.name = @story_set_category.name + "-" + (number_of_similar_named_storyset_categories + 1).to_s
+    @story_set_category = @story_set_category_original.dup
+    number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id).count('id')
+    @story_set_category.name = @story_set_category.name.partition("-")[0] + "-" + (number_of_similar_named_storyset_categories + 1).to_s
     @story_sets = @story_set_category_original.story_sets(:include => :stories)
     #debugger
     respond_to do |format|
       format.html { render :action => "new" }
     end
   end 
+  
+  def clone_silently
+    @story_set_category_original = StorySetCategory.find(params[:id])
+    @story_set_category = @story_set_category_original.dup
+    @story_set_category.domain_id = session[:domain].id
+    @story_set_category.user_id = session[:user_id]
+    number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND user_id = ?", @story_set_category_original.name + "%", @story_set_category.user_id).count('id')
+    @story_set_category.name = @story_set_category.name.partition("-")[0] + "-" + (number_of_similar_named_storyset_categories + 1).to_s
+
+    story = Story.find(params[:story_id])
+    #story_set_ids = @story_set_category_original.story_sets.select(:id)
+    
+    respond_to do |format|
+      if @story_set_category.save
+        clone_story_set(story.id, story.story_set_id, @story_set_category.id)
+        format.json { render :json=> {:success => "true"}}
+      else
+        format.json{ render :json=> {:success => "false"} }
+      end
+    end
+  end
 end

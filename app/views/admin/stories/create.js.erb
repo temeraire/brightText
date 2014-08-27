@@ -1,0 +1,11 @@
+<% if @story.errors.count == 0 %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Story was created successfully</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% else %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while saving Story</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% end %>

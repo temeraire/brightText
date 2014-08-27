@@ -1,33 +1,57 @@
-<h1>Listing domain_styles</h1>
-
-<table>
-  <tr>
-    <th>Domain</th>
-    <th>Style</th>
-    <th>App button</th>
-    <th>Groups button</th>
-    <th>Sets button</th>
-    <th>Stories button</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @domain_styles.each do |domain_style| %>
-  <tr>
-    <td><%= domain_style.domain_id %></td>
-    <td><%= domain_style.style_id %></td>
-    <td><%= domain_style.app_button %></td>
-    <td><%= domain_style.groups_button %></td>
-    <td><%= domain_style.sets_button %></td>
-    <td><%= domain_style.stories_button %></td>
-    <td><%= link_to 'Show', domain_style %></td>
-    <td><%= link_to 'Edit', edit_admin_domain_style_path(domain_style) %></td>
-    <td><%= link_to 'Destroy', domain_style_path(domain_style), :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Domain style', new_domain_style_path %>
+<script>
+  $(function () {
+    $('.footable').footable();
+  });
+</script>
+<div class="container">
+  <div class="row">
+      <div class="col-md-2 col-md-offset-9">
+        <span class="pull-right">
+          <%= link_to 'New Domain Style', new_admin_domain_style_path, {:class => "btn btn-success"}%>
+        </span>
+      </div>
+      <div class="col-md-2 col-md-offset-1">
+        <h3>Domain Styles List</h3>
+      </div>
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-md-10  col-md-offset-1">      
+      <table class="footable" data-filter="#filter" data-page-size="<%= PAGE_SIZE %>" data-limit-navigation="5">  
+        <thead>
+          <tr>
+            <th data-type="alpha" data-sort-initial="true" class="footable-first-column footable-sortable">Domain<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Style<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">App button<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Groups button<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Sets button<span class="footable-sort-indicator"></span></th>
+            <th data-type="alpha" class="footable-sortable">Stories button<span class="footable-sort-indicator"></span></th>
+            <th data-sort-ignore='true'>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% DomainStyle.all.each do |domain_style| %>
+            <tr>
+              <td><%= domain_style.domain_id %></td>
+              <td><%= domain_style.style_id %></td>
+              <td><%= domain_style.app_alias %></td>
+              <td><%= domain_style.group_alias %></td>
+              <td><%= domain_style.set_alias %></td>
+              <td><%= domain_style.story_alias %></td>
+              <td>
+                <span><%= link_to 'Show', admin_domain_style_path(:id=>domain_style.id) %> | </span>
+                <span><%= link_to 'Edit', edit_admin_domain_style_path(domain_style) %> | </span>
+                <span><%= link_to 'Destroy', admin_domain_style_path(domain_style), data: {confirm: 'Are you sure?', :method => :delete} %></span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+          </tr>
+	</tfoot>
+      </table>
+    </div>
+  </div>
+</div>

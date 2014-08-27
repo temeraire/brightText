@@ -1,99 +1,451 @@
+<style type="text/css" media="screen">
+  textarea.dataport{
+    width:764px;
+    height:392px;
+    resize:none;
+  }
+
+  DIV.harnesscontainer{
+    width:834px;
+    height:34px;
+    margin:5px;
+    padding:5px;
+    float:left;
+    border: 1px dotted black
+  }
+
+  DIV.viewportcontainer{
+    width:480px;
+    height:140px;
+    margin:5px;
+    padding:5px;
+    float:left;
+  }
+
+  DIV.btEditor{
+    height:160px;
+    padding:10px;
+  }
+
+</style>
+<ul id="story_tabs" class="nav nav-tabs nav-justified">
+  <li class="active"><a id="astep_1" href="#step_1"><h4>Step 1</h4></a></li>
+  <li><a id="astep_2" href="#step_2"><h4>Step 2</h4></a></li>
+  <li><a id="astep_3" href="#step_3"><h4>Invite</h4></a></li>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content">
+  <%= render 'step1' %>
+  <%= render 'step2' %>
+  <%= render 'step3' %>
+</div>
+<div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p id="dialog-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
-  $( function() {
-    $("#new_button").button().click( function(){
-       document.location.href='/stories/new?filter=<%= @filter %>';
+var _bt1;
+var _s1;
+var stories;
+var members;
+var formSubmitted = false;
+
+  function updateToneSlider1( gradients, value ){
+    var toneIndex = 0;
+    for ( var i = 0; i < gradients.length; i++ ){
+      if ( gradients[i].id === value ){
+            toneIndex = i;
+            break;
+      }
+    }
+    $("#tone-control1").hide( );
+    $( "#slider1" ).slider({
+      value: toneIndex,
+      min: 0,
+      max: gradients.length - 1,
+      range: false,
+      step: 0.001,
+      tooltip: "hide"
     });
 
+    $("#slider1").on('slide', function(slideEvt) {
+            var toneGradients = gradients;
+            var s1 = Math.floor(slideEvt.value);
+            if ( _s1 !== s1 ){ // allow smooth moving of the tone selector
+              _s1 = s1;
+              $( "#gradient1" ).html( gradients[ s1 ].name );
+              _bt1.handleToneSelection( gradients[ s1 ].id );
+            }
+      });
+    if ( gradients.length > 1) {
+      $( "#gradient1" ).html( gradients[ toneIndex ].name );
+      $("#tone-control1").show();
+    }
+  }
+
+function showMembers(){
+   $.ajax({
+     type: "get",
+     url: "/apologywiz/group_members",
+     dataType: "json",
+     data: "",
+     success: function(data) {
+       if(data["success"] === "true") {
+          members = data["group_members"];
+          console.log(members);
+          var rows = "";
+          $.each(members, function (i, member) {
+            console.log(member);
+            rows += "<tr>" +
+                      "<td>" + member["email"] + "</td>" +
+                      "<td><a id='" + member["id"] +"' data-email='" + member["email"] + "'class='remove_member' href='#'>Remove</a></td>" +
+                    "</tr>";
+          });
+          $("#groups-table tbody").html("");
+          $("#groups-table tbody").append(rows);
+          $('#groups-table').trigger('footable_redraw');
+       }
+     }
+   });
+}
+
+function showStories(){
+   $.ajax({
+     type: "get",
+     url: "/apologywiz/stories",
+     dataType: "json",
+     data: "",
+     success: function(data) {
+       if(data["success"] === "true") {
+          stories = data["stories"];
+          console.log(stories);
+          var rows = "";
+          $.each(stories, function (i, apology) {
+            console.log(apology);
+            if(apology["user_id"]===1){
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              "<td>" + 
+              <%#*"<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +%> 
+              <%#*" | " +%>
+              "<a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Delete</a>" + 
+              "</td>" +
+              "</tr>";
+            }else{              
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              <%#*"<td>" +%> 
+              <%#*"<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +%>  
+              <%#*"</td>" +%>
+              "</tr>";
+            }
+          });
+          $("#apologies tbody").html("");
+          $("#apologies tbody").append(rows);
+          $('#apologies').trigger('footable_redraw');
+          
+          if (stories.length > 0){
+            $('#story_category').val(stories[0]["name"]);
+            $('#story_name').val(stories[0]["subtitle"]);
+          }
+            
+       }
+     }
+   });
+}
+
+$(document).ready(function() {  
+  $(function () {
+    $('#apologies').footable();
+    $('#groups-table').footable();
   });
   
-  function onFilterSetSelect()
-  {
-    var selector =  $("#setSelector")[0];
-    document.location.href = "/stories?filter=" + selector.options[ selector.selectedIndex ].value;
-  } 
+  $("#btn_back_to_step_1").on('click', function(event){
+    event.preventDefault();
+    $("#astep_1").click();    
+  }); 
   
-</script>
-
-<div style="height=60px; width:100px">&nbsp;</div>
-<button id="new_button" style="float:left">New <%= session[:style].story_alias.titleize %></button>
-<div class="toolbar" style="float:left; padding:5px 0px 0px 50px;">Show For <%= session[:style].set_alias.pluralize.titleize %>:
-<select id="setSelector" onChange="onFilterSetSelect()" >
-<%
-  storySetFilter = @filter
-  selected = 'selected' if storySetFilter.blank?
-%>
-
- <option <%= selected %> value="__none" >All<%= @category.blank? ? "" : " in "+ @category.name %></option>
+  $("#btn_back_to_step_2").on('click', function(event){
+    $("#astep_2").click();    
+  });
  
-<%
-  selected = ''
-  selected = 'selected' if storySetFilter == "__unassigned"
-%>
- <option <%= selected %> value="__unassigned">-- unassigned --</option>
-<%
-unless @story_sets.nil?
+  $("#apologies").on('click','a.edit_apology', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story = stories[index];
+    $("#story_id").val(story["id"]);
+    $("#category_name").html("");
+    $("#name").html(story["name"]);
+    $("#bt_one").html("");
+    $("#fieldDescriptor").val("");
+    $("#fieldSummary").val("");
+    if(story["descriptor"]!=="")
+      _bt1.renderData(JSON.parse(story["descriptor"]));
+    $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+ story["id"]);
+    $("#astep_2").tab('show');
+    $('#story_category').val(story["name"]);
+    if(story["public"])
+      $('#story_public').prop("checked", true);
+      
+  });
 
-  @story_sets.each do | set |
-    selected = ''
-    selected = 'selected' if storySetFilter == set.id.to_s
-%>
-    <option value="<%=set.id%>" <%= selected %>><%= set.name %></option>
-<%
-  end
-end
-%>
-</select>
+  $("#groups-table").on('click','a.remove_member', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var email = $(this).attr("data-email");          
 
+    BootstrapDialog.show({
+      type: BootstrapDialog.TYPE_DEFAULT,
+      title: 'Confirmation!',
+      message: '<p>Remove email \''+email+'\'?',
+      buttons: [{
+          id: 'btn-delete',
+          label: 'Delete',
+          cssClass: 'btn-danger',
+          action: function(dialog){
+              var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+              $button.disable();
+              $button.spin();
+              dialog.setClosable(false);
+              $.ajax({
+                type: "DELETE",
+                url: "/apologywiz/group_members/"+index,
+                dataType: "json",
+                data: "",
+                success: function(data) {
+                  if(data["success"] === "true") {
+                    $button.stopSpin();
+                    dialog.setMessage('<p>\'' + email +'\' is removed successfully!</p>');
+                    dialog.setClosable(true);
+                    showMembers();
+                  }
+                }
+              });
+          }
+        }, {
+          label: 'Close',
+          action: function(dialogItself){
+              dialogItself.close();
+          }
+        }]
+    });
+  });
 
+  $("#apologies").on('click','a.remove_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var apology_name = $(this).attr("data-apology");
 
-<%
-  parentObj = StorySet.find_by_id( @filter )
-  parentId = "__undefined"
-  parentId = parentObj.category_id.to_s unless parentObj == nil
-%>
-<% if(@filter != "__none" && !@story_set.blank?) %>
-	<button onclick="window.location.assign('<%= reorder_stories_rank_path(@story_set) %>')">Reorder Stories</button>	
-<% else %>
-	<button disabled="disabled" >Reorder Stories</button>	
-<% end %>
-<!-- <a href="/story_sets?filter=<%#= parentId %>">Back To <%#= session[:style].set_alias.titleize %></a> -->
-</div>
-<div style="margin-right: 100px; float: right; padding: 5px 0 0 5px;">
-	<%= form_tag(stories_path, :method => :get) do %>
-		<%= text_field_tag :q, params[:q] %>
-		<%= submit_tag 'Search' %>
-	<% end %>
-</div>
-<div style="height:110px; width:100px">&nbsp;</div>
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Delete apology named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-delete',
+      label: 'Delete',
+      cssClass: 'btn-danger',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/apologywiz/stories/"+index+"/delete",
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is removed successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
+  
 
-<table id="stories_table" class="sortable_header" cellspacing="0">
-	<thead>	  
-	  <tr>
-	  	<th width="55" data-sort="int" ><b> Order </b></th>
-	    <th width="200" data-sort="string" ><b>Name</b><span class="arrow">&darr;</span></th>
-	    <th width="400" data-sort="string"><b>Sample</b></th>
-	    <th></th>
-	    <th></th>
-	  </tr>
-	</thead>
-	<tbody id="sortable">
-		<% @stories.each do |story| %>
-		  <tr class="stories_info_row info_row">
-		  	<td><%= story.rank %></td>
-		    <td style="width:100px">
-		    	<%= link_to (story.name).blank? ? "" : highlight(story.name, @highlighted_phreses, :highlighter => '<b>\1</b>'), edit_story_path(story) %>
-		    	
-		    </td>
-		    <td style="width:400px">
-		    	<%= link_to story.description.blank? ? "" : highlight(truncate(story.description, :length => 120), @highlighted_phreses, :highlighter=>'<b>\1</b>'), edit_story_path(story) %>	     
-		    </td>
-		    <td class="story_management"><%= link_to 'Clone', 'stories/' + story.id.to_s + '/clone' %></td>   
-		    <td class="story_management"><%= link_to 'Delete', 'stories/' + story.id.to_s + '/delete', :confirm => 'Are you sure?', :method => :delete %></td>
-		  	
-		  </tr>
-		  
-		<% end %>
+  $("#apologies").on('click','a.clone_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story_id = $(this).attr("data-apology-id");
+    var apology_name = $(this).attr("data-apology");
 
-	</tbody>
-</table>
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Clone apology named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-clone',
+      label: 'Clone',
+      cssClass: 'btn-primary',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/apologywiz/story_set_categories/"+index+"/clone_silently?story_id="+story_id,
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is cloned successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
+  $('#dialog').on('shown.bs.modal', function (e) {
+    $('#dialog').find('button').focus();  
+  });
+  
+});
 
+$(document).ready(function() {
+
+    _bt1 = new BrightTextEditor("bt_one", true);
+    var rawData = $("#fieldDescriptor");
+    var textData = $("#fieldSummary");
+
+    _bt1.onChange(function() {
+      rawData[0].value = $.toJSON(_bt1.toData());
+      textData[0].value = _bt1.toString();
+      updateToneSlider1(_bt1.toneGradients(), _bt1.selectedTone());
+    });
+
+    $("#edit_choicesets").on( "click", function(event){
+          event.preventDefault();
+          _bt1.editChoicesets();
+    });
+
+    $("#instant_rewrite1").on( "click", function(event){
+      event.preventDefault();
+      _bt1.rewrite();
+    });
+
+    showStories();
+  });
+
+$("#astep_1").click(function() {
+  if(formSubmitted===true){
+    formSubmitted = false;
+    //$('#story_category').val('');
+    $('#story_name').val('');  
+    showStories();
+  }
+  $(this).tab('show');
+});
+
+$("#astep_2").click(function() {
+  if(formSubmitted===false){
+    var title = $("#story_category").val();
+    if(title===''){
+      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
+      $('#dialog').modal({
+        keyboard: true
+      });
+      $("#astep_1").click();
+      $("#story_category").focus();
+    }else{
+      var found = false;
+      for (var i = 0; i < stories.length; i++) {
+        if(stories[i].name===title){
+          found = true;
+          break;
+        }
+      }
+      if(found){ //if(subtitle===''){
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">You\'ve already got an apology titled \'' + title + '\'. Please give this one a new title.</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+        $("#astep_1").click();
+        $("#story_name").focus();
+      }else{
+        $.ajax({
+          type: "post",
+          url: "/apologywiz/stories",
+          dataType: "json",
+          data: $("#new_story").serialize(),
+          success: function(data) {
+            formSubmitted = true;
+            if(data["id"] !== "") {
+              $("#story_id").val(data["id"]);
+              $("#category_name").text($("#story_category").val());
+              $("#name").text($("#story_name").val());
+              $('form.edit_story').get(0).setAttribute('action', '/apologywiz/stories/'+data["id"]);
+              $('#dialog-message').replaceWith('<p id=\"dialog-message\">Your new apology \'' + title + '\' has been created.</p>');
+              $('#dialog').modal({
+                keyboard: true
+              });
+            }
+            else if(data["name"]){
+              message = data["name"];
+              $("#story_name").parent().addClass('field_with_errors');
+              $("#story_name + .message").remove();
+              $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); 
+              $("a[href='.step1']").click();
+            }
+          }
+        });
+
+        $("#bt_one").html("");
+        $("#fieldDescriptor").val("");
+        $("#fieldSummary").val("");
+        $(this).tab('show');
+
+      }
+    }
+  }else{
+    $(this).tab('show');
+  }
+});
+
+$("#astep_3").click(function() {
+  showMembers();
+  $(this).tab('show');
+});
+
+(function() {
+    window.alert = function(str) {
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">'+ str +'</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+    };
+})();
+
+</script>

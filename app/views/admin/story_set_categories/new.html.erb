@@ -1,4 +1,6 @@
-<h1>New <%= session[:style].group_alias.titleize %></h1>
-
-<%= render 'form' %>
+<% breadcrumb :root, @application%>
+<div class="col-md-10 col-md-offset-1">
+  <h3>New <%= session[:style].group_alias.titleize %></h3>
+  <%= render 'form' %>
+</div>
 

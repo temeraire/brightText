@@ -1,45 +1,60 @@
-BrightText::Application.routes.draw do
+BtWeb::Application.routes.draw do
+
+  namespace :api do
+    post "/user_stories" => "stories#get_user_stories"
+    post "/user_app_stories" => "stories#get_user_application_stories"
+    post "/user_private_stories" => "stories#get_user_private_stories"
+    post "/app_public_stories" => "stories#get_application_public_stories"
+    post "/app_purchase" => "bright_text_applications#set_app_purchase", :defaults => { :format => 'json' }
+    post "/is_paid_user" => "users#is_paid_user", :defaults => { :format => 'json' }
+    post "/register_user" => "users#register_user", :defaults => { :format => 'json' }
+  end
 
   namespace :admin do
     resources :app_submissions
     resources :domain_styles
     resources :password_resets
-    resources :users
     resources :stories
+    resource :session, only: [:new, :create, :destroy]
 
     #match 'stories/:id' => 'stories#destroy', :via => :delete
-
-    root to: "session#new"
+    post '/upload' => 'stories#upload', as: :upload
+    get '/import' => 'stories#import', as: :import
+    post '/users/authenticate' => 'users#authenticate'
+    get '/login' => 'users#new_session', as: :login
+    get '/logout' => 'users#destroy_session', as: :logout
+    root to: "users#new_session"
 
     #match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
     #match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
     #match 'story/save'        => 'bt_proxy#save'
-    match 'stories/:id/clone'  => 'stories#clone'
-    match 'stories/:id/delete' => 'stories#destroy'
+    #match 'stories/:id/clone'  => 'stories#clone', :via=> [:get, :post]
+    #match 'stories/:id/delete' => 'stories#destroy', :via=> [:get, :post]
     # match 'story/:id' => 'stories#destroy', :via => :delete, :as => :story_destroy
 
-    match 'stories/:id/legacy'  => 'stories#legacyxml'
-    match 'stories/:id/clones'  => 'stories#clonesxml'
+    #match 'stories/:id/legacy'  => 'stories#legacyxml', :via=> [:get, :post]
+    #match 'stories/:id/clones'  => 'stories#clonesxml', :via=> [:get, :post]
 
-    match 'applications/:id/submitxml'  => 'app_submissions#submit'
-    match 'applications/:id/results'  => 'bright_text_applications#result'
+    #match 'applications/:id/submitxml'  => 'app_submissions#submit', :via=> [:get, :post]
+    #match 'applications/:id/results'  => 'bright_text_applications#result', :via=> [:get, :post]
 
 
-    match "/session/:id" => "session#create", :via => :post   
-    match "/login" => "session#new", :via => :get
-    match "/logout" => "session#destroy", :via => :get
 
     resources :domains
 
     get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
     resources :stories do
+      member do
+        get :clone
+        get :publish
+      end
       collection do
         post :update_stories_rank
       end
     end
 
     get "/stories/reorder_story_sets_rank/:category_id" => "story_sets#reorder_story_sets_rank", :as => :reorder_story_sets_rank
-    resources :story_sets do 
+    resources :story_sets do
       member do
         get :clone
       end
@@ -49,54 +64,56 @@ BrightText::Application.routes.draw do
     end
 
     get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
+    get "/story_set_categories/:id/story_sets" => "story_set_categories#category_story_sets", :as => :category_story_sets, :format => :json
     resources :story_set_categories do
       member do
         get :clone
       end
-      collection do 
+      collection do
         post :update_story_set_categories_rank
       end
     end
+    
 
     resources :bright_text_applications do
-      member do 
+      member do
         get :clone
       end
     end
   end
-  
-  
+
+
   namespace :apologywiz do
     resources :app_submissions
     resources :domain_styles
     resources :password_resets
     resources :users
-    
+    resources :groups
+    resources :group_members
+
     post '/users/authenticate' => 'users#authenticate'
     get '/login' => 'users#new_session', as: :login
     get '/register' => 'users#new', as: :register
-
-    resources :stories
-
-    match 'stories/:id' => 'stories#update', :as => :story
-
+    get '/logout' => 'users#destroy_session', as: :logout
     root to: "users#new_session"
-
-    match 'proxy/:id/story'   => 'bt_proxy#story'  , :as => :story
-    match 'proxy/:id/related' => 'bt_proxy#related', :as => :story
-    match 'story/save'        => 'bt_proxy#save'
-    match 'stories/:id/clone'  => 'stories#clone'
-    match 'stories/:id/delete' => 'stories#destroy'
+    
+    resources :stories
+    match 'stories/:id' => 'stories#update', :via=> [:get, :post]
+    match 'proxy/:id/story'   => 'bt_proxy#story', :via=> [:get, :post]
+    match 'proxy/:id/related' => 'bt_proxy#related', :via=> [:get, :post]
+    match 'story/save'        => 'bt_proxy#save', :via=> [:get, :post]
+    match 'stories/:id/clone'  => 'stories#clone', :via=> [:get, :post]
+    match 'stories/:id/delete' => 'stories#destroy', :via=> [:get, :post]
     # match 'story/:id' => 'stories#destroy', :via => :delete, :as => :story_destroy
 
-    match 'stories/:id/legacy'  => 'stories#legacyxml'
-    match 'stories/:id/clones'  => 'stories#clonesxml'
+    match 'stories/:id/legacy'  => 'stories#legacyxml', :via=> [:get, :post]
+    match 'stories/:id/clones'  => 'stories#clonesxml', :via=> [:get, :post]
 
-    match 'applications/:id/submitxml'  => 'app_submissions#submit'
-    match 'applications/:id/results'  => 'bright_text_applications#result'
+    match 'applications/:id/submitxml'  => 'app_submissions#submit', :via=> [:get, :post]
+    match 'applications/:id/results'  => 'bright_text_applications#result', :via=> [:get, :post]
 
 
-    match "/session/:id" => "session#create"
+    match "/session/:id" => "session#create", :via=> [:get, :post]
 
     match "/login" => "session#new", :via => :get
     match "/logout" => "session#destroy", :via => :get
@@ -124,6 +141,7 @@ BrightText::Application.routes.draw do
     resources :story_set_categories do
       member do
         get :clone
+        get :clone_silently
       end
       collection do
         post :update_story_set_categories_rank
@@ -136,5 +154,5 @@ BrightText::Application.routes.draw do
       end
     end
   end
-  
+
 end

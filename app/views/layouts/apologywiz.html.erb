@@ -1,68 +1,44 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>BrightText</title>
-    <style>
-      .flash {
-        padding: 10px;
-      }
-      .notice {
-        background: green;
-      }
-      .error {
-        background: #FF5E5E;
-      }
-      .field_with_errors input {
-        border: 1px solid #FF5E5E !important;
-      }
-      .field_with_errors label.message {
-        color: red !important;
-      }
-    </style>
-
-    <link rel="stylesheet" href="/stylesheets/apologywiz/reset.css">
-    <link rel="stylesheet" href="/stylesheets/apologywiz/base.css">
-    <link rel="stylesheet" href="/stylesheets/apologywiz/grids.css">
-    <link rel="stylesheet" href="/stylesheets/apologywiz/fonts.css">
-    <link rel="stylesheet" href="/stylesheets/apologywiz/skin.css">
-    <%= javascript_include_tag "rails.validations"%>
-    <%= javascript_include_tag "stupidtable"%>
-    <%= yield :stylesheets  %>
-    <%= javascript_include_tag :defaults %>
-    <%= yield :javascripts %>
-    <%= csrf_meta_tag %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for?(:title) ? yield(:title) : "ApologyWiz" %></title>
+    <link rel="shortcut icon" href="/apologywiz/favicon.ico"/>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "ApologyWiz Creator" %>">
+    <%= stylesheet_link_tag params[:controller], media: "all", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
   </head>
   <body>
-    <% flash.each do |name, msg| %>
-      <% if msg.is_a?(String) %>
-        <div class="<%= name %> flash">
-          <%= content_tag :div, msg %>
-        </div>
-      <% end %>
-    <% end %>
-
-    <div class="bg">
-      <div class="mWrp">
-        <div id="mHdr">
-
-          <div class="logo">
-            <img src="/images/apologywiz/logos/logo.png" alt="logo" />
-          </div>
-          <div>
-            <ul class="login-form">
-              <li>
-                <% if session[:user_id].present? %>
-                <span>
-                  <a href="/apologywiz/logout">Log out</a>
-                </span>                  
-                <% end %>
-              </li>
-            </ul>
+    <div class="container">
+      <div class="jumbortonui-corner-all">
+        <div class="row">
+          <div class="col-md-12">
+            <% 
+              if session[:user_id].present? 
+                current_user = User.find session[:user_id]
+            %>            
+              <span class="pull-right">
+                <a href="/apologywiz/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.present? ? current_user.name : current_user.email%></font>
+              </span>
+            <% end %>
           </div>
         </div>
-        <div id="mCnt">
-          <%= yield %>
+        <div class="row">
+          <img src="/images/apologywiz/logos/logo.png" alt="logo" />
+        </div>
+        <br/>
+        <div class="row">
+          <div class="col-md-12">
+            <%= render 'layouts/messages' %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <%= yield %>
+          </div>
         </div>
       </div>
     </div>
   </body>
+</html>

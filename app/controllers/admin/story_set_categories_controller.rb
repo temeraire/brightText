@@ -1,11 +1,13 @@
 require 'rexml/document'
 
 class Admin::StorySetCategoriesController < ApplicationController
-  #before_filter :login_required
+  protect_from_forgery :except => [:index]
+  before_filter :login_required
   # GET /story_categories
   # GET /story_categories.xml
   def index
     @filter  = request[:filter]
+    @page = params[:page]
     @applications = BrightTextApplication.where(:domain_id => session[:domain].id).order(:name)
     if !(@filter == "__none" || @filter == "__unassigned")
       @application = @applications.find_by_id @filter
@@ -31,12 +33,13 @@ class Admin::StorySetCategoriesController < ApplicationController
   # GET /story_categories/1
   # GET /story_categories/1.xml
   def show
-    @story_set_category = StorySetCategory.find(params[:id])
-    raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
+    @category = StorySetCategory.find(params[:id])
+        
+    raise ' not owner ' unless @category.domain_id == session[:domain].id
     respond_to do |format|
       format.html # show.html.erb
       format.xml  {
-        render :xml => @story_set_category
+        render :xml => @category
       }
     end
   end
@@ -47,7 +50,8 @@ class Admin::StorySetCategoriesController < ApplicationController
     @story_set_category = StorySetCategory.new
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
-    @story_set_category.application_id = filter.to_i
+      @application = BrightTextApplication.find_by_id filter
+      @story_set_category.application_id = @application.id if @application.present?
     end
     respond_to do |format|
       format.html # new.html.erb
@@ -58,6 +62,8 @@ class Admin::StorySetCategoriesController < ApplicationController
   # GET /story_categories/1/edit
   def edit
     @story_set_category = StorySetCategory.find(params[:id])
+    @page = params[:page]
+    session[:page]=@page
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
   end
 
@@ -66,11 +72,12 @@ class Admin::StorySetCategoriesController < ApplicationController
   def create
     @story_set_category = StorySetCategory.new(params[:story_set_category])
     @story_set_category.domain_id = session[:domain].id
-
+    @story_set_category.user_id = session[:user_id]
+    
     respond_to do |format|
       if @story_set_category.save
         clone_story_sets(params[:story_sets], @story_set_category.id) unless params[:story_sets].blank?
-        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s + "&page=" + session[:page].to_s, :notice => session[:style].group_alias.titleize + ' was successfully created.') }
         format.xml  { render :xml => @story_set_category, :status => :created, :location => @story_set_category }
       else
         format.html { render :action => "new" }
@@ -86,7 +93,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/admin/story_set_categories?filter=' + @story_set_category.application_id.to_s + '&page=' + session[:page], :notice => session[:style].group_alias.titleize + ' was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -98,6 +105,7 @@ class Admin::StorySetCategoriesController < ApplicationController
   # DELETE /story_categories/1
   # DELETE /story_categories/1.xml
   def destroy
+    @page = params[:page]
     @story_set_category = StorySetCategory.find(params[:id])
     # @filter = @story_set_category.application_id.to_s
     # if ( @filter == nil || @filter == "0")
@@ -108,7 +116,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
+      format.html { redirect_to admin_story_set_categories_path(:filter => @story_set_category.application_id.to_s,  :page => @page) }
       format.xml  { head :ok }
     end
   end
@@ -130,14 +138,29 @@ class Admin::StorySetCategoriesController < ApplicationController
   end
 
   def clone
+    @page = params[:page]
+    session[:page]=@page
     @story_set_category_original = StorySetCategory.find(params[:id])
-    @story_set_category = @story_set_category_original.clone
-    number_of_similar_named_storyset_categories = StorySetCategory.count(:conditions => ["name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id])
-    @story_set_category.name = @story_set_category.name + "-" + (number_of_similar_named_storyset_categories + 1).to_s
+    @story_set_category = @story_set_category_original.dup
+    number_of_similar_named_storyset_categories = StorySetCategory.where("name like ? AND application_id = ?", @story_set_category_original.name + "%", @story_set_category_original.application_id).count('id')
+    @story_set_category.name = @story_set_category.name.partition("-")[0] + "-" + (number_of_similar_named_storyset_categories + 1).to_s
     @story_sets = @story_set_category_original.story_sets(:include => :stories)
     #debugger
     respond_to do |format|
       format.html { render :action => "new" }
     end
-  end 
+  end
+  
+    
+  def category_story_sets
+    if params[:id].present?
+      @story_sets = StorySet.where(:category_id => params[:id])
+    else
+      @story_sets = []
+    end
+
+    respond_to do |format|
+      format.json { render :json => @story_sets }
+    end
+  end
 end

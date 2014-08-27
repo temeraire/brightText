@@ -1,15 +1,22 @@
-<p id="notice"><%= notice %></p>
+<% breadcrumb :story_set_category, @category%>
+<div class="col-md-10 col-md-offset-1">
+  <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Name:</b>
-  <%= @story_set_category.name %>
-</p>
+  <div class="form-group">
+    <label class="control-label" for="story_set_category_name">Name</label>
+    <p id="story_set_category_name" class="form-control-static"><%= @category.name %></p>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="story_set_category_description">Description</label>
+    <p id="story_set_category_description" class="form-control-static"><%= @category.description %></p>
+  </div>
 
-<p>
-  <b>Description:</b>
-  <%= @story_set_category.description %>
-</p>
-
-
-<%= link_to 'Edit', edit_admin_story_set_category_path(@story_set_category) %> |
-<%= link_to 'Back', admin_story_set_categories_path %>
+  <div class="row">
+    <div class="col-md-2">
+      <%= link_to 'Back', admin_story_set_categories_path,  {:class => "btn btn-default"}   %>
+    </div>
+    <div class="col-md-2">
+      <%= link_to 'Edit', edit_admin_story_set_category_path(@category), {:class => "btn btn-primary"}  %>
+    </div>
+  </div>
+</div>

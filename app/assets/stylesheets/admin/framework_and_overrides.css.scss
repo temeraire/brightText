@@ -1,0 +1,123 @@
+// import the CSS framework
+@import "bootstrap";
+
+body {
+    padding-top: 120px;
+    font-size: 14px;
+}
+
+table.sorted_table{
+    tr{cursor:move;}
+}
+
+// make all images responsive by default
+img {
+  @extend .img-responsive;
+  margin: 0 auto;
+  }
+// override for the 'Home' navigation link
+.navbar-brand {
+  font-size: inherit;
+  text-align: center;
+  width: 150px;
+}
+.navbar .divider-vertical {
+    height: 50px;
+    margin: 0 0px;
+    border-right: 1px solid #ffffff;
+    border-left: 1px solid #BDBDBD;
+}
+
+.navbar-inverse .divider-vertical {
+    border-right-color: #222222;
+    border-left-color: #111111;
+}
+
+@media (min-width: 768px) {
+    .navbar > .container .navbar-brand {
+      margin-left: 0px; 
+    } 
+}
+
+.breadcrumb {
+      padding: 10px 5px 10px 5px; 
+}
+
+.breadcrumb > li {
+      width: 148px; 
+      padding: 0 0 0 10px;
+}
+
+.breadcrumb > li:first-child{
+    width: 130px;   
+}
+
+.breadcrumb > li:last-child{
+    width: 300px;   
+}
+
+.breadcrumb > li + li:before {
+      content: "|";
+      padding: 0 5px 0 0px;
+      color: #cccccc; 
+}
+
+/*@media (max-width: 767px) {
+.navbar-collapse .nav > .divider-vertical {
+    display: none;
+  }
+}*/
+
+.container .jumbotron {
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 3px;
+}
+
+.jumbotron {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.jumbotron p {
+    margin-bottom: 15px;
+    font-size: small;
+    font-weight: 200;
+}
+
+/* Side notes for calling out things
+-------------------------------------------------- */
+
+/* Base styles (regardless of theme) */
+.bs-callout {
+margin: 20px 0;
+padding: 15px 30px 15px 15px;
+border-left: 5px solid #eee;
+font-size: small;
+}
+.bs-callout h4 {
+margin-top: 0;
+}
+.bs-callout p:last-child {
+margin-bottom: 0;
+}
+.bs-callout code,
+.bs-callout .highlight {
+background-color: #fff;
+}
+
+/* Themes for different contexts */
+.bs-callout-danger {
+background-color: #fcf2f2;
+border-color: #dFb5b4;
+}
+.bs-callout-warning {
+background-color: #fefbed;
+border-color: #f1e7bc;
+}
+.bs-callout-info {
+background-color: #f0f7fd;
+border-color: #d0e3f0;
+  }

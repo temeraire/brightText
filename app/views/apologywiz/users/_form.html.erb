@@ -1,33 +1,45 @@
-<%= form_for([:apologywiz, @user], validate: true) do |f| %>
+<%= form_for([:apologywiz, @user], html: { role: "form", class: "form"}, validate: true) do |f| %>
+  <% if @user.errors.any? %>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@user.errors.count, "error") %> prohibited this User from being saved:</b>
+        <% @user.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
+    </div>
+  <% end %>
+    <div class="form-group">
+      <%= f.label :name, :class=>'control-label' %>
+      <%= f.text_field :name, :class=>'form-control' %>
+    </div>
 
-  <ul class="login-form">
-    <li>
-      <%= f.label :name, "First name" %><strong>*</strong>
-      <%= f.text_field :name, class: 'txt' %>
-    </li>
-    <li>
-      <%= f.label :lastname, "Last name", style: 'margin:12px 0 2px;' %><br />
-      <%= f.text_field :lastname, class: 'txt' %>
-    </li>
-    <li>
-      <%= f.label :email, style: 'margin:12px 0 2px;' %>
-      <%= f.text_field :email, class: 'txt' %>
-    </li>
-    <li>
-      <%= f.label :password, style: 'margin:12px 0 2px;' %><br />
-      <%= f.password_field :password, class: 'txt' %>
-    </li>
-    <li>
-      <%= f.label :password_confirmation, style: 'margin:12px 0 2px;' %><br />
-      <%= f.password_field :password_confirmation, class: 'txt' %><br />
-    </li>
-    <li class="actions">
-      <span><%= link_to "Already Registered?", apologywiz_login_path %></span>
-      <%= f.submit 'Submit', class: 'btn' %>
-    </li>
-    <li>
+    <div class="form-group">
+      <%= f.label :lastname, :class=>'control-label' %>
+      <%= f.text_field :lastname, :class=>'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :email, :class=>'control-label' %>
+      <%= f.text_field :email, :class=>'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password, :class=>'control-label' %>
+      <%= f.password_field :password, :class=>'form-control' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password_confirmation, :class=>'control-label' %>
+      <%= f.password_field :password_confirmation, :class=>'form-control' %>
+    </div>
 
-    </li>
-  </ul>
+    <div class="row">
+      <div class="col-md-6">
+        <%= link_to "Already Registered?", apologywiz_login_path,  {:class => "btn btn-default"}   %>
+      </div>
+      <div class="col-md-6">
+        <span class="pull-right">
+          <%= f.submit :id => "save_user_btn", :value => "Submit", :class => "btn btn-primary" %>
+        </span>
+        
+      </div>
+    </div>
 
-<% end %>
+  <% end %>

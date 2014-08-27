@@ -2,18 +2,11 @@
   $(function(){
   	//set client_side_validation for selection list
    $("#story_set_category_id").change(function(){
-		var settings = window[$('form[data-validate]').attr('id')];
-		$("#story_set_name").isValid(settings.validators);		
+	var settings = window[$('form[data-validate]').attr('id')];
+	$("#story_set_name").isValid(settings.validators);
    });
-   
-   $("#save_story_set_btn").button(); 
-   $("#back_btn").button().click( function(e){
-    e.preventDefault();
-    document.location.href="/admin/story_sets?filter=<%= @story_set.category_id.to_s %>"; 
-    return false;    
-   });; 
   });
-  
+
   function onCategorySelect()
   {
     var selector =  $("#categorySelector")[0];
@@ -21,44 +14,46 @@
   }
 </script>
 
-<%= form_for([:admin, @story_set], :validate => true) do |f| %>
+<%= form_for([:admin, @story_set], :validate => true, :html => { :role => "form", :class=>"form"} ) do |f| %>
+
   <% if @story_set.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@story_set.errors.count, "error") %> prohibited this story_set from being saved:</h2>
-
-      <ul>
+    <div class="alert alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <b><%= pluralize(@story_set.errors.count, "error") %> prohibited this <%= session[:style].set_alias.titleize %> from being saved:</b>
       <% @story_set.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+          <p><%= msg %></p>
       <% end %>
-      </ul>
     </div>
+  <% end %>
+  <div class="form-group">
+    <%= f.label :name, :class=>'control-label' %>
+    <%= f.text_field :name, :class=>'form-control' %>
+  </div>
+  <div class="form-group">
+    <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
+    <%= f.select :category_id, options_from_collection_for_select(StorySetCategory.where(:domain_id => session[:domain].id),:id,:name, @story_set.category_id), {}, {:class=>'form-control'} %>
+  </div>
+  <% unless @stories.blank? %>
+        <div class="form-group">
+                <label for="stories" class="control-label">Select Stories to clone</label>
+	  	<% @stories.each do |story| %>
+                <div id="stories" class="checkbox">
+                    <label for="<%=story.id%>">
+                      <%= check_box_tag "stories[]", story.id, true %><%= story.name %>
+                    </label>
+                </div>
+	    <% end %>
+	</div>
   <% end %>
 
-  <div class="field form-field">
-    <div class="form-field-label"><%= f.label :name %>:</div>
-    <div class="form-field-value"><%= f.text_field :name %></div>
+<div class="row">
+  <div class="col-md-2">
+    <%= link_to 'Back', admin_story_sets_path(:page=>@page),  {:class => "btn btn-default"}   %>
   </div>
-  
-  
-  <div class="field form-field" >
-    <div class="form-field-label"><%= session[:style].group_alias.titleize %>:</div>
-    <div class="form-field-value">
-    	<%= f.select :category_id, options_from_collection_for_select(StorySetCategory.where(:domain_id => session[:domain].id), :id, :name, @story_set.category_id) %>
-    </div>
-    
+    <div class="col-md-10">
+      <span class="pull-right">
+        <%= f.submit :id => "save_story_set_btn", :value => "Save " + session[:style].set_alias.titleize, :class => "btn btn-primary" %>
+      </span>
   </div>
-  <% unless @stories.blank? %>  	  
-	  <div class="field form-field" style="height: auto;">
-	    <div class="form-field-label" style="width: auto; float: none;">Select Stories to clone:</div>
-		<br />
-	  	<% @stories.each do |story| %>
-		    <div class="form-field-label"><%= check_box_tag "stories[]", story.id, true %></div>
-		    <div class="form-field-value"><%= story.name %></div>
-		    <br style="clear: both;" />
-	    <% end %>
-	  </div>
-  <% end %>
-  <div class="actions">
-    <button style="height:28px; margin-right:480px" id="back_btn">Back</button><%= f.submit :id => "save_story_set_btn", :value => "Save" %>
-  </div>
+</div>
 <% end %>

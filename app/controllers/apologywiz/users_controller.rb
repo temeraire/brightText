@@ -32,10 +32,6 @@ class Apologywiz::UsersController < ApologywizController
     end
   end
 
-  def new_session
-    @user = User.new
-  end
-
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
@@ -45,9 +41,13 @@ class Apologywiz::UsersController < ApologywizController
   # POST /users.xml
   def create
     @user = User.new(params[:user])
+    @user.group = Group.new
+    @user.group.name = "Apologies"
+    @user.customer!
 
     respond_to do |format|
       if @user.save
+        GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         log_in! @user
         format.html { redirect_to(apologywiz_root_url, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
@@ -55,17 +55,6 @@ class Apologywiz::UsersController < ApologywizController
         format.html { render :action => "new" , :layout => "apologywiz" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
-    end
-  end
-
-  def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
-      log_in! @user
-      redirect_to new_apologywiz_story_path, notice: "Logged in!"
-    else
-      @user = User.new
-      flash.now[:error] = "Email or password is invalid"
-      render 'new_session', layout: "apologywiz"
     end
   end
 
@@ -95,5 +84,35 @@ class Apologywiz::UsersController < ApologywizController
       format.html { redirect_to(apologywiz_users_url) }
       format.xml  { head :ok }
     end
+  end
+
+  def new_session
+    reset_session
+    @user = User.new
+  end
+
+  def authenticate
+    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+      @user_apps = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>BrightTextApplication.find_by_name("ApologyWiz").id)
+      if @user_apps.present?
+        log_in! @user
+        redirect_to apologywiz_stories_path, notice: "Logged in!"
+      else
+        #redirect_to 'http://apologywiz.com'   
+        flash.now[:error] = 'In order to log in and create personal content, you must have the paid version of Apology Wiz! You can find it here:'
+        render 'unpaid.html.erb', :layout=>true
+      end
+    else
+      @user = User.new
+      flash.now[:error] = "Email or password is invalid"
+      render 'new_session', layout: "apologywiz"
+    end
+  end
+
+  def destroy_session
+    session[:domain] = nil
+    session[:style] = nil
+    reset_session
+    redirect_to apologywiz_login_path
   end
 end
