@@ -146,9 +146,10 @@ DIV.btEditor{
       "data-option-value-method" => :name}%>
   </div>
 
-  <div class="form-group">   
-    <%= f.label :public, :class=>'control-label' %>
-    <%= f.check_box :public%> 
+  <div class="checkbox">   
+    <%= f.label :public, :class => "checkbox" do %>
+      <%= f.check_box :public%>Public
+    <% end %>
   </div>
 
   <%#= hidden_field_tag 'format', 'json' %>
