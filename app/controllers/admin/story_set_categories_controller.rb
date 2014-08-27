@@ -51,7 +51,7 @@ class Admin::StorySetCategoriesController < ApplicationController
     filter = params[:filter]
     if ( filter != nil && filter != "__unassigned" )
       @application = BrightTextApplication.find_by_id filter
-      @story_set_category.application_id = @application.id
+      @story_set_category.application_id = @application.id if @application.present?
     end
     respond_to do |format|
       format.html # new.html.erb
