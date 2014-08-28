@@ -1,6 +1,6 @@
 <%# add navigation links to this file %>
 
-<% if session[:domain].nickname == "Admin" %>
+<% if session[:domain].name == "Admin" %>
   <li><%= link_to 'Domains', admin_domains_path%></li>
 <% else %>
   <li <%= 'class=active' if current_page?(admin_bright_text_applications_path) %>><%= link_to session[:style].app_alias.pluralize.titleize, admin_bright_text_applications_path, class: 'navbar-brand' %></li>

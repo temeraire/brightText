@@ -10,7 +10,7 @@
           current_user = User.find session[:user_id]
       %>
       <ul class="nav navbar-nav pull-right">
-        <li><%=link_to current_user.name.present? ? current_user.name : current_user.email + ' Logout', admin_logout_path, class: 'navbar-brand'%></li>
+        <li><%=link_to (current_user.name.present? ? current_user.name : current_user.email) + ' Logout', admin_logout_path, class: 'navbar-brand'%></li>
       </ul>
       <% end %>
     </div>

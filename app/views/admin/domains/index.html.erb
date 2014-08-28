@@ -34,9 +34,9 @@
             domainStyle = DomainStyle.find_by_domain_id domain.id
           %>
               <tr>
-                <td><%= domain.nickname %></td>
+                <td><%= domain.name %></td>
                 <td><%= domain.enabled %></td>
-                <td><%= domain.priveleged %></td>
+                <td><%= domain.privileged %></td>
                 <td><%= domain.self_created %></td>
                 <td>
                   <span><%= link_to 'Edit', edit_admin_domain_path(domain) %> | </span>

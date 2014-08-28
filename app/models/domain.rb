@@ -3,7 +3,7 @@ require 'digest/sha1'
 class Domain < ActiveRecord::Base
   has_one :user
 
-    validates :nickname,
+  validates :name,
     presence: true,
     length: { in: 3..40 },
     uniqueness: true
@@ -12,19 +12,8 @@ class Domain < ActiveRecord::Base
     presence: true,
     :format => { :with => /\A(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})\z/i, :message => "Please insert a valid email." },
     :uniqueness => true
-   validates :password,
-     presence: true, :on => :create,
-    length: { in: 4..40 },
-    confirmation: true
 
-  validates :password_confirmation,
-    presence: true,
-    length: { in: 4..40 }
-  
-  attr_protected :id, :salt
-
-  attr_accessor :password, :password_confirmation
-
+  attr_accessible :id, :name, :email, :enabled, :privileged, :self_created, :Owner_domain_id
 
   def self.random_string(len)
     #generate a random password consisting of strings and digits
@@ -34,24 +23,6 @@ class Domain < ActiveRecord::Base
     return newpass
   end
 
-
-  def password= (p)
-    if ( p != "******" && !p.empty?)
-      @password = p
-      self.salt = Domain.random_string(10) unless self.salt?
-      self.pass = Domain.encrypt(@password, self.salt)
-      puts ' generated pass: ' + self.pass
-    end
-  end
-
-  def password
-    logger.info("  what the hell is the pass set to???  " + pass ) unless pass == nil;
-    return "******" unless pass == nil || pass.empty?
-  end
-
-  def password_confirmation
-    return "******" unless pass == nil || pass.empty?
-  end
 
   def self.encrypt(p, salt)
     Digest::SHA1.hexdigest(p+salt)
@@ -73,7 +44,7 @@ class Domain < ActiveRecord::Base
     new_pass = Domain.random_string(10)
     self.password = self.password_confirmation = new_pass
     self.save
-    #Notifications.deliver_forgot_password(self.email, self.nickname, new_pass)
+    #Notifications.deliver_forgot_password(self.email, self.name, new_pass)
   end
 end
 

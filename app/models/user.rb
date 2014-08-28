@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
 
   def set_domain
     unless domain_id.present?
-      self.domain_id = Domain.find_by_nickname("ContextIT").id
+      self.domain_id = Domain.find_by_name("ContextIT").id
     end
   end
 
