@@ -55,9 +55,8 @@ class Admin::DomainsController < ApplicationController
   # GET /domains/new
   # GET /domains/new.xml
   def new
-    @myDomain = session[:domain]
     @domain = Domain.new
-    @domain.owner_domain_id = @myDomain.id
+    @domain.owner_domain_id = session[:domain].id
 
     respond_to do |format|
       format.html # new.html.erb
@@ -74,7 +73,7 @@ class Admin::DomainsController < ApplicationController
   # POST /domains.xml
   def create
     @domain = Domain.new(params[:domain])
-    @domain.owner_domain_id = @myDomain.id
+    @domain.owner_domain_id = session[:domain].id
 
     respond_to do |format|
       if @domain.save && DomainStyle.new({:domain_id => @domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => @domain.name + "_logo.png" } ).save   
