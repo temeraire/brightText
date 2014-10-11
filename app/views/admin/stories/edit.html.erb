@@ -1,4 +1,8 @@
-<% breadcrumb :story, @story%>
+<% if session[:domain].name == "Advocacy"  %>
+  <% breadcrumb :action, @story%>
+<% else %>
+  <% breadcrumb :story, @story%>
+<% end %>
 <div class="col-md-10 col-md-offset-1">
   <h3>Editing <%= session[:style].story_alias.titleize %></h3>
   <%= render 'form' %>

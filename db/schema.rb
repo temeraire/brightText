@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084755) do
+ActiveRecord::Schema.define(version: 920130109084756) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -45,16 +45,11 @@ ActiveRecord::Schema.define(version: 920130109084755) do
   end
 
   create_table "domains", force: true do |t|
-    t.string   "name_first"
-    t.string   "name_last"
     t.string   "email"
-    t.string   "pass"
-    t.string   "password_confirmation"
-    t.string   "salt"
-    t.string   "nickname"
+    t.string   "name"
     t.integer  "owner_domain_id"
     t.boolean  "enabled"
-    t.boolean  "priveleged"
+    t.boolean  "privileged"
     t.boolean  "self_created"
     t.string   "role"
     t.datetime "created_at"
@@ -169,7 +164,7 @@ ActiveRecord::Schema.define(version: 920130109084755) do
     t.boolean  "paid"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
+end
 
   add_index "user_apps", ["user_id", "bright_text_application_id", "platform"], name: "index_user_apps_on_user_id_and_app_id_and_platform", unique: true, using: :btree
 

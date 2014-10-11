@@ -18,8 +18,6 @@ class Admin::UsersController < ApplicationController
         else
           redirect_to admin_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
         end
-        
-        redirect_to admin_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
       else
         redirect_to admin_login_path
       end

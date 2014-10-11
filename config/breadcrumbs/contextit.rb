@@ -1,4 +1,4 @@
-crumb :root do |bright_text_application|
+crumb :application do |bright_text_application|
   if(bright_text_application.present?)
     link bright_text_application.name, admin_story_set_categories_path
   end 
@@ -10,7 +10,7 @@ crumb :story_set_category do |story_set_category|
     if story_set_category.bright_text_application.present? && story_set_category.bright_text_application.name.length > 19 
       story_set_category.bright_text_application.name = story_set_category.bright_text_application.name[0..19].gsub(/\s\w+\s*$/,'...')   
     end  
-    parent :root, story_set_category.bright_text_application
+    parent :application, story_set_category.bright_text_application
   end
    
 end
