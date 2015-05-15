@@ -3,8 +3,12 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
 
-# DB session store
-gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+# Session Store
+# gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+
+# Session Store
+gem 'redis-rails'
+
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
 
@@ -13,6 +17,7 @@ gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
+
 # Bootstarp SASS plugin
 gem 'bootstrap-sass'
 
@@ -71,5 +76,5 @@ gem 'tzinfo'
 gem 'typhoeus'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-# gem 'tzinfo-data', platforms: [:mingw, :mswin]
+# gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 

@@ -1,0 +1,19 @@
+<% if @story.errors.count == 0 %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Word Slider was updated successfully</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+
+<% 
+  else 
+    if @story.errors.get(:user_id).present?
+      message = @story.errors.get(:user_id)[0]
+    else
+      message = "An error occurred while updating Word Slider"      
+    end
+%>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\"><%=message%></p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% end %>
