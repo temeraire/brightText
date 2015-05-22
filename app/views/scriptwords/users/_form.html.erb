@@ -1,4 +1,4 @@
-<%= form_for([:wordslider, @user], html: { role: "form", class: "form"}, validate: true) do |f| %>
+<%= form_for([:scriptwords, @user], html: { role: "form", class: "form"}, validate: true) do |f| %>
   <% if @user.errors.any? %>
     <div class="alert alert-danger">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -32,7 +32,7 @@
 
     <div class="row">
       <div class="col-md-6">
-        <%= link_to "Already Registered?", wordslider_login_path,  {:class => "btn btn-default"}   %>
+        <%= link_to "Already Registered?", scriptwords_login_path,  {:class => "btn btn-default"}   %>
       </div>
       <div class="col-md-6">
         <span class="pull-right">

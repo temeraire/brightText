@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= content_for?(:title) ? yield(:title) : "Word Slider" %></title>
-    <link rel="shortcut icon" href="/wordslider/favicon.ico"/>
+    <link rel="shortcut icon" href="/scriptwords/favicon.ico"/>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Word Slider Creator" %>">
     <%= stylesheet_link_tag params[:controller], media: "all", "data-turbolinks-track" => true %>
     <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
@@ -19,13 +19,13 @@
                 current_user = User.find session[:user_id]
             %>            
               <span class="pull-right">
-                <a href="/wordslider/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.present? ? current_user.name : current_user.email%></font>
+                <a href="/scriptwords/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.present? ? current_user.name : current_user.email%></font>
               </span>
             <% end %>
           </div>
         </div>
         <div class="row">
-          <img src="/images/wordslider/logos/logo.png" alt="logo" />
+          <img src="/images/scriptwords/logos/logo.png" alt="logo" />
         </div>
         <br/>
         <div class="row">

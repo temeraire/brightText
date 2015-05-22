@@ -5,7 +5,7 @@
 <p id="notice"><%= notice %></p>
 
 
-  <%= form_for([:wordslider,@user], html: { role: "form", class: "form"}, validate:true, :url => wordslider_password_reset_path(params[:id])) do |f| %>
+  <%= form_for([:scriptwords,@user], html: { role: "form", class: "form"}, validate:true, :url => scriptwords_password_reset_path(params[:id])) do |f| %>
   <% if @user.errors.any? %>
         <div id="error_messages" class="row">
           <h4><%= pluralize(@user.errors.count, "error") %> prohibited this password reset:</h4>

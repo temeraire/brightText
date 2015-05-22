@@ -109,7 +109,7 @@ class Scriptwords::StoriesController < ScriptwordsController
     story_set.user_id = current_user.id
     #create story
     @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
-    @story.name = "Apology#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
+    @story.name = "ScriptureWord#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
     @story.user_id = session[:user_id]

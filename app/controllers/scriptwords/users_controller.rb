@@ -16,7 +16,7 @@ class Scriptwords::UsersController < ScriptwordsController
     @user = User.find(params[:id])
 
     respond_to do |format|
-      format.html { render :layout => "wordslider" }# show.html.erb
+      format.html { render :layout => "scriptwords" }# show.html.erb
       format.xml  { render :xml => @user }
     end
   end
@@ -27,7 +27,7 @@ class Scriptwords::UsersController < ScriptwordsController
     @user = User.new
 
     respond_to do |format|
-      format.html  { render :layout => 'wordslider' }# new.html.erb
+      format.html  { render :layout => 'scriptwords' }# new.html.erb
       format.xml  { render :xml => @user }
     end
   end
@@ -49,10 +49,10 @@ class Scriptwords::UsersController < ScriptwordsController
       if @user.save
         GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         log_in! @user
-        format.html { redirect_to(wordslider_root_url, :notice => 'User was successfully created.') }
+        format.html { redirect_to(scriptwords_root_url, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
-        format.html { render :action => "new" , :layout => "wordslider" }
+        format.html { render :action => "new" , :layout => "scriptwords" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
@@ -81,7 +81,7 @@ class Scriptwords::UsersController < ScriptwordsController
     @user.destroy
 
     respond_to do |format|
-      format.html { redirect_to(wordslider_users_url) }
+      format.html { redirect_to(scriptwords_users_url) }
       format.xml  { head :ok }
     end
   end
@@ -96,16 +96,16 @@ class Scriptwords::UsersController < ScriptwordsController
       #@user_apps = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>BrightTextApplication.find_by_name("ApologyWiz").id)
       #if @user_apps.present?
         log_in! @user
-        redirect_to wordslider_stories_path, notice: "Logged in!"
+        redirect_to scriptwords_stories_path, notice: "Logged in!"
       #else
-        #redirect_to 'http://wordslider.com'   
+        #redirect_to 'http://scriptwords.com'   
         #flash.now[:error] = 'In order to log in and create personal content, you must have the paid version of Apology Wiz! You can find it here:'
         #render 'unpaid.html.erb', :layout=>true
       #end
     else
       @user = User.new
       flash.now[:error] = "Email or password is invalid"
-      render 'new_session', layout: "wordslider"
+      render 'new_session', layout: "scriptwords"
     end
   end
 
@@ -113,6 +113,6 @@ class Scriptwords::UsersController < ScriptwordsController
     session[:domain] = nil
     session[:style] = nil
     reset_session
-    redirect_to wordslider_login_path
+    redirect_to scriptwords_login_path
   end
 end
