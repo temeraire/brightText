@@ -8,6 +8,7 @@ BtWeb::Application.routes.draw do
     post "/app_purchase" => "bright_text_applications#set_app_purchase", :defaults => { :format => 'json' }
     post "/is_paid_user" => "users#is_paid_user", :defaults => { :format => 'json' }
     post "/register_user" => "users#register_user", :defaults => { :format => 'json' }
+    post "/user_wordsliders" => "wordslider#get_wordsliders_list"
   end
 
   namespace :admin do

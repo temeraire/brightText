@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? yield(:title) : "ApologyWiz" %></title>
-    <link rel="shortcut icon" href="/apologywiz/favicon.ico"/>
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "ApologyWiz Creator" %>">
+    <title><%= content_for?(:title) ? yield(:title) : "Word Slider" %></title>
+    <link rel="shortcut icon" href="/wordslider/favicon.ico"/>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Word Slider Creator" %>">
     <%= stylesheet_link_tag params[:controller], media: "all", "data-turbolinks-track" => true %>
     <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
@@ -19,13 +19,13 @@
                 current_user = User.find session[:user_id]
             %>            
               <span class="pull-right">
-                <a href="/apologywiz/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.present? ? current_user.name : current_user.email%></font>
+                <a href="/wordslider/logout">Log Out</a> <br/><font style="font-style: italic">Logged in as <%=current_user.name.present? ? current_user.name : current_user.email%></font>
               </span>
             <% end %>
           </div>
         </div>
         <div class="row">
-          <img src="/images/apologywiz/logos/logo.png" alt="logo" />
+          <img src="/images/wordslider/logos/logo.png" alt="logo" />
         </div>
         <br/>
         <div class="row">
@@ -39,9 +39,9 @@
           </div>
         </div>
       </div>
-    </div>     
+    </div>      
     <script>
       $(document).bind("page:load ready", function(){ $('.alert').fadeOut(2000); });      
     </script>
-  </body>
+  </body>  
 </html>

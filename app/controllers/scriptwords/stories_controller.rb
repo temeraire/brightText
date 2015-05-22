@@ -1,4 +1,4 @@
-class Wordslider::StoriesController < WordsliderController
+class Scriptwords::StoriesController < ScriptwordsController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   
@@ -102,14 +102,14 @@ class Wordslider::StoriesController < WordsliderController
   # POST /stories
   # POST /stories.xml
   def create
-    #create story set
-    story_set = StorySet.new(name: "Wordslider#{StorySet.count + 1}")
+	#create story set
+    story_set = StorySet.new(name: "storyset#{StorySet.count + 1}")
     story_set.domain_id = session[:domain].id
     story_set.bright_text_application_id = session[:br_application_id]
     story_set.user_id = current_user.id
     #create story
     @story = Story.new(user_id: current_user.id, story_set: story_set, name: params[:story][:name], category: params[:story][:category], description: "", descriptor: "")
-    @story.name = "wordslider_levelpack_#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
+    @story.name = "Apology#{Story.where(:user_id => current_user.id).count + 1}" if @story.name.blank?
     @story.domain_id = session[:domain].id
     @story.bright_text_application_id = session[:br_application_id]
     @story.user_id = session[:user_id]
