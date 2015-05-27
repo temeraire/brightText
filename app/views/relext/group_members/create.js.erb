@@ -1,0 +1,12 @@
+<% if @group_member.errors.count == 0 %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Added to group successfully</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+  showMembers();
+<% else %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while adding to group</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% end %>

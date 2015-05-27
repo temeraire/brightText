@@ -1,5 +1,5 @@
 require 'rexml/document'
-class Relext::GroupMembersController < RelextsController
+class Relext::GroupMembersController < RelextController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   # GET /story_categories

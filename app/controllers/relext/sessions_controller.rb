@@ -1,4 +1,4 @@
-class Relext::SessionController < RelextsController
+class Relext::SessionController < RelextController
   #before_filter :login_required, :except => [:new, :create]
 
   def new

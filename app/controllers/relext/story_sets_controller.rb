@@ -1,4 +1,4 @@
-class Relext::StorySetsController < RelextsController
+class Relext::StorySetsController < RelextController
   protect_from_forgery :except => [:index]
   before_filter :login_required
 

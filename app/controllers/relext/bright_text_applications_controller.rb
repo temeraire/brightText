@@ -1,4 +1,4 @@
-class Relext::BrightTextApplicationsController < RelextsController
+class Relext::BrightTextApplicationsController < RelextController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   # GET /applications

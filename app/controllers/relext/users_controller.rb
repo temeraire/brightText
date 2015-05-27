@@ -1,4 +1,4 @@
-class Relext::UsersController < RelextsController
+class Relext::UsersController < RelextController
   # GET /users
   # GET /users.xml
   def index

@@ -1,4 +1,4 @@
-class Relext::PasswordResetsController < RelextsController
+class Relext::PasswordResetsController < RelextController
   layout "relext"
   def new
   end

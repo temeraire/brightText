@@ -1,5 +1,5 @@
 require 'rexml/document'
-class Relext::StorySetCategoriesController < RelextsController
+class Relext::StorySetCategoriesController < RelextController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   # GET /story_categories

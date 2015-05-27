@@ -1,4 +1,4 @@
-class RelextsController < ActionController::Base
+class RelextController < ActionController::Base
   #protect_from_forgery
   #  after_filter{
   #    puts response.body
@@ -17,7 +17,7 @@ class RelextsController < ActionController::Base
     session[:user_id] = user.id
     session[:domain] = user.domain    
     session[:style]  = DomainStyle.find_by_domain_id user.domain.id
-    session[:br_application_id] = BrightTextApplication.find_by_name("ScriptureWords").id
+    session[:br_application_id] = BrightTextApplication.find_by_name("Relext").id
   end
 
   def current_user
