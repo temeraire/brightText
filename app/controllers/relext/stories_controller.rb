@@ -1,4 +1,4 @@
-class Scriptwords::StoriesController < ScriptwordsController
+class Relext::StoriesController < RelextsController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   
@@ -72,7 +72,7 @@ class Scriptwords::StoriesController < ScriptwordsController
       @story.story_set_id = filter.to_i
     end
     respond_to do |format|
-      format.html { render :layout => 'scriptwords' }
+      format.html { render :layout => 'relext' }
       format.xml  { render :xml => @story }
     end
   end
@@ -179,7 +179,7 @@ class Scriptwords::StoriesController < ScriptwordsController
     @story.destroy
 
     respond_to do |format|
-      format.html { redirect_to("/scriptwords/stories?filter=" + @story.story_set_id.to_s) }
+      format.html { redirect_to("/relext/stories?filter=" + @story.story_set_id.to_s) }
       format.json{ render :json=> {:success => "true"} }
       format.xml  { head :ok }
     end
@@ -221,7 +221,7 @@ class Scriptwords::StoriesController < ScriptwordsController
 
   def reorder_stories_rank
     if( params[:story_set_id].blank? )
-      redirect_to scriptwords_stories_path
+      redirect_to relext_stories_path
     elsif( params[:story_set_id] ==  "__unassigned")
       @stories = Story.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -232,7 +232,7 @@ class Scriptwords::StoriesController < ScriptwordsController
   def update_stories_rank
     #p params.to_yaml
     @stories = Story.update(params[:stories].keys, params[:stories].values)
-    redirect_to scriptwords_stories_path(:filter => params[:filter])
+    redirect_to relext_stories_path(:filter => params[:filter])
   end
 
   private

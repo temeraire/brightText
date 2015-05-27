@@ -1,14 +1,26 @@
 BtWeb::Application.routes.draw do
 
   namespace :api do
-    post "/user_stories" => "stories#get_user_stories"
-    post "/user_app_stories" => "stories#get_user_application_stories"
-    post "/user_private_stories" => "stories#get_user_private_stories"
-    post "/app_public_stories" => "stories#get_application_public_stories"
+
     post "/app_purchase" => "bright_text_applications#set_app_purchase", :defaults => { :format => 'json' }
     post "/is_paid_user" => "users#is_paid_user", :defaults => { :format => 'json' }
     post "/register_user" => "users#register_user", :defaults => { :format => 'json' }
-    post "/user_wordsliders" => "wordslider#get_wordsliders_list"
+
+    #apology wiz Endpoints
+    post "/user_stories" => "apologies#get_user_stories"
+    post "/user_app_stories" => "apologies#get_user_application_stories"
+    post "/user_private_stories" => "apologies#get_user_private_stories"
+    post "/app_public_stories" => "apologies#get_application_public_stories"
+
+    #Word slider Endpoints
+    post "/user_wordsliders" => "wordsliders#get_wordsliders_list"
+    
+    #Scripture Words Endpoints
+    post "/user_scriptwords" => "scriptwords#get_scriptwords_list"
+
+    #Relax Texts Endpoints
+    post "/user_relexts" => "relexts#get_relexts_list"
+    
   end
 
   namespace :admin do

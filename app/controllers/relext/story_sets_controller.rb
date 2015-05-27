@@ -1,4 +1,4 @@
-class Scriptwords::StorySetsController < ScriptwordsController
+class Relext::StorySetsController < RelextsController
   protect_from_forgery :except => [:index]
   before_filter :login_required
 
@@ -98,7 +98,7 @@ class Scriptwords::StorySetsController < ScriptwordsController
     respond_to do |format|
       if @story_set.save
         clone_stories(params[:stories], @story_set.id) unless params[:stories].blank?
-        format.html { redirect_to("/scriptwords/story_sets?filter=" + @story_set.category_id.to_s ) }
+        format.html { redirect_to("/relext/story_sets?filter=" + @story_set.category_id.to_s ) }
         format.xml  { render :xml => @story_set, :status => :created, :location => @story_set }
       else
         format.html {
@@ -120,7 +120,7 @@ class Scriptwords::StorySetsController < ScriptwordsController
     raise ' not owner ' unless @story_set.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set.update_attributes(params[:story_set])
-        format.html { redirect_to("/scriptwords/story_sets?filter=" + @story_set.category_id.to_s) }
+        format.html { redirect_to("/relext/story_sets?filter=" + @story_set.category_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -137,7 +137,7 @@ class Scriptwords::StorySetsController < ScriptwordsController
     @story_set.destroy
 
     respond_to do |format|
-      format.html { redirect_to scriptwords_story_sets_path(:filter => @story_set.category_id.to_s) }
+      format.html { redirect_to relext_story_sets_path(:filter => @story_set.category_id.to_s) }
       format.xml  { head :ok }
     end
   end
@@ -156,7 +156,7 @@ class Scriptwords::StorySetsController < ScriptwordsController
 
   def reorder_story_sets_rank
     if( params[:category_id].blank? )
-      redirect_to scriptwords_story_sets_path
+      redirect_to relext_story_sets_path
     elsif( params[:category_id] ==  "__unassigned")
       @story_sets = StorySet.where("category_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -167,6 +167,6 @@ class Scriptwords::StorySetsController < ScriptwordsController
   def update_story_sets_rank
     p params.to_yaml
     StorySet.update(params[:story_sets].keys, params[:story_sets].values)
-    redirect_to scriptwords_story_sets_path(:filter => params[:filter])
+    redirect_to relext_story_sets_path(:filter => params[:filter])
   end
 end

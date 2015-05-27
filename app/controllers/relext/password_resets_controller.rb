@@ -1,5 +1,5 @@
-class Scriptwords::PasswordResetsController < ScriptwordsController
-  layout "scriptwords"
+class Relext::PasswordResetsController < RelextsController
+  layout "relext"
   def new
   end
 
@@ -10,7 +10,7 @@ class Scriptwords::PasswordResetsController < ScriptwordsController
     respond_to do |format|
       format.js
     end
-    #redirect_to scriptwords_login_path, notice: "Email sent with password reset instructions."
+    #redirect_to relext_login_path, notice: "Email sent with password reset instructions."
   end
 
   def edit
@@ -20,10 +20,10 @@ class Scriptwords::PasswordResetsController < ScriptwordsController
   def update
     @user = User.find_by_reset_password_token! params[:id]
     if @user.reset_password_sent_at < 2.hours.ago
-      redirect_to new_scriptwords_password_reset_path, notice: "Passowrd reset has expired."
+      redirect_to new_relext_password_reset_path, notice: "Passowrd reset has expired."
     else
       if @user.update_attributes! params[:user]
-        redirect_to scriptwords_login_path, notice: "Password has been reset."
+        redirect_to relext_login_path, notice: "Password has been reset."
       else
         logger.debug "#{@user.errors}"
         render :edit

@@ -1,5 +1,5 @@
 require 'rexml/document'
-class Scriptwords::StorySetCategoriesController < ScriptwordsController
+class Relext::StorySetCategoriesController < RelextsController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   # GET /story_categories
@@ -88,7 +88,7 @@ class Scriptwords::StorySetCategoriesController < ScriptwordsController
     raise ' not owner ' unless @story_set_category.domain_id == session[:domain].id
     respond_to do |format|
       if @story_set_category.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/scriptwords/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
+        format.html { redirect_to('/relext/story_set_categories?filter=' + @story_set_category.application_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -110,14 +110,14 @@ class Scriptwords::StorySetCategoriesController < ScriptwordsController
     @story_set_category.destroy
 
     respond_to do |format|
-      format.html { redirect_to scriptwords_story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
+      format.html { redirect_to relext_story_set_categories_path(:filter => @story_set_category.application_id.to_s) }
       format.xml  { head :ok }
     end
   end
 
   def reorder_story_set_categories_rank
     if( params[:application_id].blank? )
-      redirect_to scriptwords_story_set_categories_path
+      redirect_to relext_story_set_categories_path
     elsif( params[:application_id] ==  "__unassigned")
       @story_set_categories = StorySetCategory.where("story_set_id IS NULL AND domain_id = ?", session[:domain].id).order(:rank)
     else
@@ -128,7 +128,7 @@ class Scriptwords::StorySetCategoriesController < ScriptwordsController
   def update_story_set_categories_rank
     #p params.to_yaml
     @story_set_categories = StorySetCategory.update(params[:story_set_categories].keys, params[:story_set_categories].values)
-    redirect_to scriptwords_story_set_categories_path(:filter => params[:filter])
+    redirect_to relext_story_set_categories_path(:filter => params[:filter])
   end
 
   def clone

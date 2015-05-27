@@ -1,6 +1,6 @@
 require 'rexml/document'
 
-class Api::StoriesController < ActionController::Base
+class Api::ApologiesController < ActionController::Base
     after_filter{
       puts response.body
     } 

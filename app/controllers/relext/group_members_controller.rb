@@ -1,5 +1,5 @@
 require 'rexml/document'
-class Scriptwords::GroupMembersController < ScriptwordsController
+class Relext::GroupMembersController < RelextsController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   # GET /story_categories
@@ -63,7 +63,7 @@ class Scriptwords::GroupMembersController < ScriptwordsController
 self
     respond_to do |format|
       if @group_member.save
-        format.html { redirect_to('/scriptwords/stories#step_3') }
+        format.html { redirect_to('/relext/stories#step_3') }
         format.xml  { render :xml => @group_member, :status => :created, :location => @group_member }
         format.js
       else
@@ -81,7 +81,7 @@ self
     raise ' not owner ' unless @group_member.domain_id == session[:domain].id
     respond_to do |format|
       if @group_member.update_attributes(params[:story_set_category])
-        format.html { redirect_to('/scriptwords/story_set_categories?filter=' + @group_member.application_id.to_s) }
+        format.html { redirect_to('/relext/story_set_categories?filter=' + @group_member.application_id.to_s) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -104,7 +104,7 @@ self
 
     respond_to do |format|
       format.json {render :json=> { :success => "true" } }
-      format.html { redirect_to scriptwords_story_set_categories_path(:filter => @group_member.application_id.to_s) }
+      format.html { redirect_to relext_story_set_categories_path(:filter => @group_member.application_id.to_s) }
       format.xml  { head :ok }
     end
   end

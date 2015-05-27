@@ -1,4 +1,4 @@
-class Scriptwords::SessionController < ScriptwordsController
+class Relext::SessionController < RelextsController
   #before_filter :login_required, :except => [:new, :create]
 
   def new
@@ -18,13 +18,13 @@ class Scriptwords::SessionController < ScriptwordsController
       session[:style]  = DomainStyle.find_by_domain_id @domain.id
 
       if @domain.id == 1
-        redirect_to scriptwords_domains_path, status: :found #"/admin/domains"
+        redirect_to relext_domains_path, status: :found #"/admin/domains"
       else
-        redirect_to  scriptwords_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
+        redirect_to  relext_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
       end
 
     else
-      redirect_to scriptwords_login_path
+      redirect_to relext_login_path
     end
 
   end
@@ -33,7 +33,7 @@ class Scriptwords::SessionController < ScriptwordsController
     session[:domain] = nil
     session[:style] = nil
     reset_session
-    redirect_to scriptwords_login_path
+    redirect_to relext_login_path
   end 
 
   def new_session
@@ -44,11 +44,11 @@ class Scriptwords::SessionController < ScriptwordsController
   def authenticate
     if (@user = User.authenticate params[:user][:email], params[:user][:password])
       log_in! @user
-      redirect_to scriptwords_stories_path, notice: "Logged in!"
+      redirect_to relext_stories_path, notice: "Logged in!"
     else
       @user = User.new
       flash.now[:error] = "Email or password is invalid"
-      render 'new_session', layout: "scriptwords"
+      render 'new_session', layout: "relext"
     end
   end
 
@@ -56,7 +56,7 @@ class Scriptwords::SessionController < ScriptwordsController
     session[:domain] = nil
     session[:style] = nil
     reset_session
-    redirect_to scriptwords_login_path
+    redirect_to relext_login_path
   end
 
 end

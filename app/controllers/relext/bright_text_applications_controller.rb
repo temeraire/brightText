@@ -1,4 +1,4 @@
-class Scriptwords::BrightTextApplicationsController < ScriptwordsController
+class Relext::BrightTextApplicationsController < RelextsController
   protect_from_forgery :except => [:index]
   before_filter :login_required
   # GET /applications
@@ -163,7 +163,7 @@ class Scriptwords::BrightTextApplicationsController < ScriptwordsController
     raise ' not owner ' unless @bt_application.domain_id == session[:domain].id
     respond_to do |format|
       if @bt_application.update_attributes(params[:bright_text_application])
-        format.html { redirect_to(scriptwords_bright_text_applications_url) }
+        format.html { redirect_to(relext_bright_text_applications_url) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -180,7 +180,7 @@ class Scriptwords::BrightTextApplicationsController < ScriptwordsController
     @bt_application.destroy
 
     respond_to do |format|
-      format.html { redirect_to(scriptwords_bright_text_applications_url) }
+      format.html { redirect_to(relext_bright_text_applications_url) }
       format.xml  { head :ok }
     end
   end

@@ -1,19 +1,19 @@
 require 'rexml/document'
 
-class Api::WordsliderController < ActionController::Base
+class Api::RelextsController < ActionController::Base
   after_filter{
     puts response.body
   } 
 
   
-  def get_wordsliders_list
+  def get_relexts_list
     @user_name = params[:user_name]
     @password = request[:password]
 
     if (@user = User.authenticate @user_name, @password)
-      @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
+      @bt_application = BrightTextApplication.where(:name=>"RelaxText").first
     else
-      @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
+      @bt_application = BrightTextApplication.where(:name=>"RelaxText").first
       @user = User.find_by_email(@user_name);
       if(@user.blank?)
         @user = User.new
@@ -22,7 +22,7 @@ class Api::WordsliderController < ActionController::Base
         @user.domain_id = @bt_application.domain_id
         @user.customer!
         @user.group = Group.new
-        @user.group.name = "Apologies"
+        @user.group.name = "Friends"
 
         if @user.save
           GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
@@ -64,7 +64,7 @@ class Api::WordsliderController < ActionController::Base
           index = 1
           storyEntries.each do | storyEntry |
             storyEl = result.root.add_element("pack")
-            storyEl.attributes["id"]   = "wordslider_levelpack_" + index.to_s
+            storyEl.attributes["id"]   = "relext_levelpack_" + index.to_s
             storyEl.attributes["title"] = storyEntry.name                
             storyEl.attributes["random"] = storyEntry.public? ? "true" : "false";
             chunks = storyEntry.descriptor.split(/\n+/)
