@@ -66,7 +66,7 @@ class Api::WordslidersController < ActionController::Base
             storyEl = result.root.add_element("pack")
             storyEl.attributes["id"]   = "wordslider_levelpack_" + index.to_s
             storyEl.attributes["title"] = storyEntry.name                
-            storyEl.attributes["random"] = storyEntry.public? ? "true" : "false";
+            storyEl.attributes["random"] = storyEntry.randomize? ? "true" : "false";
             chunks = storyEntry.descriptor.split(/\n+/)
             chunks.each do |chunk|
               item = storyEl.add_element("item")
