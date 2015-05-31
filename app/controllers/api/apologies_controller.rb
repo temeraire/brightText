@@ -76,10 +76,10 @@ class Api::ApologiesController < ActionController::Base
             "WHERE story_set_categories.application_id = ? " +
             "AND (stories.user_id = ? " +
             "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
-            "WHERE group_members.email = ? ) " +
+            "WHERE group_members.email = ? AND group_members.bright_text_application_id = ?) " +
             "OR stories.public = TRUE) " +
             "ORDER BY  story_set_categories.rank";
-          categoryObjects = StorySetCategory.find_by_sql [@categories_sql, @bt_application.id, @user.id, @user.email ]
+          categoryObjects = StorySetCategory.find_by_sql [@categories_sql, @bt_application.id, @user.id, @user.email, @bt_application.id ]
 
           categoryObjects.each do | category |
             categoryEl = categoriesEl.add_element("StoryCategory")
@@ -93,10 +93,10 @@ class Api::ApologiesController < ActionController::Base
               "WHERE  story_sets.category_id = ? AND stories.bright_text_application_id = ? " +
               "AND (stories.user_id = ? " +
               "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
-              "WHERE group_members.email = ? ) " +
+              "WHERE group_members.email = ? AND group_members.bright_text_application_id = ?) " +
               "OR stories.public = TRUE) " +
               "ORDER BY  story_sets.rank";
-            storySetObjects = StorySet.find_by_sql [ @story_set_sql, category.id, @bt_application.id, @user.id, @user.email ]
+            storySetObjects = StorySet.find_by_sql [ @story_set_sql, category.id, @bt_application.id, @user.id, @user.email, @bt_application.id ]
             storySetObjects.each do | storySet |
               storySetEl = storySetsEl.add_element("StorySet");
               storySetEl.attributes["id"]   = storySet.id
@@ -107,10 +107,10 @@ class Api::ApologiesController < ActionController::Base
                 "WHERE stories.story_set_id = ? AND stories.bright_text_application_id = ? " +
                 "AND (stories.user_id = ? " +
                 "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
-                "WHERE group_members.email = ? ) " +
+                "WHERE group_members.email = ? AND group_members.bright_text_application_id = ?) " +
                 "OR stories.public = TRUE) " +
                 "ORDER BY  stories.rank";
-              storyEntries = Story.find_by_sql [@stories_sql, storySet.id, @bt_application.id, @user.id, @user.email ]
+              storyEntries = Story.find_by_sql [@stories_sql, storySet.id, @bt_application.id, @user.id, @user.email, @bt_application.id ]
               storyEntries.each do | storyEntry |
                 storyEl = storiesEl.add_element("Story")
                 storyEl.attributes["id"]   = storyEntry.id

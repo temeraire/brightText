@@ -57,10 +57,10 @@ class Api::ScriptwordsController < ActionController::Base
             "WHERE stories.bright_text_application_id = ? " +
             "AND (stories.user_id = ? " +
             "OR stories.user_id IN (SELECT groups.user_id FROM groups INNER JOIN group_members ON groups.id = group_members.group_id " +
-            "WHERE group_members.email = ? ) " +
+            "WHERE group_members.email = ? AND group_members.bright_text_application_id = ?) " +
             "OR stories.public = TRUE) " +
             "ORDER BY  stories.rank";
-          storyEntries = Story.find_by_sql [@stories_sql, @bt_application.id, @user.id, @user.email ]
+          storyEntries = Story.find_by_sql [@stories_sql, @bt_application.id, @user.id, @user.email, @bt_application.id ]
           index = 1
           storyEntries.each do | storyEntry |
             storyEl = result.root.add_element("pack")
