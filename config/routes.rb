@@ -97,8 +97,7 @@ BtWeb::Application.routes.draw do
 
 
   namespace :apologywiz do
-    resources :app_submissions
-    resources :domain_styles
+
     resources :password_resets
     resources :users
     resources :groups
@@ -131,46 +130,10 @@ BtWeb::Application.routes.draw do
     match "/login" => "session#new", :via => :get
     match "/logout" => "session#destroy", :via => :get
 
-    resources :domains
-
-    get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
-    resources :stories do
-      collection do
-        post :update_stories_rank
-      end
-    end
-
-    get "/stories/reorder_story_sets_rank/:category_id" => "story_sets#reorder_story_sets_rank", :as => :reorder_story_sets_rank
-    resources :story_sets do
-      member do
-        get :clone
-      end
-      collection do
-        post :update_story_sets_rank
-      end
-    end
-
-    get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
-    resources :story_set_categories do
-      member do
-        get :clone
-        get :clone_silently
-      end
-      collection do
-        post :update_story_set_categories_rank
-      end
-    end
-
-    resources :bright_text_applications do
-      member do
-        get :clone
-      end
-    end
+    
   end
   
   namespace :wordslider do
-    resources :app_submissions
-    resources :domain_styles
     resources :password_resets
     resources :users
     resources :groups
@@ -203,46 +166,9 @@ BtWeb::Application.routes.draw do
     match "/login" => "session#new", :via => :get
     match "/logout" => "session#destroy", :via => :get
 
-    resources :domains
-
-    get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
-    resources :stories do
-      collection do
-        post :update_stories_rank
-      end
-    end
-
-    get "/stories/reorder_story_sets_rank/:category_id" => "story_sets#reorder_story_sets_rank", :as => :reorder_story_sets_rank
-    resources :story_sets do
-      member do
-        get :clone
-      end
-      collection do
-        post :update_story_sets_rank
-      end
-    end
-
-    get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
-    resources :story_set_categories do
-      member do
-        get :clone
-        get :clone_silently
-      end
-      collection do
-        post :update_story_set_categories_rank
-      end
-    end
-
-    resources :bright_text_applications do
-      member do
-        get :clone
-      end
-    end
   end
    
   namespace :scriptwords do
-    resources :app_submissions
-    resources :domain_styles
     resources :password_resets
     resources :users
     resources :groups
@@ -275,46 +201,9 @@ BtWeb::Application.routes.draw do
     match "/login" => "session#new", :via => :get
     match "/logout" => "session#destroy", :via => :get
 
-    resources :domains
-
-    get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
-    resources :stories do
-      collection do
-        post :update_stories_rank
-      end
-    end
-
-    get "/stories/reorder_story_sets_rank/:category_id" => "story_sets#reorder_story_sets_rank", :as => :reorder_story_sets_rank
-    resources :story_sets do
-      member do
-        get :clone
-      end
-      collection do
-        post :update_story_sets_rank
-      end
-    end
-
-    get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
-    resources :story_set_categories do
-      member do
-        get :clone
-        get :clone_silently
-      end
-      collection do
-        post :update_story_set_categories_rank
-      end
-    end
-
-    resources :bright_text_applications do
-      member do
-        get :clone
-      end
-    end
   end
    
   namespace :relext do
-    resources :app_submissions
-    resources :domain_styles
     resources :password_resets
     resources :users
     resources :groups
@@ -346,42 +235,6 @@ BtWeb::Application.routes.draw do
 
     match "/login" => "session#new", :via => :get
     match "/logout" => "session#destroy", :via => :get
-
-    resources :domains
-
-    get "/stories/reorder_stories_rank/:story_set_id" => "stories#reorder_stories_rank", :as => :reorder_stories_rank
-    resources :stories do
-      collection do
-        post :update_stories_rank
-      end
-    end
-
-    get "/stories/reorder_story_sets_rank/:category_id" => "story_sets#reorder_story_sets_rank", :as => :reorder_story_sets_rank
-    resources :story_sets do
-      member do
-        get :clone
-      end
-      collection do
-        post :update_story_sets_rank
-      end
-    end
-
-    get "/story_set_categories/reorder_rank/:application_id" => "story_set_categories#reorder_story_set_categories_rank", :as => :reorder_story_set_categories_rank
-    resources :story_set_categories do
-      member do
-        get :clone
-        get :clone_silently
-      end
-      collection do
-        post :update_story_set_categories_rank
-      end
-    end
-
-    resources :bright_text_applications do
-      member do
-        get :clone
-      end
-    end
   end
-
+  
 end

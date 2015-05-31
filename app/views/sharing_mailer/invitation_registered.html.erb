@@ -4,12 +4,39 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
   </head>
   <body>
-    <p>Hey <%=@receiver.name if @receiver.name.present? %></p>
-    <p>
-      <%=@sender.name.present? ? @sender.name : @sender.email %> has created something that he wants you to see. Fire up the Apology Wiz app and you'll see it's been added to your  home screen!
-    </p>
-    <p>
-      - The Apology Wiz Team
-    </p>
+    
+      <% if(@app_name=="ApologyWiz") %>        
+        <p>Hey <%=@receiver.name if @receiver.name.present? %></p>
+        <p>
+          <%=@sender.name.present? ? @sender.name : @sender.email %> has created something that he wants you to see. Fire up the Apology Wiz app and you'll see it's been added to your  home screen!
+        </p>
+        <p>
+          - The Apology Wiz Team
+        </p>
+      <% elsif (@app_name=="Wordslider") %>
+        <p>Hey <%=@receiver.name if @receiver.name.present? %></p>
+        <p>
+          <%=@sender.name.present? ? @sender.name : @sender.email %> has created something that he wants you to see. Fire up the Word Slider app and you'll see it's been added to your  home screen!
+        </p>
+        <p>
+          - The Word Sider Team
+        </p>
+      <% elsif (@app_name=="ScriptureWords") %>
+          <p>Hey <%=@receiver.name if @receiver.name.present? %></p>
+          <p>
+            <%=@sender.name.present? ? @sender.name : @sender.email %> has created something that he wants you to see. Fire up the Scripture Words app and you'll see it's been added to your  home screen!
+          </p>
+          <p>
+            - The Scripture Words Team
+          </p>
+      <% elsif (@app_name=="Relext") %>
+        <p>Hey <%=@receiver.name if @receiver.name.present? %></p>
+        <p>
+          <%=@sender.name.present? ? @sender.name : @sender.email %> has created something that he wants you to see. Fire up the Relext app and you'll see it's been added to your  home screen!
+        </p>
+        <p>
+          - The Relext Team
+        </p>
+      <% end %>
   </body>
 </html>

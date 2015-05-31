@@ -11,7 +11,7 @@
       <%= form_for([:scriptwords, @user], html: { role: "form", class: "form"}, url: {action: "authenticate"}, validate: true) do |f| %>
           <div class="form-group">
             <%= f.label :email, :class=>'control-label' %>
-            <%= f.text_field :email, :class=>'form-control' %>
+            <%= f.email_field :email, :class=>'form-control' %>
           </div>
           <div class="form-group">
             <%= f.label :password, :class=>'control-label' %>

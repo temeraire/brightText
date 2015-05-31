@@ -5,7 +5,8 @@ class Relext::PasswordResetsController < RelextController
 
   def create
     @user = User.find_by_email params[:email]
-    @user.send_password_reset if @user
+    app_name = "Relext"
+    @user.send_password_reset(app_name) if @user
     
     respond_to do |format|
       format.js

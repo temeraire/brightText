@@ -8,7 +8,7 @@ class Wordslider::GroupMembersController < WordsliderController
   def index
     @group = Group.find_by_user_id(session[:user_id])
     puts @group.id
-    @group_members  = GroupMember.where(:group_id=>@group.id)
+    @group_members  = GroupMember.where(:group_id=>@group.id, :bright_text_application_id=>session[:br_application_id])
     respond_to do |format|
       format.json {render :json=> { :success => "true", :group_members => @group_members } }
       format.html # index.html.erb
@@ -50,18 +50,17 @@ class Wordslider::GroupMembersController < WordsliderController
   # POST /story_categories.xml
   def create
     @group_member = GroupMember.new(params[:group_member])
-
+    @group_member.bright_text_application_id = session[:br_application_id]
     @user = User.find_by_email(@group_member.email)
     @group_member.user_id = @user.id if @user.present?
     @owner = User.find(session[:user_id])
     @group_member.group_id = @owner.group.id
     if @user.present?
-      SharingMailer.invitation_registered(@owner, @user).deliver
+      SharingMailer.invitation_registered(@owner, @user, "Wordslider").deliver
     else
-      SharingMailer.invitation(@owner.email, @group_member.email).deliver
+      SharingMailer.invitation(@owner.email, @group_member.email, "Wordslider").deliver
     end
     
-self
     respond_to do |format|
       if @group_member.save
         format.html { redirect_to('/wordslider/stories#step_3') }

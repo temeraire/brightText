@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084757) do
+ActiveRecord::Schema.define(version: 920130109084759) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -62,8 +62,10 @@ ActiveRecord::Schema.define(version: 920130109084757) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "bright_text_application_id"
   end
 
+  add_index "group_members", ["bright_text_application_id"], name: "index_group_members_on_bright_text_application_id", using: :btree
   add_index "group_members", ["email"], name: "index_group_members_on_email", using: :btree
 
   create_table "groups", force: true do |t|
@@ -96,6 +98,7 @@ ActiveRecord::Schema.define(version: 920130109084757) do
     t.integer  "bright_text_application_id"
     t.boolean  "public",                                      default: false
     t.boolean  "brighttext",                                  default: true
+    t.boolean  "randomize",                                   default: false
   end
 
   add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree
