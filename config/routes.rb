@@ -1,5 +1,9 @@
 BtWeb::Application.routes.draw do
 
+
+  match 'stories/:id/legacy'  => 'admin/stories#legacyxml', :via=> [:get, :post]
+  match 'stories/:id/clones'  => 'admin/stories#clonesxml', :via=> [:get, :post]
+
   namespace :api do
     post "/user_stories" => "stories#get_user_stories"
     post "/user_app_stories" => "stories#get_user_application_stories"

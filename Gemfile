@@ -4,7 +4,9 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.0'
 
 # DB session store
-gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+# gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+gem 'redis-rails'
+
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
 
