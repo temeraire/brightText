@@ -18,9 +18,9 @@ class Apologywiz::SessionController < ApologywizController
       session[:style]  = DomainStyle.find_by_domain_id @domain.id
 
       if @domain.id == 1
-        redirect_to aplogywiz_domains_path, status: :found #"/admin/domains"
+        redirect_to apologywiz_domains_path, status: :found #"/admin/domains"
       else
-        redirect_to  aplogywiz_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
+        redirect_to  apologywiz_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
       end
 
     else

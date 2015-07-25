@@ -1,6 +1,8 @@
 BtWeb::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-
+  
+  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
+	
   # Code is not reloaded between requests.
   config.cache_classes = true
 

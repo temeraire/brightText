@@ -10,20 +10,8 @@
   <% end %>
   <div class="col-md-12">
     <div class="form-group">
-      <%= f.label :nickname, :class=>'control-label' %>
-      <%= f.text_field :nickname, :class=>'form-control' %>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <%= f.label :name_first, :class=>'control-label' %>
-      <%= f.text_field :name_first, :class=>'form-control' %>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <%= f.label :name_last, :class=>'control-label' %>
-      <%= f.text_field :name_last, :class=>'form-control' %>
+      <%= f.label :name, :class=>'control-label' %>
+      <%= f.text_field :name, :class=>'form-control' %>
     </div>
   </div>
   <div class="col-md-12">
@@ -32,33 +20,22 @@
       <%= f.text_field :email, :class=>'form-control' %>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <%= f.label :password, :class=>'control-label' %>
-      <%= f.password_field :password, :class=>'form-control' %>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <%= f.label :password_confirmation, :class=>'control-label' %>
-      <%= f.password_field :password_confirmation, :class=>'form-control' %>
-    </div>
-  </div>
   <div class="col-md-12">
-    <div class="checkbox">
-      <%= f.label :enabled%>
-      <%= f.check_box :enabled%>
+    <div class="checkbox">   
+      <%= f.label :enabled, :class => "checkbox" do %>
+        <%= f.check_box :enabled%> Enabled
+      <% end %>
     </div>
-
-    <div class="checkbox">
-      <%= f.label :priveleged%>
-      <%= f.check_box :priveleged%>
+    <div class="checkbox">   
+      <%= f.label :privileged, :class => "checkbox" do %>
+        <%= f.check_box :privileged%> Privileged
+      <% end %>
     </div>
-
-    <div class="checkbox">
-      <%= f.label :self_created%>
-      <%= f.check_box :self_created%>
-    </div>
+    <div class="checkbox">   
+      <%= f.label :self_created, :class => "checkbox" do %>
+        <%= f.check_box :self_created%> Self Created
+      <% end %>
+    </div> 
   </div>
   <%= f.hidden_field :owner_domain_id %>
   <div class="row">

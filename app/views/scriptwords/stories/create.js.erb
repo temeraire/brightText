@@ -1,0 +1,11 @@
+<% if @story.errors.count == 0 %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">New Scripture Word named '<%=@story.category%>' is now ready to be created.</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% else %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while creating Scripture Word</p>');
+  $('#dialog').modal({
+    keyboard: true
+  });
+<% end %>

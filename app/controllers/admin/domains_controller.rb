@@ -14,7 +14,7 @@ class Admin::DomainsController < ApplicationController
 
     @domains.each do | domain |
       @domainObj = {}
-      @domainObj["name"] = domain["nickname"];
+      @domainObj["name"] = domain["name"];
       @domainObj["id"]   = domain["id"];
       @domainObj["owner"] = domain["owner_domain_id"];
       @resultArray << @domainObj;
@@ -43,7 +43,7 @@ class Admin::DomainsController < ApplicationController
       format.html # show.html.erb
       format.xml  { render :xml => @domain }
       format.js   {
-        @result = { :name => @domain.nickname }.to_json()
+        @result = { :name => @domain.name }.to_json()
         if params[:callback]
           @result = params[:callback] + "(" + @result + ")"
         end
@@ -55,9 +55,8 @@ class Admin::DomainsController < ApplicationController
   # GET /domains/new
   # GET /domains/new.xml
   def new
-    @myDomain = session[:domain]
     @domain = Domain.new
-    @domain.owner_domain_id = @myDomain.id
+    @domain.owner_domain_id = session[:domain].id
 
     respond_to do |format|
       format.html # new.html.erb
@@ -74,14 +73,14 @@ class Admin::DomainsController < ApplicationController
   # POST /domains.xml
   def create
     @domain = Domain.new(params[:domain])
-
+    @domain.owner_domain_id = session[:domain].id
 
     respond_to do |format|
-      if @domain.save && DomainStyle.new({:domain_id => @domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => "/static/default_logo.png" } ).save
-        format.html { redirect_to(admin_domains_url, :notice => 'Domain was successfully updated.') }
+      if @domain.save && DomainStyle.new({:domain_id => @domain.id, :style_id => 1, :app_alias => "application", :group_alias => "category", :set_alias => "set", :story_alias => "story", :logo => @domain.name + "_logo.png" } ).save   
+        format.html { redirect_to(admin_domains_url, :notice => 'Domain was successfully created.') }
         format.xml  { render :xml => @domain, :status => :created, :location => @domain }
       else
-        format.html { render :action => "new" }
+        format.html { render :action => "new"}
         format.xml  { render :xml => @domain.errors, :status => :unprocessable_entity }
       end
     end
@@ -99,7 +98,7 @@ class Admin::DomainsController < ApplicationController
 
     respond_to do |format|
       if @domain.update_attributes(params[:domain])
-        format.html { redirect_to(admin_domains_url) }
+        format.html { redirect_to(admin_domains_url, :notice => 'Domain was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

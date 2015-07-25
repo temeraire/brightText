@@ -1,12 +1,12 @@
 class ApplicationController < ActionController::Base
   def login_required
-    if session[:domain].present? && (session[:domain].nickname=="Admin" || session[:domain].nickname=="ContextIT")      
-      return true
+    if session[:domain].present? && current_user.present? && (current_user.admin? || current_user.moderator?) # (session[:domain].name=="Admin" || session[:domain].name=="ContextIT")      
+      return false
     end
     flash[:warning]='Please login to continue'
     session[:return_to]=request.url
     redirect_to "/admin/index.html"
-    return false
+    return true
   end
 
   def log_in! user
@@ -21,6 +21,14 @@ class ApplicationController < ActionController::Base
 
   def get_first_application_id
     BrightTextApplication.where(:domain_id => session[:domain].id).order(:name).first.id.to_s
+  end
+
+  def get_first_category
+    StorySetCategory.where(:domain_id => session[:domain].id).order(:name).first
+  end
+
+  def get_first_story_set
+    StorySet.where(:domain_id => session[:domain].id).order(:name).first
   end
 
   def find_application

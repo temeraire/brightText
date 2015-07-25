@@ -13,7 +13,11 @@ class Admin::UsersController < ApplicationController
       if @user.admin?
         redirect_to admin_domains_path, status: :found #"/admin/domains"
       elsif @user.moderator?
-        redirect_to admin_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
+        if session[:domain].name=="Advocacy"
+          redirect_to admin_story_sets_path, status: :found #"/admin/domains"
+        else
+          redirect_to admin_bright_text_applications_path, status: :found #"/admin/bright_text_applications"
+        end
       else
         redirect_to admin_login_path
       end

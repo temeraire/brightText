@@ -52,6 +52,9 @@ class Admin::StoriesController < ApplicationController
                           @filter == "__none" ? {} : {"stories.story_set_id" => @story_set})).order(:name)
           end
       end
+      if @story_set.nil?
+	@story_set = get_first_story_set
+      end
       session[:br_story_set_id] = @story_set.id unless @story_set.blank?
       @filter = @story_set.id.to_s if @filter.blank? && !@story_set.blank? #update @filter for selection list and bread crumbs similar values
 
@@ -70,6 +73,8 @@ class Admin::StoriesController < ApplicationController
 #      @stories = @stories.search_for params[:q]
 #      @highlighted_phreses = params[:q].split()
     end
+
+    story_set = @story_set
 
     respond_to do |format|
       format.html # index.html.erb

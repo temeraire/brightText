@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 920130109084755) do
+ActiveRecord::Schema.define(version: 920130109084759) do
 
   create_table "app_submissions", force: true do |t|
     t.integer  "bright_text_application_id"
@@ -45,16 +45,11 @@ ActiveRecord::Schema.define(version: 920130109084755) do
   end
 
   create_table "domains", force: true do |t|
-    t.string   "name_first"
-    t.string   "name_last"
     t.string   "email"
-    t.string   "pass"
-    t.string   "password_confirmation"
-    t.string   "salt"
-    t.string   "nickname"
+    t.string   "name"
     t.integer  "owner_domain_id"
     t.boolean  "enabled"
-    t.boolean  "priveleged"
+    t.boolean  "privileged"
     t.boolean  "self_created"
     t.string   "role"
     t.datetime "created_at"
@@ -67,8 +62,10 @@ ActiveRecord::Schema.define(version: 920130109084755) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "bright_text_application_id"
   end
 
+  add_index "group_members", ["bright_text_application_id"], name: "index_group_members_on_bright_text_application_id", using: :btree
   add_index "group_members", ["email"], name: "index_group_members_on_email", using: :btree
 
   create_table "groups", force: true do |t|
@@ -100,6 +97,8 @@ ActiveRecord::Schema.define(version: 920130109084755) do
     t.integer  "rank"
     t.integer  "bright_text_application_id"
     t.boolean  "public",                                      default: false
+    t.boolean  "brighttext",                                  default: true
+    t.boolean  "randomize",                                   default: false
   end
 
   add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree
@@ -137,6 +136,18 @@ ActiveRecord::Schema.define(version: 920130109084755) do
 
   add_index "story_sets", ["bright_text_application_id"], name: "index_story_sets_on_bright_text_application_id", using: :btree
 
+  create_table "user_apps", force: true do |t|
+    t.integer  "user_id",                    null: false
+    t.integer  "bright_text_application_id", null: false
+    t.string   "version"
+    t.integer  "platform"
+    t.boolean  "paid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_apps", ["user_id", "bright_text_application_id", "platform"], name: "index_user_apps_on_user_id_and_app_id_and_platform", using: :btree
+
   create_table "users", force: true do |t|
     t.string   "name"
     t.integer  "domain_id"
@@ -160,17 +171,5 @@ ActiveRecord::Schema.define(version: 920130109084755) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-
-  create_table "user_apps", id: false, force: true do |t|
-    t.integer  "user_id",                    null: false
-    t.integer  "bright_text_application_id", null: false
-    t.string   "version"
-    t.integer  "platform"
-    t.boolean  "paid"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_apps", ["user_id", "bright_text_application_id", "platform"], name: "index_user_apps_on_user_id_and_app_id_and_platform", unique: true, using: :btree
 
 end

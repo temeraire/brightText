@@ -1,0 +1,49 @@
+<div class="tab-pane active" id="step_1">
+  <div class="jumbotron">
+    <div class="container">
+        <div class="col-md-6">
+          <h3>New Text</h3>
+          <%= form_for([:relext, @story], :html => { :role => "form", :class=>"form"}, :validate => true) do |f| %>
+          <div class="form-group">
+            <label class="control-label">Title <font size="3">(will display on your device)</font></label>
+            <%= f.text_field :category, class: 'form-control', placeholder: "example: John's Relext" %>
+          </div>
+          <%#*<div class="form-group">%>
+            <%#*<label class="control-label">Subtitle <font size="3">(optional -- displayed here only)</font></label>%>
+            <%#= f.text_field :name, class: 'form-control', placeholder: "example: Sorry I've been a creep" %>
+          <%#*</div>%>
+          <% end %>
+        </div>
+      <div class="col-md-6">        
+        <div class="col-md-offset-1 col-md-11">
+          <h3>My Word Sliders <label class="control-label"><font size="3">(Click name to edit)</font></label></h3>
+          <form class="form-horizontal" role="form">            
+              <div class="form-group">
+                <label class="col-md-offset-4 col-md-2 control-label" for="filter">Search</label>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" id="filter" placeholder="Enter text to filter">
+                </div>            
+              </div>
+          </form>
+        </div>
+        <div class="col-md-offset-1 col-md-11">
+          <table id="apologies" class="footable" data-filter="#filter" data-page-size="3" data-limit-navigation="5">        
+            <thead>
+              <tr>
+                <th data-type="alpha" data-sort-initial="false" class="footable-first-column footable-sortable">Name<span class="footable-sort-indicator"></span></th>
+                <th data-sort-ignore='true'>Actions</th>
+              </tr>
+            </thead>
+            <tbody>              
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -37,6 +37,11 @@ class Admin::StorySetsController < ApplicationController
                            @filter == "__none" ? {} : {"story_sets.category_id" => @category})).order(:name)
       end
     end
+    if @category.nil?
+	@category = get_first_category	
+    end 
+    #for breadcrumb, will fix later
+    @story_set_category = @category
 
     @filter = @category.id.to_s if @filter.blank? && !@category.blank? #update @filter for selection list and breadcrumbs similar values
 

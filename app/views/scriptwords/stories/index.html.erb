@@ -1,0 +1,395 @@
+<style type="text/css" media="screen">
+  textarea.dataport{
+    width:764px;
+    height:392px;
+    resize:none;
+  }
+
+  DIV.harnesscontainer{
+    width:834px;
+    height:34px;
+    margin:5px;
+    padding:5px;
+    float:left;
+    border: 1px dotted black
+  }
+
+  DIV.viewportcontainer{
+    width:480px;
+    height:140px;
+    margin:5px;
+    padding:5px;
+    float:left;
+  }
+
+  DIV.btEditor{
+    height:160px;
+    padding:10px;
+  }
+
+</style>
+<ul id="story_tabs" class="nav nav-tabs nav-justified">
+  <li class="active"><a id="astep_1" href="#step_1"><h4>Name It</h4></a></li>
+  <li><a id="astep_2" href="#step_2"><h4>Create It</h4></a></li>
+  <li><a id="astep_3" href="#step_3"><h4>Invite</h4></a></li>
+</ul>
+<!-- Tab panes -->
+<div class="tab-content">
+  <%= render 'step1' %>
+  <%= render 'step2' %>
+  <%= render 'step3' %>
+</div>
+<div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p id="dialog-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  
+  
+var stories;
+var members;
+var formSubmitted = false;
+
+
+
+function showMembers(){
+   $.ajax({
+     type: "get",
+     url: "/scriptwords/group_members",
+     dataType: "json",
+     data: "",
+     success: function(data) {
+       if(data["success"] === "true") {
+          members = data["group_members"];
+          console.log(members);
+          var rows = "";
+          $.each(members, function (i, member) {
+            console.log(member);
+            rows += "<tr>" +
+                      "<td>" + member["email"] + "</td>" +
+                      "<td><a id='" + member["id"] +"' data-email='" + member["email"] + "'class='remove_member' href='#'>Remove</a></td>" +
+                    "</tr>";
+          });
+          $("#groups-table tbody").html("");
+          $("#groups-table tbody").append(rows);
+          $('#groups-table').trigger('footable_redraw');
+       }
+     }
+   });
+}
+
+function showStories(){
+   $.ajax({
+     type: "get",
+     url: "/scriptwords/stories",
+     dataType: "json",
+     data: "",
+     success: function(data) {
+       if(data["success"] === "true") {
+          stories = data["stories"];
+          console.log(stories);
+          var rows = "";
+          $.each(stories, function (i, apology) {
+            console.log(apology);
+            if(apology["user_id"]===1){
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              "<td>" + 
+              <%#*"<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +%> 
+              <%#*" | " +%>
+              "<a id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='remove_story' href='#'>Delete</a>" + 
+              "</td>" +
+              "</tr>";
+            }else{              
+              rows += "<tr>" +
+              "<td><a id='" + i +"' class='edit_apology' href='#'>" + apology["name"] + "</a></td>" +
+              <%#*"<td>" +%> 
+              <%#*"<a id='" + apology["category_id"] +"' data-apology-id='" + apology["id"] +"' data-apology='" + apology["name"] + "'class='clone_story' href='#'>Clone</a>" +%>  
+              <%#*"</td>" +%>
+              "</tr>";
+            }
+          });
+          $("#apologies tbody").html("");
+          $("#apologies tbody").append(rows);
+          $('#apologies').trigger('footable_redraw');
+          
+          if (stories.length > 0){
+            $('#story_category').val(stories[0]["name"]);
+            $('#story_name').val(stories[0]["subtitle"]);
+          }
+            
+       }
+     }
+   });
+}
+
+$(document).ready(function() {  
+  $(function () {
+    $('#apologies').footable();
+    $('#groups-table').footable();
+  });
+  
+  $("#btn_back_to_step_1").on('click', function(event){
+    event.preventDefault();
+    $("#astep_1").click();    
+  }); 
+  
+  $("#btn_back_to_step_2").on('click', function(event){
+    $("#astep_2").click();    
+  });
+ 
+  $("#apologies").on('click','a.edit_apology', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story = stories[index];
+    $("#story_id").val(story["id"]);
+    $("#category_name").html("");
+    $("#name").html(story["name"]);
+    $("#story_descriptor").val("");
+    $("#story_descriptor").val(story["descriptor"]);
+    $('form.edit_story').get(0).setAttribute('action', '/scriptwords/stories/'+ story["id"]);
+    $("#astep_2").tab('show');
+    $('#story_category').val(story["name"]);
+    if(story["public"])
+      $('#story_public').prop("checked", true);
+      
+  });
+
+  $("#groups-table").on('click','a.remove_member', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var email = $(this).attr("data-email");          
+
+    BootstrapDialog.show({
+      type: BootstrapDialog.TYPE_DEFAULT,
+      title: 'Confirmation!',
+      message: '<p>Remove email \''+email+'\'?',
+      buttons: [{
+          id: 'btn-delete',
+          label: 'Delete',
+          cssClass: 'btn-danger',
+          action: function(dialog){
+              var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+              $button.disable();
+              $button.spin();
+              dialog.setClosable(false);
+              $.ajax({
+                type: "DELETE",
+                url: "/scriptwords/group_members/"+index,
+                dataType: "json",
+                data: "",
+                success: function(data) {
+                  if(data["success"] === "true") {
+                    $button.stopSpin();
+                    dialog.setMessage('<p>\'' + email +'\' is removed successfully!</p>');
+                    dialog.setClosable(true);
+                    showMembers();
+                  }
+                }
+              });
+          }
+        }, {
+          label: 'Close',
+          action: function(dialogItself){
+              dialogItself.close();
+          }
+        }]
+    });
+  });
+
+  $("#apologies").on('click','a.remove_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var apology_name = $(this).attr("data-apology");
+
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Delete scripture word named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-delete',
+      label: 'Delete',
+      cssClass: 'btn-danger',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/scriptwords/stories/"+index+"/delete",
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is removed successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
+  
+
+  $("#apologies").on('click','a.clone_story', function(event){
+    event.preventDefault();
+    var index = $(this).attr("id");
+    var story_id = $(this).attr("data-apology-id");
+    var apology_name = $(this).attr("data-apology");
+
+    BootstrapDialog.show({
+    type: BootstrapDialog.TYPE_DEFAULT,
+    title: 'Confirmation!',
+    message: '<p>Clone scripture word named \''+apology_name+'\'?',
+    buttons: [{
+      id: 'btn-clone',
+      label: 'Clone',
+      cssClass: 'btn-primary',
+      action: function(dialog){
+        var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+        $button.disable();
+        $button.spin();
+        dialog.setClosable(false);
+        $.ajax({
+          type: "GET",
+          url: "/scriptwords/story_set_categories/"+index+"/clone_silently?story_id="+story_id,
+          dataType: "json",
+          data: "",
+          success: function(data) {
+            if(data["success"] === "true") {
+              $button.stopSpin();
+              dialog.setMessage('<p>\'' + apology_name +'\' is cloned successfully!</p>');
+              dialog.setClosable(true);
+              showStories();
+            }
+          }
+        });
+      }
+    }, {
+      label: 'Close',
+      action: function(dialogItself){
+          dialogItself.close();
+      }
+    }
+    ]
+    });
+  });
+  
+  $('#dialog').on('shown.bs.modal', function (e) {
+    $('#dialog').find('button').focus();  
+  });
+  
+});
+
+$(document).ready(function() {
+    showStories();
+  });
+
+$("#astep_1").click(function() {
+  if(formSubmitted===true){
+    formSubmitted = false;
+    //$('#story_category').val('');
+    $('#story_name').val('');  
+    showStories();
+  }
+  $(this).tab('show');
+});
+
+$("#astep_2").click(function() {
+  if(formSubmitted===false){
+    var title = $("#story_category").val();
+    if(title===''){
+      $('#dialog-message').replaceWith('<p id=\"dialog-message\">Title can\'t be blank</p>');
+      $('#dialog').modal({
+        keyboard: true
+      });
+      $("#astep_1").click();
+      $("#story_category").focus();
+    }else{
+      var found = false;
+      for (var i = 0; i < stories.length; i++) {
+        if(stories[i].name===title){
+          found = true;
+          break;
+        }
+      }
+      if(found){ //if(subtitle===''){
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">You\'ve already got an scripture word titled \'' + title + '\'. Please give this one a new title.</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+        $("#astep_1").click();
+        $("#story_name").focus();
+      }else{
+        $.ajax({
+          type: "post",
+          url: "/scriptwords/stories",
+          dataType: "json",
+          data: $("#new_story").serialize(),
+          success: function(data) {
+            formSubmitted = true;
+            if(data["id"] !== "") {
+              $("#story_id").val(data["id"]);
+              $("#category_name").text($("#story_category").val());
+              $("#name").text($("#story_name").val());
+              $('form.edit_story').get(0).setAttribute('action', '/scriptwords/stories/'+data["id"]);
+              $('#dialog-message').replaceWith('<p id=\"dialog-message\">Your new word slider \'' + title + '\' has been created.</p>');
+              $('#dialog').modal({
+                keyboard: true
+              });
+            }
+            else if(data["name"]){
+              message = data["name"];
+              $("#story_name").parent().addClass('field_with_errors');
+              $("#story_name + .message").remove();
+              $("#story_name").after('<label class="message" style="margin-top: 50px; display: block; margin-left: 30px;">' + message + '</label>'); 
+              $("a[href='.step1']").click();
+            }
+          }
+        });
+
+        $("#story_descriptor").val("");
+        $("#name").html("");
+        $(this).tab('show');
+
+      }
+    }
+  }else{
+    $(this).tab('show');
+  }
+});
+
+$("#astep_3").click(function() {
+  showMembers();
+  $(this).tab('show');
+});
+
+(function() {
+    window.alert = function(str) {
+        $('#dialog-message').replaceWith('<p id=\"dialog-message\">'+ str +'</p>');
+        $('#dialog').modal({
+          keyboard: true
+        });
+    };
+})();
+
+</script>

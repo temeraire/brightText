@@ -1,11 +1,11 @@
 <% if @story.errors.count == 0 %>
-  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Story was updated successfully</p>');
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\"><%= session[:style].story_alias.titleize %> was updated successfully</p>');
   $('#dialog').modal({
     keyboard: true
   });
 
 <% else %>
-  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while updating Story</p>');
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while updating <%= session[:style].story_alias.titleize %></p>');
   $('#dialog').modal({
     keyboard: true
   });

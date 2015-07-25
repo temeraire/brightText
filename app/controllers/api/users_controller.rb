@@ -52,7 +52,7 @@ class Api::UsersController < ActionController::Base
           @user.domain_id = @bt_application.domain_id
           @user.customer!
           @user.group = Group.new
-          @user.group.name = "Apologies"
+          @user.group.name = "Friends"
 
           if @user.save
             GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)

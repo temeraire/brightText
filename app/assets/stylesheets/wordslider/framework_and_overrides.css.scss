@@ -1,0 +1,95 @@
+// import the CSS framework
+@import "bootstrap";
+
+body {
+    padding-top: 10px;
+    font-size: 14px;
+}
+
+textarea.form-control { resize:none; }
+// make all images responsive by default
+img {
+    @extend .img-responsive;
+    margin: 0 auto;
+}
+// override for the 'Home' navigation link
+.navbar-brand {
+    font-size: inherit;
+}
+
+.container .jumbotron {
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 3px;
+}
+
+.jumbotron {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: medium;
+}
+
+.jumbotron p {
+    margin-bottom: 15px;
+    font-size: small;
+    font-weight: 200;
+}
+
+.wait-popup-bg{
+    position:fixed;    
+    padding:2px;
+    height:36px;
+    width:36px;
+    top: 50%;
+    left: 50%;
+    margin-top: -18px;
+    margin-left: -18px;
+    background:#FFFFFF;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+
+.nav-tabs-justified > .active > a, .nav-tabs.nav-justified > .active > a, .nav-tabs-justified > .active > a:hover, .nav-tabs.nav-justified > .active > a:hover, .nav-tabs-justified > .active > a:focus, .nav-tabs.nav-justified > .active > a:focus {
+    border: 1px solid #dddddd;
+    background-color:#eeeeee; 
+}
+
+
+/* Side notes for calling out things
+-------------------------------------------------- */
+
+/* Base styles (regardless of theme) */
+.bs-callout {
+margin: 20px 0;
+padding: 15px 30px 15px 15px;
+border-left: 5px solid #eee;
+font-size: small;
+}
+.bs-callout h4 {
+margin-top: 0;
+}
+.bs-callout p:last-child {
+margin-bottom: 0;
+}
+.bs-callout code,
+.bs-callout .highlight {
+background-color: #fff;
+}
+
+/* Themes for different contexts */
+.bs-callout-danger {
+background-color: #fcf2f2;
+border-color: #dFb5b4;
+}
+.bs-callout-warning {
+background-color: #fefbed;
+border-color: #f1e7bc;
+}
+.bs-callout-info {
+background-color: #f0f7fd;
+border-color: #d0e3f0;
+}

@@ -130,11 +130,12 @@ DIV.btEditor{
     <%= f.label :name, :class=>'control-label' %>
     <%= f.text_field :name, :class=>'form-control' %>
   </div>
-  <div class="form-group">
-    <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
-    <%= select_tag :category_id, options_from_collection_for_select(StorySetCategory.where(:application_id => session[:br_application_id]), :id, :name, @story.story_set.present? ? @story.story_set.category_id : 1), {:class => "form-control"}%>
-  </div>
-
+  <% if session[:domain].name != "Advocacy"  %>
+    <div class="form-group">
+      <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
+      <%= select_tag :category_id, options_from_collection_for_select(StorySetCategory.where(:application_id => session[:br_application_id]), :id, :name, @story.story_set.present? ? @story.story_set.category_id : 1), {:class => "form-control"}%>
+    </div>
+  <% end %>
   <div class="form-group">
     <label for="story_sets" class="control-label"><%= session[:style].set_alias.titleize %></label>
     <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:category_id => @story.story_set.present? ? @story.story_set.category_id : 1), :id, :name, 

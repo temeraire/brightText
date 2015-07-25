@@ -1,0 +1,63 @@
+<script>
+  $(function(){ 
+    $("#add_group_form")
+      .bind("ajax:beforeSend", function(){
+        $("#spinner").show();
+      })
+      .bind("ajax:complete", function(){          
+        $("#spinner").hide();
+      });
+  });
+</script>
+<div class="tab-pane" id="step_3">
+  <div class="jumbotron">
+    <div class="container">
+    <%= form_for([:wordslider, @group_member], :remote=>true, :html => { :role => "form", :class=>"form", :id => "add_group_form"}, :validate => true) do |f| %>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="control-label">Email</label>
+            <%= f.email_field :email, class: 'form-control', placeholder: "example: john@gmail.com" %>
+          </div>
+          <div class="form-group">
+            <%= f.submit :id => "save_group_member_btn", :value => "Add", :class => "btn btn-primary" %>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <h4>Shared With:</h4>
+          <div class="form-group">
+            <span class="pull-right">
+              <input type="text" class="form-control" id="filter" placeholder="Enter text to filter">
+            </span>
+          </div>
+          <table id="groups-table" class="footable" data-filter="#filter" data-page-size="3" data-limit-navigation="5">
+            <thead>
+              <tr>
+                <th data-type="alpha" data-sort-initial="false" class="footable-first-column footable-sortable">Email<span class="footable-sort-indicator"></span></th>
+                <th data-sort-ignore='true'>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="text-align: center"><div class="pagination pagination-centered"></div></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-md-2">          
+          <button id="btn_back_to_step_2" type="button" class="btn btn-default">Back to Create It</button>          
+        </div>
+      </div>
+    <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="spinner"  class="wait-popup-bg" style="display:none;">
+  <img src="/images/wordslider/ajax-loader.gif"/>
+</div>
