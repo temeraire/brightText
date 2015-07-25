@@ -3,15 +3,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
 
-<<<<<<< HEAD
-# DB session store
-# gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-=======
 # Session Store
 # gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-
-# Session Store
->>>>>>> dd7bb76469f789e3cac858a66a4837e9d00cf8b8
 gem 'redis-rails'
 
 # Use sqlite3 as the database for Active Record
