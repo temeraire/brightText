@@ -74,7 +74,7 @@ DIV.btEditor{
   }
 
   $(document).ready(function() {
-
+<%if @story.brighttext==true%>
     _bt1 = new BrightTextEditor("bt_one", true);
     var rawData = $("#fieldDescriptor");
     var textData = $("#fieldSummary");
@@ -95,7 +95,7 @@ DIV.btEditor{
           _bt1.editChoicesets();
     });
 
-<%if @story.descriptor.present?%>
+
       _bt1.renderData(<%=raw @story.descriptor %>);
 <%end%>
   
@@ -131,7 +131,7 @@ DIV.btEditor{
     <%= f.text_field :name, :class=>'form-control' %>
   </div>
   <% if session[:domain].name != "Advocacy"  %>
-    <div class="form-group">
+  <div class="form-group">
       <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
       <%= select_tag :category_id, options_from_collection_for_select(StorySetCategory.where(:application_id => session[:br_application_id]), :id, :name, @story.story_set.present? ? @story.story_set.category_id : 1), {:class => "form-control"}%>
     </div>
@@ -162,6 +162,8 @@ DIV.btEditor{
           <h3 class="panel-title">Editor</h3>
         </div>
         <div class="panel-body">
+          
+<%if @story.brighttext==true%>
           <div id="controls1" style="height:50px">
             <div class="col-md-3">
               <span class="pull-left">
@@ -183,6 +185,10 @@ DIV.btEditor{
           </div>
 
           <div id="bt_one" class="form-control btEditor">BT Wand</div>
+<%else%>
+      <%= f.text_area :descriptor, class: 'form-control', rows: 5 %>
+<%end%>  
+
         </div>
       </div>
     </div>
@@ -198,9 +204,10 @@ DIV.btEditor{
       </span>
     </div>
   </div>
-
+<%if @story.brighttext==true%>
   <%= f.hidden_field :description, :id => "fieldSummary" %>
   <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
+<%end%>
 <% end %>
 
 

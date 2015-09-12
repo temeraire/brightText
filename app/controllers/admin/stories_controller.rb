@@ -160,6 +160,11 @@ class Admin::StoriesController < ApplicationController
   # PUT /stories/1.xml
   def update
     @story = Story.find(params[:id])
+    @application = find_application
+    if(@story.brighttext==false)
+      params[:story][:description] = ""
+    end
+    
     @story_author = StoryAuthor.where(:user_id=>session[:user_id], :story_id=>@story.id).first
     if(@story_author.nil?)
       @story.story_authors.build().user_id = session[:user_id]      
