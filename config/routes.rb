@@ -14,6 +14,7 @@ BtWeb::Application.routes.draw do
 
     #Word slider Endpoints
     post "/user_wordsliders" => "wordsliders#get_wordsliders_list"
+    post "/get_public_wordsliders" => "wordsliders#get_public_wordsliders_list"
     
     #Scripture Words Endpoints
     post "/user_scriptwords" => "scriptwords#get_scriptwords_list"

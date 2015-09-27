@@ -7,7 +7,7 @@ class Api::ApologiesController < ActionController::Base
   def get_user_stories
     @user_name = params[:user_name]
     @password = request[:password]
-    @application_id = request[:application_id]
+    @application_id = BrightTextApplication.where(:name=>"ApologyWiz").first #request[:application_id]    
 
     if (@user = User.authenticate @user_name, @password)
       @stories = Story.where("(user_id IS NULL OR user_id = ?) AND (bright_text_application_id = ? OR bright_text_application_id is NULL)",@user.id, @application_id).order(:name)
@@ -132,7 +132,7 @@ class Api::ApologiesController < ActionController::Base
   def get_user_private_stories
     @user_name = params[:user_name]
     @password = request[:password]
-    @application_id = request[:application_id]
+    @application_id = BrightTextApplication.where(:name=>"ApologyWiz").first #request[:application_id]
 
     if (@user = User.authenticate @user_name, @password)
       @bt_application = BrightTextApplication.find(@application_id)
