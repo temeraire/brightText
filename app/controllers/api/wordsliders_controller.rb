@@ -68,35 +68,12 @@ class Api::WordslidersController < ActionController::Base
   
   
   def get_public_wordsliders_list
-    @user_name = params[:user_name]
-    @password = request[:password]
-
-    if (@user = User.authenticate @user_name, @password)
-      @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
-    else
-      @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
-      @user = User.find_by_email(@user_name);
-      if(@user.blank?)
-        @user = User.new
-        @user.email = @user_name;
-        @user.password = @password
-        @user.domain_id = @bt_application.domain_id
-        @user.customer!
-        @user.group = Group.new
-        @user.group.name = "WordSliders"
-
-        if @user.save
-          GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
-        end
-      end
-    end
+    @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
 
     respond_to do |format|
       format.xml  {
-
         result = REXML::Document.new("<story/>")
         if(@bt_application.present?)
-
           @stories_sql =
             "SELECT DISTINCT stories.* FROM stories " +
             "WHERE stories.bright_text_application_id = ? " +
