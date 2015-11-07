@@ -43,13 +43,14 @@ class Wordslider::UsersController < WordsliderController
     @user = User.new(params[:user])
     @user.group = Group.new
     @user.group.name = "WordSliders"
-    @user.customer!
+    @user.bright_text_application_id = BrightTextApplication.where(:name=>"WordSlider").first.id
+    @user.user_type = 0
 
     respond_to do |format|
       if @user.save
         GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         log_in! @user
-        format.html { redirect_to(wordslider_root_url, :notice => 'User was successfully created.') }
+        format.html { redirect_to(wordslider_root_url, :notice => 'User was successfully created.', :status => :created) }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
         format.html { render :action => "new" , :layout => "wordslider" }
@@ -92,7 +93,8 @@ class Wordslider::UsersController < WordsliderController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
+    if (@user = User.authenticate_user params[:user][:email], params[:user][:password], @bt_application)
       #@user_apps = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>BrightTextApplication.find_by_name("ApologyWiz").id)
       #if @user_apps.present?
         log_in! @user

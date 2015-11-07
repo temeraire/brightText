@@ -43,16 +43,19 @@ class Apologywiz::UsersController < ApologywizController
     @user = User.new(params[:user])
     @user.group = Group.new
     @user.group.name = "Apologies"
-    @user.customer!
+    @user.bright_text_application_id = BrightTextApplication.where(:name=>"ApologyWiz").first.id
+    @user.user_type = 0
 
     respond_to do |format|
       if @user.save
+        puts ">>>>>>>>>>>>>>>>" + @user.bright_text_application_id.to_s
         GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         log_in! @user
         format.html { redirect_to(apologywiz_root_url, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
         format.html { render :action => "new" , :layout => "apologywiz" }
+        #format.html { render :html => @user.errors, :status => :unprocessable_entity }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
@@ -92,7 +95,8 @@ class Apologywiz::UsersController < ApologywizController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    app_id = BrightTextApplication.where(:name=>"ApologyWiz").first
+    if (@user = User.authenticate_user params[:user][:email], params[:user][:password], app_id)
       @user_apps = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>BrightTextApplication.find_by_name("ApologyWiz").id)
       if @user_apps.present?
         log_in! @user

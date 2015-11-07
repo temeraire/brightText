@@ -42,7 +42,8 @@ class Apologywiz::SessionController < ApologywizController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    @bt_application = BrightTextApplication.where(:name=>"ApologyWiz").first
+    if (@user = User.authenticate_user params[:user][:email], params[:user][:password],@bt_application)
       log_in! @user
       redirect_to apologywiz_stories_path, notice: "Logged in!"
     else

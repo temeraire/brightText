@@ -9,11 +9,9 @@ class Api::RelextsController < ActionController::Base
   def get_relexts_list
     @user_name = params[:user_name]
     @password = request[:password]
-
-    if (@user = User.authenticate @user_name, @password)
-      @bt_application = BrightTextApplication.where(:name=>"RelaxText").first
-    else
-      @bt_application = BrightTextApplication.where(:name=>"RelaxText").first
+    @bt_application = BrightTextApplication.where(:name=>"RelaxText").first
+    
+    if (!(@user = User.authenticate_user @user_name, @password, @bt_application.id ))
       @user = User.find_by_email(@user_name);
       if(@user.blank?)
         @user = User.new

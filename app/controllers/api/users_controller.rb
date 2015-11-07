@@ -11,7 +11,7 @@ class Api::UsersController < ActionController::Base
     
     respond_to do |format|
       format.json {  
-        if (@user = User.authenticate user_name, password)    
+        if (@user = User.authenticate_user user_name, password, application_id)    
           
           @user_app = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>application_id).first
           

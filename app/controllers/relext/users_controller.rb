@@ -43,7 +43,8 @@ class Relext::UsersController < RelextController
     @user = User.new(params[:user])
     @user.group = Group.new
     @user.group.name = "RelaxText"
-    @user.customer!
+    @user.bright_text_application_id = BrightTextApplication.where(:name=>"Relext").first.id
+    @user.user_type = 0
 
     respond_to do |format|
       if @user.save
@@ -92,7 +93,8 @@ class Relext::UsersController < RelextController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    @bt_application = BrightTextApplication.where(:name=>"Relext").first
+    if (@user = User.authenticate_user params[:user][:email], params[:user][:password], @bt_application.id)
       #@user_apps = UserApp.where(:user_id=>@user.id, :bright_text_application_id=>BrightTextApplication.find_by_name("ApologyWiz").id)
       #if @user_apps.present?
         log_in! @user

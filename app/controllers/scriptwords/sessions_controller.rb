@@ -42,7 +42,8 @@ class Scriptwords::SessionController < ScriptwordsController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    @bt_application = BrightTextApplication.where(:name=>"ScriptureWords").first
+    if (@user = User.authenticate_user params[:user][:email], params[:user][:password],@bt_application)
       log_in! @user
       redirect_to scriptwords_stories_path, notice: "Logged in!"
     else

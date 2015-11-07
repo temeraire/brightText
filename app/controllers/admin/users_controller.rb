@@ -7,7 +7,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    if (@user = User.authenticate_admin params[:user][:email], params[:user][:password])
       log_in! @user
       #redirect_to apologywiz_stories_path, notice: "Logged in!"
       if @user.admin?
