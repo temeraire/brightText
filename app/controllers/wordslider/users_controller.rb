@@ -50,7 +50,7 @@ class Wordslider::UsersController < WordsliderController
       if @user.save
         GroupMember.where(:email => @user.email).update_all(:user_id=>@user.id)
         log_in! @user
-        format.html { redirect_to(wordslider_root_url, :notice => 'User was successfully created.', :status => :created) }
+        format.html { redirect_to(wordslider_root_url, :notice => 'User was successfully created.') }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
         format.html { render :action => "new" , :layout => "wordslider" }
