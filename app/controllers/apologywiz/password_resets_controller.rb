@@ -4,7 +4,7 @@ class Apologywiz::PasswordResetsController < ApologywizController
   end
 
   def create
-    @user = User.find_by_email params[:email]
+    @user = User.where(:email=> params[:email], :bright_text_application_id => BrightTextApplication.where(:name=>"ApologyWiz").first.id)
     app_name = "ApologyWiz"
     @user.send_password_reset(app_name) if @user
     
