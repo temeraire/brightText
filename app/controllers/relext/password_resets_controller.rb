@@ -4,7 +4,7 @@ class Relext::PasswordResetsController < RelextController
   end
 
   def create
-    @user = User.where(:email=> params[:email], :bright_text_application_id => BrightTextApplication.where(:name=>"Relext").first.id)
+    @user = User.where(:email=> params[:email], :bright_text_application_id => BrightTextApplication.where(:name=>"Relext").first.id).first
     app_name = "Relext"
     @user.send_password_reset(app_name) if @user
     
