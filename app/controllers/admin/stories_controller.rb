@@ -86,6 +86,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/1
   # GET /stories/1.xml
   def show
+    @application = find_application
     @story = Story.find(params[:id])
     respond_to do |format|
       format.html # show.html.erb
@@ -97,6 +98,7 @@ class Admin::StoriesController < ApplicationController
   # GET /stories/new
   # GET /stories/new.xml
   def new
+    @application = find_application
     @story = Story.new
     @page = 0
 
@@ -125,6 +127,7 @@ class Admin::StoriesController < ApplicationController
 
   # GET /stories/1/edit
   def edit
+    @application = find_application
     @story = Story.find(params[:id])
     @page = params[:page]
   end

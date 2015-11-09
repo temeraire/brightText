@@ -74,7 +74,7 @@ DIV.btEditor{
   }
 
   $(document).ready(function() {
-<%if @story.brighttext==true%>
+<%if @story.brighttext==true && @application.name=="ApologyWiz"%>
     _bt1 = new BrightTextEditor("bt_one", true);
     var rawData = $("#fieldDescriptor");
     var textData = $("#fieldSummary");
@@ -147,12 +147,18 @@ DIV.btEditor{
       "data-option-value-method" => :name}%>
   </div>
 
-  <div class="checkbox">   
+  <div class="checkbox-inline">   
     <%= f.label :public, :class => "checkbox" do %>
       <%= f.check_box :public%>Public
     <% end %>
   </div>
-
+<%if @story.brighttext==false%>
+  <div class="checkbox-inline">   
+    <%= f.label :randomize, :class => "checkbox" do %>
+      <%= f.check_box :randomize%>Randomize
+    <% end %>
+  </div>
+<%end%>
   <%#= hidden_field_tag 'format', 'json' %>
   <div class="row">
     <!--   WAND WAND WAND WAND WAND  -->
@@ -163,7 +169,7 @@ DIV.btEditor{
         </div>
         <div class="panel-body">
           
-<%if @story.brighttext==true%>
+<%if @story.brighttext==true && @application.name=="ApologyWiz"%>
           <div id="controls1" style="height:50px">
             <div class="col-md-3">
               <span class="pull-left">
@@ -204,7 +210,7 @@ DIV.btEditor{
       </span>
     </div>
   </div>
-<%if @story.brighttext==true%>
+<%if @story.brighttext==true &&  @application.name=="ApologyWiz"%>
   <%= f.hidden_field :description, :id => "fieldSummary" %>
   <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
 <%end%>
