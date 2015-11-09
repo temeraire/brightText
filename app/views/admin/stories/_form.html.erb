@@ -152,7 +152,7 @@ DIV.btEditor{
       <%= f.check_box :public%>Public
     <% end %>
   </div>
-<%if @story.brighttext==false%>
+<%if @story.brighttext==false || @application.name!="ApologyWiz"%>
   <div class="checkbox-inline">   
     <%= f.label :randomize, :class => "checkbox" do %>
       <%= f.check_box :randomize%>Randomize
