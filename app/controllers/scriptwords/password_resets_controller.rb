@@ -4,7 +4,7 @@ class Scriptwords::PasswordResetsController < ScriptwordsController
   end
 
   def create
-    @user = User.find_by_email params[:email]
+    @user = User.where(:email=> params[:email], :bright_text_application_id => BrightTextApplication.where(:name=>"ScriptureWords").first.id).first
     app_name = "ScriptureWords"
     @user.send_password_reset(app_name) if @user
     

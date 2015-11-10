@@ -4,7 +4,7 @@ class Wordslider::PasswordResetsController < WordsliderController
   end
 
   def create
-    @user = User.find_by_email params[:email]
+    @user = User.where(:email=> params[:email], :bright_text_application_id => BrightTextApplication.where(:name=>"WordSlider").first.id).first
     app_name = "Wordslider"
     @user.send_password_reset(app_name) if @user
     

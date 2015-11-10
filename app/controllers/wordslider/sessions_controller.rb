@@ -42,7 +42,8 @@ class Wordslider::SessionController < WordsliderController
   end
 
   def authenticate
-    if (@user = User.authenticate params[:user][:email], params[:user][:password])
+    @bt_application = BrightTextApplication.where(:name=>"WordSlider").first
+    if (@user = User.authenticate_user params[:user][:email], params[:user][:password], @bt_application)
       log_in! @user
       redirect_to wordslider_stories_path, notice: "Logged in!"
     else

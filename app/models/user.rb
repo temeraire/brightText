@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   belongs_to :domain
   has_one :group, autosave: true
   has_many :groups, through: :group_members
+  
   attr_accessor :password
   attr_accessible :name,:lastname, :email, :password, :password_confirmation, :user_type
 
@@ -15,7 +16,7 @@ class User < ActiveRecord::Base
                 #:confirmation => true,
                 :length => {:minimum => 4}
   validates :email, :format => { :with => /\A(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})\z/i, :message => "Please insert a valid email." }
-  validates :email, uniqueness: true
+  validates :email, :uniqueness => { :scope => :bright_text_application_id, :message => "This email is already registered. Please use your username and password to login." }
 
   validates :password, :confirmation => true, :on => :create
   validates :password, :confirmation => true, :on => :update, :unless => lambda{ |user| user.password.blank? }
@@ -33,12 +34,20 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.authenticate(name, password)
-    user = where("email = :name", :name => name ).first
+  def self.authenticate_user(name, password, bright_text_application_id)
+    user = where("email = :name AND bright_text_application_id = :bright_text_application_id", :name => name, :bright_text_application_id => bright_text_application_id).first
     if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
       user
     end
   end
+
+  def self.authenticate_admin(name, password)
+    user = where("email = :name", :name => name).first
+    if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
+      user
+    end
+  end
+
 
   def send_password_reset(app_name)
     generate_token :reset_password_token

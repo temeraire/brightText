@@ -15,7 +15,7 @@ class Api::BrightTextApplicationsController < ActionController::Base
     signature = request[:signature]   
     
     forgot_password = false
-    if (@user = User.authenticate @user_name, @password)
+    if (@user = User.authenticate_user @user_name, @password, @application_id)
       @bt_application = BrightTextApplication.find(@application_id)
     else
       @bt_application = BrightTextApplication.find(@application_id)
