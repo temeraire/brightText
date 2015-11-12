@@ -1,37 +1,37 @@
 <%
-  content_for :javascript do
-    javascript_include_tag '/assets/admin/btedit.js', "data-turbolinks-track" => true
+content_for :javascript do
+  javascript_include_tag '/assets/admin/btedit.js', "data-turbolinks-track" => true
   end
 %>
 <style type="text/css" media="screen">
 
-textarea.dataport{
-  width:764px;
-  height:392px;
-  resize:none;
-}
+    textarea.dataport{
+        width:764px;
+        height:392px;
+        resize:none;
+    }
 
-DIV.harnesscontainer{
-  width:834px;
-  height:34px;
-  margin:5px;
-  padding:5px;
-  float:left;
-  border: 1px dotted black
-}
+    DIV.harnesscontainer{
+        width:834px;
+        height:34px;
+        margin:5px;
+        padding:5px;
+        float:left;
+        border: 1px dotted black
+    }
 
-DIV.viewportcontainer{
-  width:480px;
-  height:130px;
-  margin:5px;
-  padding:5px;
-  float:left;
-}
+    DIV.viewportcontainer{
+        width:480px;
+        height:130px;
+        margin:5px;
+        padding:5px;
+        float:left;
+    }
 
-DIV.btEditor{
-  height:140px;
-  padding:10px;
-}
+    DIV.btEditor{
+        height:140px;
+        padding:10px;
+    }
 
 </style>
 
@@ -40,192 +40,205 @@ DIV.btEditor{
   var _bt1;
   var _s1;
 
-  function updateToneSlider1( gradients, value ){
-    var toneIndex = 0;
-    for ( var i = 0; i < gradients.length; i++ ){
-      if ( gradients[i].id === value ){
-            toneIndex = i;
-            break;
+  function updateToneSlider1(gradients, value) {
+      var toneIndex = 0;
+      for (var i = 0; i < gradients.length; i++) {
+          if (gradients[i].id === value) {
+              toneIndex = i;
+              break;
+          }
       }
-    }
-    $("#tone-control1").hide( );
-    $( "#slider1" ).slider({
-      value: toneIndex,
-      min: 0,
-      max: gradients.length - 1,
-      range: false,
-      step: 0.001,
-      tooltip: "hide"
-    });
-
-    $("#slider1").on('slide', function(slideEvt) {
-            var toneGradients = gradients;
-            var s1 = Math.floor(slideEvt.value);
-            if ( _s1 !== s1 ){ // allow smooth moving of the tone selector
-              _s1 = s1;
-              $( "#gradient1" ).html( gradients[ s1 ].name );
-              _bt1.handleToneSelection( gradients[ s1 ].id );
-            }
+      $("#tone-control1").hide( );
+      $("#slider1").slider({
+          value: toneIndex,
+          min: 0,
+          max: gradients.length - 1,
+          range: false,
+          step: 0.001,
+          tooltip: "hide"
       });
-    if ( gradients.length > 1) {
-      $( "#gradient1" ).html( gradients[ toneIndex ].name );
-      $("#tone-control1").show();
-    }
+
+      $("#slider1").on('slide', function (slideEvt) {
+          var toneGradients = gradients;
+          var s1 = Math.floor(slideEvt.value);
+          if (_s1 !== s1) { // allow smooth moving of the tone selector
+              _s1 = s1;
+              $("#gradient1").html(gradients[ s1 ].name);
+              _bt1.handleToneSelection(gradients[ s1 ].id);
+          }
+      });
+      if (gradients.length > 1) {
+          $("#gradient1").html(gradients[ toneIndex ].name);
+          $("#tone-control1").show();
+      }
   }
 
-  $(document).ready(function() {
+  $(document).ready(function () {
 <%if @story.brighttext==true && @application.name=="ApologyWiz"%>
-    _bt1 = new BrightTextEditor("bt_one", true);
-    var rawData = $("#fieldDescriptor");
-    var textData = $("#fieldSummary");
+        _bt1 = new BrightTextEditor("bt_one", true);
+        var rawData = $("#fieldDescriptor");
+        var textData = $("#fieldSummary");
 
-    _bt1.onChange(function() {
-      rawData[0].value = $.toJSON(_bt1.toData());
-      textData[0].value = _bt1.toString();
-      updateToneSlider1(_bt1.toneGradients(), _bt1.selectedTone());
-    });
+        _bt1.onChange(function () {
+            rawData[0].value = $.toJSON(_bt1.toData());
+            textData[0].value = _bt1.toString();
+            updateToneSlider1(_bt1.toneGradients(), _bt1.selectedTone());
+        });
 
-    $("#instant_rewrite1").on( "click", function(event){
-          event.preventDefault();
-          _bt1.rewrite();
-    });    
+        $("#instant_rewrite1").on("click", function (event) {
+            event.preventDefault();
+            _bt1.rewrite();
+        });
 
-    $("#edit_choicesets").on( "click", function(event){
-          event.preventDefault();
-          _bt1.editChoicesets();
-    });
+        $("#edit_choicesets").on("click", function (event) {
+            event.preventDefault();
+            _bt1.editChoicesets();
+        });
 
 
-      _bt1.renderData(<%=raw @story.descriptor %>);
+        _bt1.renderData(<%=raw @story.descriptor %>);
 <%end%>
-  
-    $('#dialog').on('shown.bs.modal', function (e) {
-      $('#dialog').find('button').focus();  
-    });
+
+      $('#dialog').on('shown.bs.modal', function (e) {
+          $('#dialog').find('button').focus();
+      });
   });
 
-(function() {
-    window.alert = function(str) {
-        $('#dialog-message').replaceWith('<p id=\"dialog-message\">'+ str +'</p>');
-        $('#dialog').modal({
-          keyboard: true
-        });
-    };
-})();
+  (function () {
+      window.alert = function (str) {
+          $('#dialog-message').replaceWith('<p id=\"dialog-message\">' + str + '</p>');
+          $('#dialog').modal({
+              keyboard: true
+          });
+      };
+  })();
 
 </script>
 
-  <%= form_for([:admin, @story], :remote=> true, :validate => true, :html => { :role => "form", :class=>"form"} ) do |f| %>
+<%= form_for([:admin, @story], :remote=> true, :validate => true, :html => { :role => "form", :class=>"form-horizontal"} ) do |f| %>
 
   <% if @story.errors.any? %>
     <div class="alert alert-danger">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      <b><%= pluralize(@story.errors.count, "error") %> prohibited this <%= session[:style].story_alias.titleize %> from being saved:</b>
-      <% @story.errors.full_messages.each do |msg| %>
-        <p><%= msg %></p>
-      <% end %>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <b><%= pluralize(@story.errors.count, "error") %> prohibited this <%= session[:style].story_alias.titleize %> from being saved:</b>
+        <% @story.errors.full_messages.each do |msg| %>
+          <p><%= msg %></p>
+        <% end %>
     </div>
   <% end %>
+
   <div class="form-group">
-    <%= f.label :name, :class=>'control-label' %>
-    <%= f.text_field :name, :class=>'form-control' %>
+      <div class="col-md-6">
+          <%= f.label :name, :class=>'control-label' %>
+          <%= f.text_field :name, :class=>'form-control' %>
+      </div>
+      <div class="col-md-6">
+          <%= f.label :product_name, :class=>'control-label' %>
+          <%= f.text_field :product_name, :class=>'form-control' %>
+      </div>
   </div>
   <% if session[:domain].name != "Advocacy"  %>
-  <div class="form-group">
-      <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
-      <%= select_tag :category_id, options_from_collection_for_select(StorySetCategory.where(:application_id => session[:br_application_id]), :id, :name, @story.story_set.present? ? @story.story_set.category_id : 1), {:class => "form-control"}%>
+  <div class="col-md-12">
+    <div class="form-group">
+        <label for="categories" class="control-label"><%= session[:style].group_alias.titleize %></label>
+        <%= select_tag :category_id, options_from_collection_for_select(StorySetCategory.where(:application_id => session[:br_application_id]), :id, :name, @story.story_set.present? ? @story.story_set.category_id : 1), {:class => "form-control"}%>
     </div>
+  </div>    
   <% end %>
+  <div class="col-md-12">
   <div class="form-group">
-    <label for="story_sets" class="control-label"><%= session[:style].set_alias.titleize %></label>
-    <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:category_id => @story.story_set.present? ? @story.story_set.category_id : 1), :id, :name, 
-      @story.story_set.present? ? @story.story_set_id : 1), {},{:class => "form-control", 
-      "data-option-dependent" => true,
-      "data-option-observed" => "category_id",
-      "data-option-url" => "/admin/story_set_categories/:story_set_id:/story_sets.json",
-      "data-option-key-method" => :id,
-      "data-option-value-method" => :name}%>
+      <label for="story_sets" class="control-label"><%= session[:style].set_alias.titleize %></label>
+      <%= f.select :story_set_id, options_from_collection_for_select(StorySet.where(:category_id => @story.story_set.present? ? @story.story_set.category_id : 1), :id, :name, 
+        @story.story_set.present? ? @story.story_set_id : 1), {},{:class => "form-control", 
+        "data-option-dependent" => true,
+        "data-option-observed" => "category_id",
+        "data-option-url" => "/admin/story_set_categories/:story_set_id:/story_sets.json",
+        "data-option-key-method" => :id,
+        "data-option-value-method" => :name}%>
   </div>
+  </div>    
 
   <div class="checkbox-inline">   
-    <%= f.label :public, :class => "checkbox" do %>
-      <%= f.check_box :public%>Public
-    <% end %>
+      <%= f.label :public, :class => "checkbox" do %>
+        <%= f.check_box :public%>Public
+      <% end %>
   </div>
-<%if @story.brighttext==false || @application.name!="ApologyWiz"%>
-  <div class="checkbox-inline">   
-    <%= f.label :randomize, :class => "checkbox" do %>
-      <%= f.check_box :randomize%>Randomize
-    <% end %>
-  </div>
-<%end%>
+  <%if @story.brighttext==false || @application.name!="ApologyWiz"%>
+    <div class="checkbox-inline">   
+        <%= f.label :randomize, :class => "checkbox" do %>
+          <%= f.check_box :randomize%>Randomize
+        <% end %>
+    </div>
+  <%end%>
   <%#= hidden_field_tag 'format', 'json' %>
+<div class="spacer20"></div>
   <div class="row">
-    <!--   WAND WAND WAND WAND WAND  -->
-    <div id="main_container" class="col-md-12" style="height:270px">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3 class="panel-title">Editor</h3>
-        </div>
-        <div class="panel-body">
-          
-<%if @story.brighttext==true && @application.name=="ApologyWiz"%>
-          <div id="controls1" style="height:50px">
-            <div class="col-md-3">
-              <span class="pull-left">
-                <button id="edit_choicesets" class="btn btn-primary">Choicesets</button>
-              </span>
-            </div>
-            <div class="col-md-6">
-              <div id="tone-control1">
-                <div class="col-md-6">Tone:</div>
-                <div class="col-md-6"><span id="gradient1" class="pull-right"></span></div>
-                <div id="slider1" style="width:400px"></div>
+      <!--   WAND WAND WAND WAND WAND  -->
+      <div id="main_container" class="col-md-12" style="height:270px">
+          <div class="panel panel-primary">
+              <div class="panel-heading">
+                  <h3 class="panel-title">Editor</h3>
               </div>
-            </div>
-            <div class="col-md-3">
-              <span class="pull-right">
-                <button id="instant_rewrite1" class="btn btn-primary">Instant Rewrite</button>
-              </span>
-            </div>
-          </div>
+              <div class="panel-body">
 
-          <div id="bt_one" class="form-control btEditor">BT Wand</div>
-<%else%>
-      <%= f.text_area :descriptor, class: 'form-control', rows: 5 %>
-<%end%>  
+                  <%if @story.brighttext==true && @application.name=="ApologyWiz"%>
+                    <div id="controls1" style="height:50px">
+                        <div class="col-md-3">
+                            <span class="pull-left">
+                                <button id="edit_choicesets" class="btn btn-primary">Choicesets</button>
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="tone-control1">
+                                <div class="col-md-6">Tone:</div>
+                                <div class="col-md-6"><span id="gradient1" class="pull-right"></span></div>
+                                <div id="slider1" style="width:400px"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="pull-right">
+                                <button id="instant_rewrite1" class="btn btn-primary">Instant Rewrite</button>
+                            </span>
+                        </div>
+                    </div>
 
+                    <div id="bt_one" class="form-control btEditor">BT Wand</div>
+                  <%else%>
+                    <%= f.text_area :descriptor, class: 'form-control', rows: 5 %>
+                    <%end%>  
+
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-2">
-        <%= link_to 'Back', admin_stories_path(:filter=>session[:filter], :page=>@page),  {:class => "btn btn-default"}   %>
+    <div class="row">
+        <div class="col-md-2">
+            <%= link_to 'Back', admin_stories_path(:filter=>session[:filter], :page=>@page),  {:class => "btn btn-default"}   %>
+        </div>
+        <div class="col-md-10">
+            <span class="pull-right">
+                <%= f.submit :id => "save_story_btn", :value => "Save " + session[:style].story_alias.titleize, :class => "btn btn-primary" %>
+            </span>
+        </div>
     </div>
-    <div class="col-md-10">
-      <span class="pull-right">
-        <%= f.submit :id => "save_story_btn", :value => "Save " + session[:style].story_alias.titleize, :class => "btn btn-primary" %>
-      </span>
-    </div>
-  </div>
-<%if @story.brighttext==true &&  @application.name=="ApologyWiz"%>
-  <%= f.hidden_field :description, :id => "fieldSummary" %>
-  <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
-<%end%>
-<% end %>
+    <div class="spacer20"></div>
+    <%if @story.brighttext==true &&  @application.name=="ApologyWiz"%>
+      <%= f.hidden_field :description, :id => "fieldSummary" %>
+      <%= f.hidden_field :descriptor,  :id => "fieldDescriptor" %>
+    <%end%>
+  <% end %>
 
 
-<div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <p id="dialog-message"></p>
+  <div id="dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-body">
+                  <p id="dialog-message"></p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+              </div>
+          </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
-      </div>
-    </div>
   </div>
-</div>
