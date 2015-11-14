@@ -115,6 +115,7 @@ class Admin::StoriesController < ApplicationController
 
   # GET /stories/XX/clone
   def clone
+    @application = find_application
     @page = params[:page]
     @sourceStory = Story.find(params[:id])
     @story = @sourceStory.dup

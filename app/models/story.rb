@@ -9,12 +9,14 @@ class Story < ActiveRecord::Base
 
   before_save :set_rank
 
-  attr_accessible :id, :name, :story_set_id, :description, :descriptor, :user_id, :story_set, :category, :public, :rank, :randomize
+  attr_accessible :id, :name, :story_set_id, :description, :descriptor, :user_id, :story_set, :category, :public, :rank, :randomize, :store_id
 
   validates :name,
-              :uniqueness => { :scope => :story_set_id, :message => "This name is already taken. Please select another name" },
+              :uniqueness => { :scope => :story_set_id, :message => " is already taken. Please select another name" },
               :presence => {:message => "Please insert a name."}
-
+ 
+  validates :store_id, 
+              :uniqueness => { :scope => :bright_text_application_id, :message => " id is already taken. Please select another id" }
 
   def category
     if story_set.present?

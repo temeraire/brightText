@@ -99,7 +99,7 @@ ActiveRecord::Schema.define(version: 920130109084762) do
     t.boolean  "public",                                      default: false
     t.boolean  "brighttext",                                  default: true
     t.boolean  "randomize",                                   default: false
-    t.string   "product_name"
+    t.string   "store_id"
   end
 
   add_index "stories", ["bright_text_application_id"], name: "index_stories_on_bright_text_application_id", using: :btree

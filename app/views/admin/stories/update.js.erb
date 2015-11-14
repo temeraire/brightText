@@ -5,7 +5,13 @@
   });
 
 <% else %>
-  $('#dialog-message').replaceWith('<p id=\"dialog-message\">An error occurred while updating <%= session[:style].story_alias.titleize %></p>');
+  <%
+    message = ""
+    @story.errors.full_messages.each do |msg| 
+         message = message +" "+ msg +"."
+    end
+  %>
+  $('#dialog-message').replaceWith('<p id=\"dialog-message\">Following error occurred while saving <%= session[:style].story_alias.titleize %>:<%=message%></p>');
   $('#dialog').modal({
     keyboard: true
   });
