@@ -46,7 +46,7 @@ class Api::WordslidersController < ActionController::Base
           index = 1
           storyEntries.each do | storyEntry |
             storyEl = result.root.add_element("pack")
-            storyEl.attributes["id"]   = "wordslider_levelpack_" + index.to_s
+            storyEl.attributes["id"]   = storyEntry.store_id
             storyEl.attributes["title"] = storyEntry.name                
             storyEl.attributes["random"] = storyEntry.randomize? ? "true" : "false";
             chunks = storyEntry.descriptor.split(/\n+/)
@@ -81,7 +81,7 @@ class Api::WordslidersController < ActionController::Base
           index = 1
           storyEntries.each do | storyEntry |
             storyEl = result.root.add_element("pack")
-            storyEl.attributes["id"]   = "wordslider_levelpack_" + index.to_s
+            storyEl.attributes["id"]   = storyEntry.store_id #"wordslider_levelpack_" + index.to_s
             storyEl.attributes["title"] = storyEntry.name                
             storyEl.attributes["random"] = storyEntry.randomize? ? "true" : "false";
             chunks = storyEntry.descriptor.split(/\n+/)
